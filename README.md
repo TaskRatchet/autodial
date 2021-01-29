@@ -43,23 +43,6 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+## Guinea pigs
 
-## Notes for rate units (runits)
-
-const DIY = 365.25 // this is what physicists use, eg, to define a light year
-const SID = 86400  // seconds in a day (not used: DIM=DIY/12, WIM=DIY/12/7)
-
-/** Number of seconds in a year, month, etc 
-    @enum {Number} */
-self.SECS = { 'y' : DIY*SID, 
-              'm' : DIY*SID/12,
-              'w' : 7*SID,
-              'd' : SID,
-              'h' : 3600        }
-/** Unit names
-    @enum {string} */
-self.UNAM = { 'y' : 'year',
-              'm' : 'month',
-              'w' : 'week',
-              'd' : 'day',
-              'h' : 'hour'      }
+dreev has at least a dozen people who replied to "daily beemail: autodialer guineapigs"
