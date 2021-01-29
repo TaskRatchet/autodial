@@ -10,6 +10,8 @@ export default function Home() {
   const username = params.get('username')
   const access_token = params.get('access_token')
 
+  console.log(set)
+
   useEffect(() => {
     console.log('running effect')
 

@@ -62,6 +62,8 @@ describe('Home page', () => {
   it('persists credentials', async () => {
     getParams.mockReturnValue(new URLSearchParams('?access_token=abc123&username=alice'))
 
+    const { getByText } = await render(<Home />)
+
     await waitFor(() => {
       expect(set).toBeCalledWith('user_alice', 'abc123')
     })
