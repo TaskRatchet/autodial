@@ -45,7 +45,7 @@ function stepify(d, dflt=0) {
 
 // Take list of datapoints and a window (in seconds), return average rate in that window.
 function avgrate(data, window) {
-  console.log(`calling avgrate; datepoints: ${JSON.stringify(data)}`)
+  // console.log(`calling avgrate; datepoints: ${JSON.stringify(data)}`)
   if (!data || !data.length) return 0
   data = data.map(p => [parsedate(p[0]), p[1]]) // convert daystamps to unixtimes
 
@@ -58,16 +58,28 @@ function avgrate(data, window) {
   return vdelta/window
 }
 
+// Clip x to be at least a and at most b: min(b,max(a,x)). Swaps a & b if a > b.
+function clip(x, a, b) {
+  if (a > b) [a, b] = [b, a]
+  return x < a ? a : x > b ? b : x
+}
+
 type Goal = {
   runits: 'h' | 'd' | 'w' | 'm' | 'y',
   roadall: [string | null, number | null, number | null][],
   datapoints: [string, number, string][] 
 }
 
+type Options = {
+  min?: number,
+  max?: number
+}
+
 // Takes a goal g which includes roadall and data, returns new roadall
-export default function dial(g: Goal) {
+export default function dial(g: Goal, opts: Options = {}) {
+  const { min = -Infinity, max = Infinity } = opts
   const siru = SECS[g.runits] // seconds in rate units
-  console.log(`siru: ${siru}`)
+  // console.log(`siru: ${siru}`)
   const t = now()
 
   const firstrow = g.roadall[0]
@@ -79,7 +91,7 @@ export default function dial(g: Goal) {
 
   return [
     ...g.roadall.slice(0, -1), 
-    [lastrow[0], lastrow[1], arps * siru]
+    [lastrow[0], lastrow[1], clip(arps * siru, min, max)]
   ]
 }
 

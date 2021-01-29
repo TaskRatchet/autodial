@@ -71,7 +71,17 @@ describe("dial function", () => {
     expect(Math.abs(r[1][2] - 1)).toBeLessThanOrEqual(1e-12)
   })
 
-  // what happens when average rate is zero? What if it just didn't do anything, didn't change the rate at all? Or perhaps the user sets min and max instead of a single limit?
+  it("dials goal with min option", () => {
+    mockNow(2021, 2, 1)
+
+    const r = dial({
+      runits: 'w',
+      roadall: [["20210125", 0, null], ["20210201", null, 1]], 
+      datapoints: [["20210125", 1, "comment"]]
+    }, {min: 2})
+
+    expect(r[1][2]).toEqual(2)
+  })
 
   // waiting for: api maybe handles kyoom, aggday, odom
 })
