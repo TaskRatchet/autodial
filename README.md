@@ -27,3 +27,10 @@ Login with `taskratchet@gmail.com`:
 ```bash
 firebase login
 ```
+
+Run tests:
+
+```bash
+cd functions/
+npm run test
+```
