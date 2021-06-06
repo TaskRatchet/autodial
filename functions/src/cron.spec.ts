@@ -1,9 +1,8 @@
 jest.mock("firebase-functions");
-import dial from "./dial";
+import cron from "./cron";
 
 describe("function", () => {
   it("runs", async () => {
-    dial();
-    expect(false).toBeTruthy();
+    cron();
   });
 });
