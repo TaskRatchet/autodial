@@ -1,3 +1,3 @@
-export function now() {
-  // TODO: implement
+export function now(): number {
+  return Date.now() / 1000;
 }

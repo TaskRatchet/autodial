@@ -7,7 +7,8 @@ jest.mock("./time");
 const mockNow = now as jest.Mock;
 
 const setNow = (yyyy: number, m: number, d: number) => {
-  return mockNow.mockReturnValue(Date.UTC(yyyy, m - 1, d, 12) / 1000);
+  const value: number = Date.UTC(yyyy, m - 1, d, 12) / 1000;
+  return mockNow.mockReturnValue(value);
 };
 
 describe("dial function", () => {
@@ -44,7 +45,12 @@ describe("dial function", () => {
       datapoints: [["20210125", 1, "comment"]],
     });
 
-    expect(Math.abs(r[1][2] - 1 / 7)).toBeLessThanOrEqual(1e-12);
+    // TODO: name this temp var better
+    const num = r[1][2];
+
+    if (num === null) throw new Error("num is null");
+
+    expect(Math.abs(num - 1 / 7)).toBeLessThanOrEqual(1e-12);
   });
 
   // for now we'll expect this to autodial to zero when you've entered no data
@@ -72,7 +78,12 @@ describe("dial function", () => {
       datapoints: [["20210125", 1, "comment"]],
     });
 
-    expect(Math.abs(r[1][2] - 1)).toBeLessThanOrEqual(1e-12);
+    // TODO: name this temp var better
+    const num = r[1][2];
+
+    if (num === null) throw new Error("num is null");
+
+    expect(Math.abs(num - 1)).toBeLessThanOrEqual(1e-12);
   });
 
   it("dials goal with min option", () => {

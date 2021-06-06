@@ -41,7 +41,7 @@
 // 3. Every element too small: return n-1 (the index of the last element)
 // 4. Every element is too big: return -1 (one less than the first element)
 // *This is like finding the infimum of the set of just-right elements.*
-export function searchLow(sa, df) {
+export function searchLow<T>(sa: T[], df: (e: T) => number): number {
   if (!sa || !sa.length) return -1; // empty/non-array => every element too big
 
   let li = -1; // initially left of the leftmost element of sa
@@ -63,7 +63,7 @@ export function searchLow(sa, df) {
 // 3. Every element is too small: return n (one more than the last element)
 // 4. Every element is too big: return 0 (the index of the first element)
 // *This is like finding the supremum of the set of just-right elements.*
-export function searchHigh(sa, df) {
+export function searchHigh<T>(sa: T[], df: (e: T) => number): number {
   if (!sa || !sa.length) return 0; // empty/non-array => every element too small
 
   let li = -1; // initially left of the leftmost element of sa
