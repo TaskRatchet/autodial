@@ -7,6 +7,7 @@ import {setUserAuth} from './lib/database'
 
 jest.mock('./lib/browser')
 jest.mock('./lib/database')
+jest.mock('./lib/firebase')
 
 const mockGetParams = getParams as jest.Mock
 const mockSetUserAuth = setUserAuth as jest.Mock
@@ -24,15 +25,15 @@ describe('Home page', () => {
   it('has authenticate button', async () => {
     const { getByText } = await render(<App />)
 
-    expect(getByText('Authenticate')).toBeInTheDocument()
+    expect(getByText('Login with Beeminder')).toBeInTheDocument()
   })
 
   it('links authenticate link', async () => {
     const { getByText } = await render(<App />)
 
-    const link = getByText('Authenticate') as HTMLLinkElement
+    const link = getByText('Login with Beeminder') as any
 
-    expect(link.href).toContain('https://www.beeminder.com/apps/authorize')
+    expect(link.parentElement.href).toContain('https://www.beeminder.com/apps/authorize')
   })
 
   describe('with mocked env', () => {
@@ -48,23 +49,23 @@ describe('Home page', () => {
     });
 
     it('includes client id in authenticate url', async () => {
-      process.env.BM_CLIENT_ID = 'the_client_id'
+      process.env.REACT_APP_BM_CLIENT_ID = 'the_client_id'
 
       const { getByText } = await render(<App />)
 
-      const link = getByText('Authenticate') as HTMLLinkElement
+      const link = getByText('Login with Beeminder') as any
 
-      expect(link.href).toContain('the_client_id')
+      expect(link.parentElement.href).toContain('the_client_id')
     })
 
     it('includes client secret in authenticate url', async () => {
-      process.env.APP_URL = 'http://the_app_url'
+      process.env.REACT_APP_APP_URL = 'http://the_app_url'
 
       const { getByText } = await render(<App />)
 
-      const link = getByText('Authenticate') as HTMLLinkElement
+      const link = getByText('Login with Beeminder') as any
 
-      expect(link.href).toContain(encodeURIComponent('http://the_app_url'))
+      expect(link.parentElement.href).toContain(encodeURIComponent('http://the_app_url'))
     })
   })
 
@@ -85,4 +86,6 @@ describe('Home page', () => {
 
     expect(setUserAuth).not.toBeCalled()
   })
+
+
 })

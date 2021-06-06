@@ -13,3 +13,17 @@
 - Name it something like `bm_autodial_dev`
 - Use `http://localhost:3000` as the redirect and post-deauthorize callback urls
 - Copy the client ID into your `.env.local` file
+
+### Cloud Functions
+
+Install the global `firebase` CLI:
+
+```bash
+npm install -g firebase-tools
+```
+
+Login with `taskratchet@gmail.com`:
+
+```bash
+firebase login
+```

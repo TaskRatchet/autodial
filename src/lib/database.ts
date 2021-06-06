@@ -1,6 +1,17 @@
+import firebase from "firebase/app";
+import 'firebase/firestore'
 
+let _db: firebase.firestore.Firestore | undefined;
 
-// TODO: Implement
+function getDb() {
+    if (!_db) _db = firebase.firestore();
+
+    return _db
+}
+
 export async function setUserAuth(bmUser: string, bmToken: string) {
-    throw new Error('unimplemented')
+    return getDb().collection('users').doc(bmUser).set({
+        'beeminder_user': bmUser,
+        'beeminder_token': bmToken
+    })
 }
