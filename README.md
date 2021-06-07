@@ -41,3 +41,4 @@ npm run test
 - Set up automatic functions deploy via gh actions on master branch
 - Set up automatic web deploy via netlify on master branch
 - Set up cron trigger on gcp function via gcp scheduler
+- Require CI test passes for merge to master
