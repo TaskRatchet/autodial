@@ -17,10 +17,11 @@ jobs:
         run: npm test
   test-function:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./functions
     steps:
       - uses: actions/checkout@v2
-      - run: cd functions
-      - run: pwd
       - uses: actions/cache@v2
         with:
           path: ~/.npm
