@@ -86,6 +86,13 @@ describe('Home page', () => {
 
     expect(setUserAuth).not.toBeCalled()
   })
-
-
 })
+
+// TODO:
+// displays authenticated username
+// hides authenticate button when authenticated
+// displays disconnect button when authenticated
+// disconnect button sets active=false in firestore
+// authenticate button sets active=true in firestore
+// disconnect button clears get params from url
+// add route to handle de-authorizing the app from Beeminder side

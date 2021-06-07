@@ -31,7 +31,8 @@ function App() {
         })
     }, [username, accessToken])
 
-    return <Container>
+    return <Container className={'App'}>
+        <h1>Beeminder Autodialer</h1>
         <Button variant={'contained'} color={'primary'} href={url}>Login with Beeminder</Button>
     </Container>
 }
