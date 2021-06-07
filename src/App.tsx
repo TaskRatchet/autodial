@@ -33,7 +33,8 @@ function App() {
 
     return <Container className={'App'}>
         <h1>Beeminder Autodialer</h1>
-        <Button variant={'contained'} color={'primary'} href={url}>Login with Beeminder</Button>
+        <p>The Beeminder autodialer will automatically adjust the rate on your goals based on your historical performance.</p>
+        <Button variant={'contained'} color={'primary'} href={url}>Enable Autodialer</Button>
     </Container>
 }
 

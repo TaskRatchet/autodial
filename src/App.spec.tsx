@@ -25,13 +25,13 @@ describe('Home page', () => {
   it('has authenticate button', async () => {
     const { getByText } = await render(<App />)
 
-    expect(getByText('Login with Beeminder')).toBeInTheDocument()
+    expect(getByText('Enable Autodialer')).toBeInTheDocument()
   })
 
   it('links authenticate link', async () => {
     const { getByText } = await render(<App />)
 
-    const link = getByText('Login with Beeminder') as any
+    const link = getByText('Enable Autodialer') as any
 
     expect(link.parentElement.href).toContain('https://www.beeminder.com/apps/authorize')
   })
@@ -53,7 +53,7 @@ describe('Home page', () => {
 
       const { getByText } = await render(<App />)
 
-      const link = getByText('Login with Beeminder') as any
+      const link = getByText('Enable Autodialer') as any
 
       expect(link.parentElement.href).toContain('the_client_id')
     })
@@ -63,7 +63,7 @@ describe('Home page', () => {
 
       const { getByText } = await render(<App />)
 
-      const link = getByText('Login with Beeminder') as any
+      const link = getByText('Enable Autodialer') as any
 
       expect(link.parentElement.href).toContain(encodeURIComponent('http://the_app_url'))
     })
