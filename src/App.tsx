@@ -40,10 +40,12 @@ function App() {
       performance.
     </p>
 
-    <h2>Step 1: Connect the autodialer to your Beeminder account</h2>
+    <h2>Instructions</h2>
+
+    <h3>Step 1: Connect the autodialer to your Beeminder account</h3>
     <p><Button variant={"contained"} color={"primary"} href={url}>Enable Autodialer</Button></p>
 
-    <h2>Step 2: Configure specific goals to use the autodialer</h2>
+    <h3>Step 2: Configure specific goals to use the autodialer</h3>
     <p>Add these tags to the fineprint of the goals you wish to autodial:</p>
     <TableContainer>
       <Table>
@@ -70,15 +72,19 @@ function App() {
       </Table>
     </TableContainer>
 
-    <h2>Step 3: Use Beeminder as normal</h2>
+    <h3>Step 3: Use Beeminder as normal</h3>
     <p>
       Once a day, the autodialer will adjust the rates of your enabled goals to equal your
       average for the last 30 days. Any goals with less than 30 days of history will not be
       autodialed.
     </p>
+    
     <h2>Known Issues & Limitations</h2>
     <ul>
-      <li>Not all <a href="https://help.beeminder.com/article/97-custom-goals#aggday">aggregation methods</a> are supported.</li>
+      <li>
+        Not all <a href="https://help.beeminder.com/article/97-custom-goals#aggday">aggregation methods</a> are
+        supported. Unsupported methods include mode, trimmean, clocky, and skatesum.
+      </li>
       <li>The aggregated value of a goal's initial day is considered the starting value of the road and does not otherwise influence dialing.</li>
       <li>Goals will not be dialed until they have at least 30 days of history.</li>
     </ul>
