@@ -59,6 +59,8 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
 
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
 
+  console.log({aggregatedPoints});
+
   const window = Math.min(30 * SID, t - st);
   const arps = avgrate(aggregatedPoints, window); // avg rate per second
 

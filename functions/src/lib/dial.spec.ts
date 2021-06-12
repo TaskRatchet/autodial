@@ -204,11 +204,35 @@ describe("dial function", () => {
 
     e(newRate).toFuzzyEqual(2 / 30);
   });
+
+  it("supports aggday count", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "count",
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 5, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    // because data is not cumulative, initial day aggregates to 1,
+    // and additional day aggregates to 2, so difference is 1
+    e(newRate).toFuzzyEqual(1 / 30);
+  });
 });
 
 // TODO:
 // add test to ensure support last aggday
 // support sum aggday
+// support cumulative??
 // do not dial goals with nonstandard kyoom, aggday, odom
 
 // waiting for: api maybe handles kyoom, aggday, odom

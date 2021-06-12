@@ -47,6 +47,14 @@ function getDirtyAggregates(
       });
     }
 
+    case "count": {
+      return dates.map((d) => {
+        const matches = data.filter((p) => p[0] === d);
+        console.log({matches});
+        return [d, matches.length, "aggregate"];
+      });
+    }
+
     default: {
       throw new Error("Unsupported aggday method!");
     }
