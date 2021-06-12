@@ -33,7 +33,6 @@ function stepify(d: UnixDatapoint[]): (unixDelta: number) => number {
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
 function avgrate(data: Datapoint[], window: number) {
-  // console.log(`calling avgrate; datepoints: ${JSON.stringify(data)}`)
   if (!data || !data.length) return 0;
 
   // convert daystamps to unixtimes
@@ -43,8 +42,12 @@ function avgrate(data: Datapoint[], window: number) {
   // unixtime to the most recent y-value as of that unixtime:
   const df = stepify(unixData); // df is the data function
 
-  const vdelta = df(now()) - df(now() - window - 1);
-  // console.log({window, vdelta})
+  const preTime = now() - window - 1;
+
+  const valNow = df(now());
+  const valBefore = df(preTime);
+  const vdelta = valNow - valBefore;
+
   return vdelta / window;
 }
 
@@ -63,7 +66,7 @@ type Options = {
 export default function dial(g: Goal, opts: Options = {}): Roadall {
   const {min = -Infinity, max = Infinity} = opts;
   const siru = UNIT_SECONDS[g.runits]; // seconds in rate units
-  // console.log(`siru: ${siru}`)
+
   const t = now();
 
   const firstrow = g.roadall[0];
@@ -73,9 +76,12 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
   const window = Math.min(30 * SID, t - st);
   const arps = avgrate(g.datapoints, window); // avg rate per second
 
+  const shouldDial = window >= 30 * SID;
+  const newRate = shouldDial ? clip(arps * siru, min, max) : lastrow[2];
+
   return [
     ...g.roadall.slice(0, -1),
-    [lastrow[0], lastrow[1], clip(arps * siru, min, max)],
+    [lastrow[0], lastrow[1], newRate],
   ];
 }
 

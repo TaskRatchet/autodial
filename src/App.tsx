@@ -48,8 +48,10 @@ function App() {
     <TableContainer>
       <Table>
         <TableHead>
-          <TableCell>Tag</TableCell>
-          <TableCell>Effect</TableCell>
+          <TableRow>
+            <TableCell>Tag</TableCell>
+            <TableCell>Effect</TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
@@ -69,7 +71,11 @@ function App() {
     </TableContainer>
 
     <h2>Step 3: Use Beeminder as normal</h2>
-    <p>Once a day, the autodialer will adjust the rates of your enabled goals to equal your average for the last 30 days.</p>
+    <p>
+      Once a day, the autodialer will adjust the rates of your enabled goals to equal your
+      average for the last 30 days. Any goals with less than 30 days of history will not be
+      autodialed.
+    </p>
   </Container>;
 }
 
