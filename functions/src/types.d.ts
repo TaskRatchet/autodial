@@ -27,6 +27,7 @@ type Aggday =
 
 type Goal = {
   aggday: Aggday,
+  kyoom: boolean,
   runits: "h" | "d" | "w" | "m" | "y",
   roadall: Roadall,
   datapoints: Datapoint[]

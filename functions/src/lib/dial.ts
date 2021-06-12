@@ -41,6 +41,14 @@ function clip(x: number, a: number, b: number) {
   return x < a ? a : x > b ? b : x;
 }
 
+function autoSum(data: Datapoint[]): Datapoint[] {
+  return data.reduce((prev: Datapoint[], p) => {
+    const last = prev[prev.length - 1];
+    const sum = last ? last[1] + p[1] : p[1];
+    return [...prev, [p[0], sum, p[2]]];
+  }, []);
+}
+
 type Options = {
   min?: number,
   max?: number
@@ -59,10 +67,10 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
 
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
 
-  console.log({aggregatedPoints});
+  const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 
   const window = Math.min(30 * SID, t - st);
-  const arps = avgrate(aggregatedPoints, window); // avg rate per second
+  const arps = avgrate(summed, window); // avg rate per second
 
   const shouldDial = window >= 30 * SID;
   const newRate = shouldDial ? clip(arps * siru, min, max) : lastrow[2];

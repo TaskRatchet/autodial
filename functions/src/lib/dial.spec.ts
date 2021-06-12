@@ -14,6 +14,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210225", null, 1]],
       datapoints: [],
@@ -27,6 +28,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210201", null, 1]],
       datapoints: [["20210125", 1, "comment"]],
@@ -40,6 +42,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "d",
       roadall: [["20210124", 0, null], ["20210224", null, 1]],
       datapoints: [["20210124", 0, "initial"], ["20210125", 1, "comment"]],
@@ -61,6 +64,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [["20210125", 1, "comment"]],
@@ -74,6 +78,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "w",
       roadall: [["20210125", 0, null], ["20210201", null, 1]],
       datapoints: [["20210125", 1, "comment"]],
@@ -91,6 +96,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "w",
       roadall: [["20210125", 0, null], ["20210225", null, 1]],
       datapoints: [["20210126", 1, "comment"]],
@@ -105,6 +111,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "last",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
@@ -126,6 +133,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "first",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
@@ -147,6 +155,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "sum",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
@@ -168,6 +177,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "min",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
@@ -189,6 +199,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "max",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
@@ -210,6 +221,7 @@ describe("dial function", () => {
 
     const r = dial({
       aggday: "count",
+      kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
@@ -226,6 +238,28 @@ describe("dial function", () => {
     // because data is not cumulative, initial day aggregates to 1,
     // and additional day aggregates to 2, so difference is 1
     e(newRate).toFuzzyEqual(1 / 30);
+  });
+
+  it("supports cumulative goals", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "count",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 5, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(2 / 30);
   });
 });
 
