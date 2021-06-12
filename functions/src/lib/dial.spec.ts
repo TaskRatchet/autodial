@@ -261,12 +261,208 @@ describe("dial function", () => {
 
     e(newRate).toFuzzyEqual(2 / 30);
   });
+
+  it("supports aggday binary", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "binary",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 5, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(1 / 30);
+  });
+
+  it("supports aggday nonzero", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "nonzero",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 0, "comment"],
+        ["20210202", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(1 / 30);
+  });
+
+  it("supports aggday truemean", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "truemean",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 5, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(5 / 30);
+  });
+
+  it("supports aggday mean", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "mean",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 5, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(5 / 30);
+  });
+
+  it("supports aggday uniquemean", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "uniqmean",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 5, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(5 / 30);
+  });
+
+  it("supports aggday median", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "median",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 4, "comment"],
+        ["20210201", 5, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(4 / 30);
+  });
+
+  it("supports aggday cap1", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "cap1",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 1, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(1 / 30);
+  });
+
+  it("supports aggday square", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "square",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 2, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(9 / 30);
+  });
+
+  it("supports aggday triangle", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "triangle",
+      kyoom: true,
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 1, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(3 / 30);
+  });
 });
 
 // TODO:
-// add test to ensure support last aggday
-// support sum aggday
-// support cumulative??
 // do not dial goals with nonstandard kyoom, aggday, odom
 
 // waiting for: api maybe handles kyoom, aggday, odom
