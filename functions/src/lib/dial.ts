@@ -1,4 +1,4 @@
-import {now} from "./time";
+import {now, parseDate} from "./time";
 import {searchLow} from "./search";
 
 const DIY = 365.25; // this is what physicists use, eg, to define a light year
@@ -83,12 +83,4 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
     ...g.roadall.slice(0, -1),
     [lastrow[0], lastrow[1], newRate],
   ];
-}
-
-// Take a daystamp like "20210201" and return unixtime
-function parseDate(s: string) {
-  const y = +s.slice(0, 4);
-  const m = +s.slice(4, 6);
-  const d = +s.slice(6, 8);
-  return Date.UTC(y, m - 1, d, 12) / 1000;
 }

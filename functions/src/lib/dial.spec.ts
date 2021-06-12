@@ -1,15 +1,11 @@
 import dial from "./dial";
-import {now} from "./time";
+import * as time from "./time";
 import {describe, it} from "@jest/globals";
 import {e} from "./test/helpers";
 
-jest.mock("./time");
-
-const mockNow = now as jest.Mock;
-
 const setNow = (yyyy: number, m: number, d: number) => {
   const value: number = Date.UTC(yyyy, m - 1, d, 12) / 1000;
-  return mockNow.mockReturnValue(value);
+  jest.spyOn(time, "now").mockReturnValue(value);
 };
 
 describe("dial function", () => {
