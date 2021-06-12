@@ -1,5 +1,7 @@
 import {now, parseDate} from "./time";
-import {searchLow} from "./search";
+
+import stepify from "./stepify";
+import aggregate from "./aggregate";
 
 const DIY = 365.25; // this is what physicists use, eg, to define a light year
 const SID = 86400; // seconds in a day (not used: DIM=DIY/12, WIM=DIY/12/7)
@@ -11,24 +13,6 @@ const UNIT_SECONDS = {
   "d": SID,
   "h": 3600,
 };
-
-
-// Utility function for stepify. Takes a list of datapoints sorted by x-value
-// and a given x-value and finds the most recent y-value (the one with the
-// greatest x-value in d that's less than or equal to the given x).
-// It's like Mathematica's Interpolation[] with interpolation order 0.
-// If the given x is strictly less than d[0][0], return d[0][1].
-function stepFunc(d: UnixDatapoint[], x: number): number {
-  const i = Math.max(0, searchLow(d, (p) => p[0] - x));
-  return d[i][1];
-}
-
-// Take a list of datapoints sorted by x-value and return a pure function that
-// interpolates a step function from the data, always mapping to the most
-// recent y-value.
-function stepify(d: UnixDatapoint[]): (unixDelta: number) => number {
-  return !d || !d.length ? (x) => 0 : (x) => stepFunc(d, x);
-}
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
@@ -73,8 +57,10 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
   const lastrow = g.roadall[g.roadall.length - 1];
   const st = parseDate(firstrow[0] || ""); // start time
 
+  const aggregatedPoints = aggregate(g.datapoints, g.aggday);
+
   const window = Math.min(30 * SID, t - st);
-  const arps = avgrate(g.datapoints, window); // avg rate per second
+  const arps = avgrate(aggregatedPoints, window); // avg rate per second
 
   const shouldDial = window >= 30 * SID;
   const newRate = shouldDial ? clip(arps * siru, min, max) : lastrow[2];

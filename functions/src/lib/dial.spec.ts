@@ -13,6 +13,7 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial({
+      aggday: "last",
       runits: "d",
       roadall: [["20210125", 0, null], ["20210225", null, 1]],
       datapoints: [],
@@ -25,6 +26,7 @@ describe("dial function", () => {
     setNow(2021, 1, 25);
 
     const r = dial({
+      aggday: "last",
       runits: "d",
       roadall: [["20210125", 0, null], ["20210201", null, 1]],
       datapoints: [["20210125", 1, "comment"]],
@@ -37,6 +39,7 @@ describe("dial function", () => {
     setNow(2021, 2, 24);
 
     const r = dial({
+      aggday: "last",
       runits: "d",
       roadall: [["20210124", 0, null], ["20210224", null, 1]],
       datapoints: [["20210124", 0, "initial"], ["20210125", 1, "comment"]],
@@ -46,10 +49,10 @@ describe("dial function", () => {
 
     if (newRate === null) throw new Error("num is null");
 
-    e(newRate).toFuzzyEqual(1/30);
+    e(newRate).toFuzzyEqual(1 / 30);
   });
 
-  // for now we'll e this to autodial to zero when you've entered no data
+  // for now we'll expect this to autodial to zero when you've entered no data
   // in a month but eventually we'll want to treat that as a bug. autodialer
   // should never give you an infinitely flat road that never makes you do
   // anything ever again.
@@ -57,6 +60,7 @@ describe("dial function", () => {
     setNow(2021, 3, 1);
 
     const r = dial({
+      aggday: "last",
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [["20210125", 1, "comment"]],
@@ -69,6 +73,7 @@ describe("dial function", () => {
     setNow(2021, 2, 1);
 
     const r = dial({
+      aggday: "last",
       runits: "w",
       roadall: [["20210125", 0, null], ["20210201", null, 1]],
       datapoints: [["20210125", 1, "comment"]],
@@ -85,12 +90,119 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial({
+      aggday: "last",
       runits: "w",
       roadall: [["20210125", 0, null], ["20210225", null, 1]],
       datapoints: [["20210126", 1, "comment"]],
-    }, {min: 2});
+    },
+    {min: 2});
 
     e(r[1][2]).toEqual(2);
+  });
+
+  it("supports aggday last", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "last",
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 2, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(2 / 30);
+  });
+
+  it("supports aggday first", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "first",
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 2, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(1 / 30);
+  });
+
+  it("supports aggday sum", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "sum",
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 2, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(3 / 30);
+  });
+
+  it("supports aggday min", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "min",
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 1, "comment"],
+        ["20210201", 2, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(1 / 30);
+  });
+
+  it("supports aggday max", () => {
+    setNow(2021, 2, 29);
+
+    const r = dial({
+      aggday: "max",
+      runits: "d",
+      roadall: [["20210125", 0, null], ["20210301", null, 1]],
+      datapoints: [
+        ["20210125", 0, "initial"],
+        ["20210201", 2, "comment"],
+        ["20210201", 1, "comment"],
+      ],
+    });
+
+    const newRate = r[1][2];
+
+    if (newRate === null) throw new Error("num is null");
+
+    e(newRate).toFuzzyEqual(2 / 30);
   });
 });
 

@@ -76,6 +76,12 @@ function App() {
       average for the last 30 days. Any goals with less than 30 days of history will not be
       autodialed.
     </p>
+    <h2>Known Issues & Limitations</h2>
+    <ul>
+      <li>Not all <a href="https://help.beeminder.com/article/97-custom-goals#aggday">aggregation methods</a> are supported.</li>
+      <li>The aggregated value of a goal's initial day is considered the starting value of the road and does not otherwise influence dialing.</li>
+      <li>Goals will not be dialed until they have at least 30 days of history.</li>
+    </ul>
   </Container>;
 }
 
