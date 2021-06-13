@@ -78,7 +78,7 @@ function App() {
       average for the last 30 days. Any goals with less than 30 days of history will not be
       autodialed.
     </p>
-    
+
     <h2>Known Issues & Limitations</h2>
     <ul>
       <li>
