@@ -463,6 +463,5 @@ describe("dial function", () => {
 });
 
 // TODO:
-// do not dial goals with nonstandard kyoom, aggday, odom
-
-// waiting for: api maybe handles kyoom, aggday, odom
+// reject odom goals
+// don't touch pre-akrasia horizon road

@@ -5,7 +5,7 @@ import {getParams} from "./lib/browser";
 import {useEffect} from "react";
 import {init} from "./lib/firebase";
 import Container from "@material-ui/core/Container";
-import {Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
 import {getGoals} from "./lib/beeminder";
 import Alert from "@material-ui/lab/Alert";
 import {useQuery, UseQueryResult} from "react-query";
@@ -74,13 +74,13 @@ function App() {
 
     {isAuthenticated && <>
       <p>Connected Beeminder user: <strong><a href={`https://beeminder.com/${username}`} target={'_blank'} rel={'nofollow noreferrer'}>{username}</a></strong></p>
-      <Button variant="contained" color="secondary" href={disableUrl}>Disable Autodialer</Button>
+      <Button variant="outlined" color="secondary" href={disableUrl}>Disable Autodialer</Button>
     </>}
 
     <h3>Step 2: Configure specific goals to use the autodialer</h3>
     <p>Add one or more of the following three tags to the fineprint of the goals you wish to autodial:</p>
-    <TableContainer>
-      <Table>
+    <TableContainer component={Paper} variant="outlined">
+      <Table size={"small"}>
         <TableHead>
           <TableRow>
             <TableCell>Tag</TableCell>
@@ -107,8 +107,8 @@ function App() {
     {isAuthenticated && goals && <>
         <p>Here are your goals for which autodialing is enabled:</p>
 
-        <TableContainer>
-            <Table>
+        <TableContainer component={Paper} variant="outlined">
+            <Table size={"small"}>
                 <TableHead>
                     <TableRow>
                         <TableCell>Slug</TableCell>

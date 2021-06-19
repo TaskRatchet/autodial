@@ -32,3 +32,8 @@ type Goal = {
   roadall: Roadall,
   datapoints: Datapoint[]
 }
+
+type User = {
+  "beeminder_token": string,
+  "beeminder_user": string
+}
