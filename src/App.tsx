@@ -94,11 +94,11 @@ function App() {
           </TableRow>
           <TableRow>
             <TableCell>#autodialMin=1</TableCell>
-            <TableCell>Enables autodialing and specifies the smallest rate the autodialer will set for the goal.</TableCell>
+            <TableCell>Enables autodialing and specifies the smallest rate the autodialer will set for the goal, in terms of your goal's current time unit.</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>#autodialMax=1</TableCell>
-            <TableCell>Enables autodialing and specifies the largest rate the autodialer will set for the goal.</TableCell>
+            <TableCell>Enables autodialing and specifies the largest rate the autodialer will set for the goal, in terms of your goal's current time unit.</TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -121,14 +121,14 @@ function App() {
                   {goals.map((g) => {
                     const hasAutodialTag = !!g.fineprint?.includes("#autodial")
                     const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
-                    const min = (minMatches && minMatches[1]) || "Negative Infinity"
+                    const min = minMatches ?  `${minMatches[1]}/${g.runits}` : "Negative Infinity"
                     const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
-                    const max = (maxMatches && maxMatches[1]) || "Positive Infinity"
+                    const max = maxMatches ?  `${maxMatches[1]}/${g.runits}` : "Positive Infinity"
                     return <TableRow key={g.slug}>
                       <TableCell>{g.slug}</TableCell>
                       <TableCell className={hasAutodialTag.toString()}>{hasAutodialTag ? "True" : "False"}</TableCell>
-                      <TableCell>{(hasAutodialTag && min) || '—'}</TableCell>
-                      <TableCell>{(hasAutodialTag && max) || '—'}</TableCell>
+                      <TableCell>{hasAutodialTag ? min : '—'}</TableCell>
+                      <TableCell>{hasAutodialTag ? max : '—'}</TableCell>
                     </TableRow>;
                   })}
                 </TableBody>

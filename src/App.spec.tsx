@@ -23,6 +23,7 @@ function loadParams(params: string) {
 function loadGoals(goals: Partial<Goal>[]) {
   const goals_ = goals.map((g, i) => ({
     slug: `slug_${i}`,
+    runits: 'd',
     fineprint: null,
     ...g
   }))
@@ -226,7 +227,7 @@ describe('Home page', () => {
     const {getByText} = await r(<App/>)
 
     await waitFor(() => {
-      expect(getByText('1')).toBeInTheDocument()
+      expect(getByText('1/d')).toBeInTheDocument()
     })
   })
 
@@ -262,7 +263,7 @@ describe('Home page', () => {
     const {getByText} = await r(<App/>)
 
     await waitFor(() => {
-      expect(getByText('1')).toBeInTheDocument()
+      expect(getByText('1/d')).toBeInTheDocument()
     })
   })
 
