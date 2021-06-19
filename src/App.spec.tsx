@@ -24,7 +24,7 @@ function loadGoals(goals: Partial<Goal>[]) {
   const goals_ = goals.map((g, i) => ({
     slug: `slug_${i}`,
     runits: 'd',
-    fineprint: null,
+    fineprint: '#autodial',
     ...g
   }))
 
@@ -195,7 +195,7 @@ describe('Home page', () => {
 
     await waitFor(() => {
       const a = getByText("a_slug")
-      expect(a.parentElement?.nextSibling?.firstChild?.textContent).toEqual("b_slug")
+      expect(a.parentElement?.parentElement?.nextSibling?.firstChild?.textContent).toEqual("b_slug")
     })
   })
 
@@ -205,18 +205,6 @@ describe('Home page', () => {
     const {queryByText} = await r(<App/>)
 
     expect(queryByText('Here are your goals:')).not.toBeInTheDocument()
-  })
-
-  it('says whether #autodial included in goals', async () => {
-    loadGoals([
-      {slug: 'the_slug', fineprint: '#autodial'},
-    ])
-
-    const {getByText} = await r(<App/>)
-
-    await waitFor(() => {
-      expect(getByText('True')).toBeInTheDocument()
-    })
   })
 
   it('displays min value', async () => {
@@ -387,6 +375,39 @@ describe('Home page', () => {
     await r(<App/>)
 
     expect(getGoals).not.toBeCalled()
+  })
+
+  it('only shows enabled goals', async () => {
+    loadGoals([
+      {slug: 'slug_a', fineprint: null},
+      {slug: 'slug_b', fineprint: '#autodial'},
+    ])
+
+    const {queryByText, getByText} = await r(<App/>)
+
+    await waitFor(() => {
+      expect(getByText('slug_b')).toBeInTheDocument()
+    })
+
+    expect(queryByText('slug_a')).not.toBeInTheDocument()
+  })
+
+  it('links slugs', async () => {
+    loadGoals([{slug: 'the_slug'}])
+
+    const {getByText} = await r(<App/>)
+
+    await waitFor(() => {
+      expect(getByText('the_slug')).toHaveAttribute('href', 'https://beeminder.com/alice/the_slug')
+    })
+  })
+
+  it('links username', async () => {
+    const {getByText} = await r(<App/>)
+
+    await waitFor(() => {
+      expect(getByText('alice')).toHaveAttribute('href', 'https://beeminder.com/alice')
+    })
   })
 })
 

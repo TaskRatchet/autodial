@@ -35,7 +35,7 @@ function App() {
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
     });
-    return goals;
+    return goals.filter((g: Goal) => !!g.fineprint?.includes("#autodial"));
   });
   const isAuthenticated = username && !disable && !isLoading && !isError;
 
@@ -73,7 +73,7 @@ function App() {
     </p>}
 
     {isAuthenticated && <>
-      <p>Connected Beeminder user: <strong>{username}</strong></p>
+      <p>Connected Beeminder user: <strong><a href={`https://beeminder.com/${username}`} target={'_blank'} rel={'nofollow noreferrer'}>{username}</a></strong></p>
       <Button variant="contained" color="secondary" href={disableUrl}>Disable Autodialer</Button>
     </>}
 
@@ -105,30 +105,27 @@ function App() {
     </TableContainer>
 
     {isAuthenticated && goals && <>
-        <p>Here are your goals:</p>
+        <p>Here are your goals for which autodialing is enabled:</p>
 
         <TableContainer>
             <Table>
                 <TableHead>
                     <TableRow>
                         <TableCell>Slug</TableCell>
-                        <TableCell>Enabled</TableCell>
                         <TableCell>#autodialMin=?</TableCell>
                         <TableCell>#autodialMax=?</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                   {goals.map((g) => {
-                    const hasAutodialTag = !!g.fineprint?.includes("#autodial")
                     const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
-                    const min = minMatches ?  `${minMatches[1]}/${g.runits}` : "Negative Infinity"
                     const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
-                    const max = maxMatches ?  `${maxMatches[1]}/${g.runits}` : "Positive Infinity"
+                    const min = minMatches ? `${minMatches[1]}/${g.runits}` : "Negative Infinity"
+                    const max = maxMatches ? `${maxMatches[1]}/${g.runits}` : "Positive Infinity"
                     return <TableRow key={g.slug}>
-                      <TableCell>{g.slug}</TableCell>
-                      <TableCell className={hasAutodialTag.toString()}>{hasAutodialTag ? "True" : "False"}</TableCell>
-                      <TableCell>{hasAutodialTag ? min : '—'}</TableCell>
-                      <TableCell>{hasAutodialTag ? max : '—'}</TableCell>
+                      <TableCell><a href={`https://beeminder.com/${username}/${g.slug}`} target={'_blank'} rel={'nofollow noreferrer'}>{g.slug}</a></TableCell>
+                      <TableCell>{min}</TableCell>
+                      <TableCell>{max}</TableCell>
                     </TableRow>;
                   })}
                 </TableBody>
