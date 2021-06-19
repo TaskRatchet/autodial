@@ -43,7 +43,9 @@ describe('Home page', () => {
 
     const { getByText } = await r(<App />)
 
-    expect(getByText('Enable Autodialer')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(getByText('Enable Autodialer')).toBeInTheDocument()
+    })
   })
 
   it('links authenticate link', async () => {
@@ -51,9 +53,11 @@ describe('Home page', () => {
 
     const { getByText } = await r(<App />)
 
-    const link = getByText('Enable Autodialer') as any
+    await waitFor(() => {
+      const link = getByText('Enable Autodialer') as any
 
-    expect(link.parentElement.href).toContain('https://www.beeminder.com/apps/authorize')
+      expect(link.parentElement.href).toContain('https://www.beeminder.com/apps/authorize')
+    })
   })
 
   describe('with mocked env', () => {
@@ -75,9 +79,11 @@ describe('Home page', () => {
 
       const { getByText } = await r(<App />)
 
-      const link = getByText('Enable Autodialer') as any
+      await waitFor(() => {
+        const link = getByText('Enable Autodialer') as any
 
-      expect(link.parentElement.href).toContain('the_client_id')
+        expect(link.parentElement.href).toContain('the_client_id')
+      })
     })
 
     it('includes client secret in authenticate url', async () => {
@@ -87,9 +93,11 @@ describe('Home page', () => {
 
       const { getByText } = await r(<App />)
 
-      const link = getByText('Enable Autodialer') as any
+      await waitFor(() => {
+        const link = getByText('Enable Autodialer') as any
 
-      expect(link.parentElement.href).toContain(encodeURIComponent('http://the_app_url'))
+        expect(link.parentElement.href).toContain(encodeURIComponent('http://the_app_url'))
+      })
     })
   })
 
@@ -120,7 +128,7 @@ describe('Home page', () => {
 
   it('displays Beeminder error message', async () => {
     await withMutedReactQueryLogger(async () => {
-      mockGetGoals.mockRejectedValue("the_error_message");
+      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText} = await r(<App />)
 
@@ -132,7 +140,7 @@ describe('Home page', () => {
 
   it('does not set user auth if bm error', async () => {
     await withMutedReactQueryLogger(async () => {
-      mockGetGoals.mockRejectedValue("the_error_message");
+      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText} = await r(<App/>)
 
@@ -154,7 +162,7 @@ describe('Home page', () => {
 
   it('does not display beeminder username if auth failure', async () => {
     await withMutedReactQueryLogger(async () => {
-      mockGetGoals.mockRejectedValue("the_error_message")
+      mockGetGoals.mockRejectedValue(new Error("the_error_message"))
 
       const {getByText, queryByText} = await r(<App/>)
 
@@ -326,6 +334,58 @@ describe('Home page', () => {
     })
 
     expect(queryByText('Here are your goals:')).not.toBeInTheDocument()
+  })
+
+  it('displays error on disable if Beeminder auth fails', async () => {
+    await withMutedReactQueryLogger(async () => {
+      loadParams('?access_token=abc123&username=alice&disable=true')
+
+      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+
+      const {getByText} = await r(<App/>)
+
+      await waitFor(() => {
+        expect(getByText('Unable to disable autodialer for Beeminder user alice: Beeminder authentication failed.')).toBeInTheDocument()
+      })
+    })
+  })
+
+  it('does not display disable success message if auth fails', async () => {
+    await withMutedReactQueryLogger(async () => {
+      loadParams('?access_token=abc123&username=alice&disable=true')
+
+      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+
+      const {getByText, queryByText} = await r(<App/>)
+
+      expect(queryByText('The autodialer has been disabled for Beeminder user alice')).not.toBeInTheDocument()
+
+      await waitFor(() => {
+        expect(getByText('Unable to disable autodialer for Beeminder user alice: Beeminder authentication failed.')).toBeInTheDocument()
+      })
+
+      expect(queryByText('The autodialer has been disabled for Beeminder user alice')).not.toBeInTheDocument()
+    })
+  })
+
+  it('displays loading indicator while loading', async () => {
+    const {getByText} = await r(<App/>)
+
+    expect(getByText('loading...')).toBeInTheDocument()
+  })
+
+  it('does not display enable button while loading', async () => {
+    const {queryByText} = await r(<App/>)
+
+    expect(queryByText('Enable Autodialer')).not.toBeInTheDocument()
+  })
+
+  it('does not get goals if no username', async () => {
+    loadParams('')
+
+    await r(<App/>)
+
+    expect(getGoals).not.toBeCalled()
   })
 })
 

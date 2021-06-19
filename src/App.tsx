@@ -13,7 +13,7 @@ import {useQuery, UseQueryResult} from "react-query";
 init();
 
 type Goals = Goal[]
-type GoalsError = string
+type GoalsError = Error
 
 function App() {
   const {REACT_APP_APP_URL = "", REACT_APP_BM_CLIENT_ID = ""} = process.env;
@@ -30,6 +30,7 @@ function App() {
     isError,
     isLoading,
   }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
+    if (!username) return;
     const goals = await getGoals(username, accessToken);
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
@@ -60,14 +61,21 @@ function App() {
 
     <h3>Step 1: Connect the autodialer to your Beeminder account</h3>
 
-    {error && <Alert severity="error">{error}</Alert>}
-    {disable && <Alert severity="success">The autodialer has been disabled for Beeminder user {username}</Alert>}
-    {isAuthenticated ? <>
+    {error && <Alert severity="error">{error.message}</Alert>}
+    {disable && error && <Alert severity="error"><span>Unable to disable autodialer for Beeminder user {username}: Beeminder authentication failed.</span> Please <a
+        href={enableUrl}>reauthenticate with Beeminder</a> and then try again.</Alert>}
+    {disable && !isLoading && !error && <Alert severity="success">The autodialer has been disabled for Beeminder user {username}</Alert>}
+
+    {isLoading && <p>loading...</p>}
+
+    {!isAuthenticated && !isLoading && <p>
+        <Button variant={"contained"} color={"primary"} href={enableUrl}>Enable Autodialer</Button>
+    </p>}
+
+    {isAuthenticated && <>
       <p>Connected Beeminder user: <strong>{username}</strong></p>
       <Button variant="contained" color="secondary" href={disableUrl}>Disable Autodialer</Button>
-    </> : <p>
-      <Button variant={"contained"} color={"primary"} href={enableUrl}>Enable Autodialer</Button>
-    </p>}
+    </>}
 
     <h3>Step 2: Configure specific goals to use the autodialer</h3>
     <p>Add one or more of the following three tags to the fineprint of the goals you wish to autodial:</p>
