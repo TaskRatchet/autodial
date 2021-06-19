@@ -390,9 +390,4 @@ describe('Home page', () => {
 })
 
 // TODO:
-// hides authenticate button when authenticated
-// displays disconnect button when authenticated
-// disconnect button sets active=false in firestore
-// authenticate button sets active=true in firestore
-// disconnect button clears get params from url
-// add route to handle de-authorizing the app from Beeminder side
+// add route to handle de-authorizing the app from Beeminder side (will need de-auth cloud function to handle post data)
