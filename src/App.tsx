@@ -5,9 +5,15 @@ import {getParams} from "./lib/browser";
 import {useEffect} from "react";
 import {init} from "./lib/firebase";
 import Container from "@material-ui/core/Container";
-import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {getGoals} from "./lib/beeminder";
+import Alert from "@material-ui/lab/Alert";
+import {useQuery, UseQueryResult} from "react-query";
 
 init();
+
+type Goals = Goal[]
+type GoalsError = string
 
 function App() {
   const {REACT_APP_APP_URL = "", REACT_APP_BM_CLIENT_ID = ""} = process.env;
@@ -16,22 +22,26 @@ function App() {
   const params = getParams();
   const username = params.get("username");
   const accessToken = params.get("access_token");
+  const {
+    data: goals,
+    error,
+    isError,
+    isLoading,
+  }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
+    const goals = await getGoals(username, accessToken);
+    goals.sort(function(a: Goal, b: Goal) {
+      return a.slug.localeCompare(b.slug);
+    });
+    return goals;
+  });
+  const shouldShowUsername = username && !isLoading && !isError;
 
   useEffect(() => {
-      if (!username || !accessToken) return;
+      if (!username || !accessToken || isLoading || isError) return;
 
-      setUserAuth(username,
-        accessToken).then(() => {
-        // TODO: handle then
-        console.log("persist auth token success");
-      }).catch((e) => {
-        // TODO: handle catch
-        // What should we do? Re-throw? Display the error?
-        console.log("persist auth token failure");
-        console.log(e);
-      });
+      setUserAuth(username, accessToken);
     },
-    [username, accessToken]);
+    [username, accessToken, isLoading, isError]);
 
   return <Container className={"App"}>
     <h1>Beeminder Autodialer</h1>
@@ -43,10 +53,13 @@ function App() {
     <h2>Instructions</h2>
 
     <h3>Step 1: Connect the autodialer to your Beeminder account</h3>
+
+    {error && <Alert severity="error">{error}</Alert>}
+    {shouldShowUsername && <p>{username}</p>}
     <p><Button variant={"contained"} color={"primary"} href={url}>Enable Autodialer</Button></p>
 
     <h3>Step 2: Configure specific goals to use the autodialer</h3>
-    <p>Add these tags to the fineprint of the goals you wish to autodial:</p>
+    <p>Add one or more of the following three tags to the fineprint of the goals you wish to autodial:</p>
     <TableContainer>
       <Table>
         <TableHead>
@@ -62,15 +75,47 @@ function App() {
           </TableRow>
           <TableRow>
             <TableCell>#autodialMin=1</TableCell>
-            <TableCell>Optional. Specifies the smallest rate the autodialer will set for the goal.</TableCell>
+            <TableCell>Enables autodialing and specifies the smallest rate the autodialer will set for the goal.</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>#autodialMax=1</TableCell>
-            <TableCell>Optional. Specifies the largest rate the autodialer will set for the goal.</TableCell>
+            <TableCell>Enables autodialing and specifies the largest rate the autodialer will set for the goal.</TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
+
+    {goals && <>
+        <p>Here are your goals:</p>
+
+        <TableContainer>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Slug</TableCell>
+                        <TableCell>Enabled</TableCell>
+                        <TableCell>#autodialMin=?</TableCell>
+                        <TableCell>#autodialMax=?</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                  {goals.map((g) => {
+                    const hasAutodialTag = !!g.fineprint?.includes("#autodial")
+                    const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
+                    const min = (minMatches && minMatches[1]) || "Negative Infinity"
+                    const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
+                    const max = (maxMatches && maxMatches[1]) || "Positive Infinity"
+                    return <TableRow key={g.slug}>
+                      <TableCell>{g.slug}</TableCell>
+                      <TableCell className={hasAutodialTag.toString()}>{hasAutodialTag ? "True" : "False"}</TableCell>
+                      <TableCell>{(hasAutodialTag && min) || '—'}</TableCell>
+                      <TableCell>{(hasAutodialTag && max) || '—'}</TableCell>
+                    </TableRow>;
+                  })}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </>}
 
     <h3>Step 3: Use Beeminder as normal</h3>
     <p>
@@ -85,7 +130,9 @@ function App() {
         Not all <a href="https://help.beeminder.com/article/97-custom-goals#aggday">aggregation methods</a> are
         supported. Unsupported methods include mode, trimmean, clocky, and skatesum.
       </li>
-      <li>The aggregated value of a goal's initial day is considered the starting value of the road and does not otherwise influence dialing.</li>
+      <li>The aggregated value of a goal's initial day is considered the starting value of the road and does not
+        otherwise influence dialing.
+      </li>
       <li>Goals will not be dialed until they have at least 30 days of history.</li>
     </ul>
   </Container>;
