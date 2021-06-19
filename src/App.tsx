@@ -18,10 +18,11 @@ type GoalsError = string
 function App() {
   const {REACT_APP_APP_URL = "", REACT_APP_BM_CLIENT_ID = ""} = process.env;
   const redirectUri = encodeURIComponent(REACT_APP_APP_URL);
-  const url = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
   const params = getParams();
   const username = params.get("username");
   const accessToken = params.get("access_token");
+  const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
+  const disableUrl = `/?access_token=${accessToken}&username=${username}&disable=true`;
   const {
     data: goals,
     error,
@@ -34,7 +35,7 @@ function App() {
     });
     return goals;
   });
-  const shouldShowUsername = username && !isLoading && !isError;
+  const isAuthenticated = username && !isLoading && !isError;
 
   useEffect(() => {
       if (!username || !accessToken || isLoading || isError) return;
@@ -55,8 +56,12 @@ function App() {
     <h3>Step 1: Connect the autodialer to your Beeminder account</h3>
 
     {error && <Alert severity="error">{error}</Alert>}
-    {shouldShowUsername && <p>{username}</p>}
-    <p><Button variant={"contained"} color={"primary"} href={url}>Enable Autodialer</Button></p>
+    {isAuthenticated ? <>
+      <p>Connected Beeminder user: <strong>{username}</strong></p>
+      <Button variant="contained" color="secondary" href={disableUrl}>Disable Autodialer</Button>
+    </> : <p>
+      <Button variant={"contained"} color={"primary"} href={enableUrl}>Enable Autodialer</Button>
+    </p>}
 
     <h3>Step 2: Configure specific goals to use the autodialer</h3>
     <p>Add one or more of the following three tags to the fineprint of the goals you wish to autodial:</p>

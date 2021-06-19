@@ -269,6 +269,30 @@ describe('Home page', () => {
       expect(getByText('Positive Infinity')).toBeInTheDocument()
     })
   })
+
+  it('removes login button when data loads successfully', async () => {
+    const { queryByText } = await r(<App />)
+
+    await waitFor(() => {
+      expect(queryByText('Enable Autodialer')).not.toBeInTheDocument()
+    })
+  })
+
+  it('includes disable button', async () => {
+    const { getByText } = await r(<App />)
+
+    await waitFor(() => {
+      expect(getByText('Disable Autodialer')).toBeInTheDocument()
+    })
+  })
+
+  it('links disable button', async () => {
+    const { getByText } = await r(<App />)
+
+    await waitFor(() => {
+      expect(getByText('Disable Autodialer').parentElement).toHaveAttribute('href', '/?access_token=abc123&username=alice&disable=true')
+    })
+  })
 })
 
 // TODO:
