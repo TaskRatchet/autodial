@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import {setUserAuth} from "./lib/database";
+import {deleteUser, setUserAuth} from "./lib/database";
 import {getParams} from "./lib/browser";
 import {useEffect} from "react";
 import {init} from "./lib/firebase";
@@ -21,6 +21,7 @@ function App() {
   const params = getParams();
   const username = params.get("username");
   const accessToken = params.get("access_token");
+  const disable: boolean = params.get("disable") === "true";
   const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
   const disableUrl = `/?access_token=${accessToken}&username=${username}&disable=true`;
   const {
@@ -35,14 +36,18 @@ function App() {
     });
     return goals;
   });
-  const isAuthenticated = username && !isLoading && !isError;
+  const isAuthenticated = username && !disable && !isLoading && !isError;
 
   useEffect(() => {
       if (!username || !accessToken || isLoading || isError) return;
 
-      setUserAuth(username, accessToken);
+      if (disable) {
+        deleteUser(username)
+      } else {
+        setUserAuth(username, accessToken);
+      }
     },
-    [username, accessToken, isLoading, isError]);
+    [username, accessToken, isLoading, isError, disable]);
 
   return <Container className={"App"}>
     <h1>Beeminder Autodialer</h1>
@@ -56,6 +61,7 @@ function App() {
     <h3>Step 1: Connect the autodialer to your Beeminder account</h3>
 
     {error && <Alert severity="error">{error}</Alert>}
+    {disable && <Alert severity="success">The autodialer has been disabled for Beeminder user {username}</Alert>}
     {isAuthenticated ? <>
       <p>Connected Beeminder user: <strong>{username}</strong></p>
       <Button variant="contained" color="secondary" href={disableUrl}>Disable Autodialer</Button>
@@ -90,7 +96,7 @@ function App() {
       </Table>
     </TableContainer>
 
-    {goals && <>
+    {isAuthenticated && goals && <>
         <p>Here are your goals:</p>
 
         <TableContainer>

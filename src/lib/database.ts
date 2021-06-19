@@ -15,3 +15,7 @@ export async function setUserAuth(bmUser: string, bmToken: string) {
         'beeminder_token': bmToken
     })
 }
+
+export async function deleteUser(bmUser: string) {
+    return getDb().collection('users').doc(bmUser).delete()
+}

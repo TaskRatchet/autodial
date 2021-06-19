@@ -1,9 +1,9 @@
 import React from "react";
-import {queryByText, waitFor} from "@testing-library/react";
+import {waitFor} from "@testing-library/react";
 import App from './App';
 
 import { getParams } from './lib/browser'
-import {setUserAuth} from './lib/database'
+import {deleteUser, setUserAuth} from "./lib/database";
 import {getGoals} from "./lib/beeminder";
 import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
 
@@ -292,6 +292,40 @@ describe('Home page', () => {
     await waitFor(() => {
       expect(getByText('Disable Autodialer').parentElement).toHaveAttribute('href', '/?access_token=abc123&username=alice&disable=true')
     })
+  })
+
+  it('does not persist credentials if disabling', async () => {
+    loadParams('?access_token=abc123&username=alice&disable=true')
+
+    const { getByText } = await r(<App />)
+
+    await waitFor(() => {
+      expect(getByText('The autodialer has been disabled for Beeminder user alice')).toBeInTheDocument()
+    })
+
+    expect(setUserAuth).not.toBeCalled()
+  })
+
+  it('deletes database user on disable', async () => {
+    loadParams('?access_token=abc123&username=alice&disable=true')
+
+    await r(<App />)
+
+    await waitFor(() => {
+      expect(deleteUser).toBeCalledWith('alice')
+    })
+  })
+
+  it('does not show goals for disabled user', async () => {
+    loadParams('?access_token=abc123&username=alice&disable=true')
+
+    const {getByText, queryByText} = await r(<App/>)
+
+    await waitFor(() => {
+      expect(getByText('The autodialer has been disabled for Beeminder user alice')).toBeInTheDocument()
+    })
+
+    expect(queryByText('Here are your goals:')).not.toBeInTheDocument()
   })
 })
 
