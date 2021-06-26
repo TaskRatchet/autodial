@@ -14,6 +14,9 @@ export default async function doCron(): Promise<void> {
       const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
       const min = minMatches ? parseInt(minMatches[1]) : undefined;
       const max = maxMatches ? parseInt(maxMatches[1]) : undefined;
+
+      console.log({g});
+
       const roadall = dial(g, {min, max});
 
       await updateGoal(u.beeminder_user, u.beeminder_token, g.slug, {roadall});
