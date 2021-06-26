@@ -6,17 +6,17 @@ export function r(ui: ReactElement): RenderResult {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: 0
-      }
-    }
+        retry: 0,
+      },
+    },
   });
   return render(<QueryClientProvider client={queryClient}>
     {ui}</QueryClientProvider>);
 }
 
-export async function withMutedReactQueryLogger(
-  func: () => Promise<any>
-): Promise<any> {
+export async function withMutedReactQueryLogger<T>(
+    func: () => Promise<T>
+): Promise<T> {
   const noop = () => {
     // do nothing
   };
