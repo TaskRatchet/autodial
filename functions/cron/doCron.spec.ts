@@ -1,4 +1,4 @@
-import cron from "./cron";
+import doCron from "./doCron";
 import {getUsers} from "./lib/database";
 import {getGoals, updateGoal} from "./lib/beeminder";
 import {makeGoal} from "./lib/test/helpers";
@@ -24,7 +24,7 @@ describe("function", () => {
   });
 
   it("gets beeminder goals", async () => {
-    await cron();
+    await doCron();
 
     expect(getGoals).toBeCalledWith("the_user", "the_token");
   });
@@ -36,7 +36,7 @@ describe("function", () => {
 
     mockGetGoals.mockResolvedValue([goal]);
 
-    await cron();
+    await doCron();
 
     expect(dial).toBeCalledWith(goal, expect.anything());
   });
@@ -48,7 +48,7 @@ describe("function", () => {
 
     mockGetGoals.mockResolvedValue([goal]);
 
-    await cron();
+    await doCron();
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1}));
   });
@@ -60,7 +60,7 @@ describe("function", () => {
 
     mockGetGoals.mockResolvedValue([goal]);
 
-    await cron();
+    await doCron();
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1}));
   });
@@ -70,7 +70,7 @@ describe("function", () => {
 
     mockGetGoals.mockResolvedValue([goal]);
 
-    await cron();
+    await doCron();
 
     expect(dial).not.toBeCalled();
   });
@@ -84,7 +84,7 @@ describe("function", () => {
 
     mockGetGoals.mockResolvedValue([goal]);
 
-    await cron();
+    await doCron();
 
     expect(updateGoal).toBeCalledWith(
         "the_user", "the_token", "the_slug", {roadall: "the_new_road"}

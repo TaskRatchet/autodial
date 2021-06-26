@@ -2,7 +2,7 @@ import {getUsers} from "./lib/database";
 import {getGoals, updateGoal} from "./lib/beeminder";
 import dial from "./lib/dial";
 
-export default async function cron(): Promise<void> {
+export default async function doCron(): Promise<void> {
   const users = await getUsers();
 
   await Promise.all(users.map(async (u) => {
