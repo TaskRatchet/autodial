@@ -1,7 +1,21 @@
-const Database = require("@replit/database")
+import firebase from "firebase/app";
+import 'firebase/firestore'
 
-const db = new Database()
+let _db: firebase.firestore.Firestore | undefined;
 
-export function set(key: string, value: string): Promise<any> {
-  return db.set(key, value)
+function getDb() {
+    if (!_db) _db = firebase.firestore();
+
+    return _db
+}
+
+export async function setUserAuth(bmUser: string, bmToken: string) {
+    return getDb().collection('users').doc(bmUser).set({
+        'beeminder_user': bmUser,
+        'beeminder_token': bmToken
+    })
+}
+
+export async function deleteUser(bmUser: string) {
+    return getDb().collection('users').doc(bmUser).delete()
 }
