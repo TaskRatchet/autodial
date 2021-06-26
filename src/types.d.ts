@@ -34,7 +34,7 @@ type Goal = {
   roadall: Roadall,
   fullroad: Fullroad
   datapoints: Datapoint[]
-  fineprint: string
+  fineprint: string | null
 }
 
 type User = {

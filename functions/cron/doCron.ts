@@ -7,11 +7,11 @@ export default async function doCron(): Promise<void> {
 
   await Promise.all(users.map(async (u) => {
     const all = await getGoals(u.beeminder_user, u.beeminder_token);
-    const toDial = all.filter((g: Goal) => g.fineprint.includes("#autodial"));
+    const toDial = all.filter((g: Goal) => g.fineprint?.includes("#autodial"));
 
     await Promise.all(toDial.map(async (g) => {
-      const minMatches = g.fineprint.match(/#autodialMin=(\d+)/);
-      const maxMatches = g.fineprint.match(/#autodialMax=(\d+)/);
+      const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
+      const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
       const min = minMatches ? parseInt(minMatches[1]) : undefined;
       const max = maxMatches ? parseInt(maxMatches[1]) : undefined;
       const roadall = dial(g, {min, max});

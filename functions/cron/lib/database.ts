@@ -14,7 +14,7 @@ function getDb() {
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         // Need to un-escape linebreaks from private key.
         // See: https://stackoverflow.com/a/50376092/6451879
-        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
       }),
     });
     _db = admin.firestore();
