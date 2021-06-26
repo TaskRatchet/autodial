@@ -4,14 +4,17 @@ type DirtyData = (Datapoint | undefined)[]
 type Reducer = (values: number[]) => number | undefined
 
 function aggregateByDate(data: Datapoint[], reduce: Reducer): DirtyData {
-  const dates: string[] = Array.from(new Set(data.map((p) => p[0])));
+  const dates: string[] = Array.from(new Set(data.map((p) => p.datestamp)));
   return dates.map((d: string) => {
-    const points = data.filter((p) => p[0] === d);
-    const reduced = reduce(points.map((p) => p[1]));
+    const points = data.filter((p) => p.datestamp === d);
+    const reduced = reduce(points.map((p) => p.value));
 
     if (reduced === undefined) return;
 
-    return [d, reduced, "aggregate"];
+    return {
+      datestamp: d,
+      value: reduced,
+    };
   });
 }
 

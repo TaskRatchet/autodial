@@ -43,7 +43,7 @@ describe("dial function", () => {
       kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210201", null, 1]],
-      datapoints: [["20210125", 1, "comment"]],
+      datapoints: [{datestamp: "20210125", value: 1}],
     }));
 
     expectEndRate(r, 1);
@@ -57,7 +57,7 @@ describe("dial function", () => {
       kyoom: false,
       runits: "d",
       roadall: [["20210124", 0, null], ["20210224", null, 1]],
-      datapoints: [["20210124", 0, "initial"], ["20210125", 1, "comment"]],
+      datapoints: [{datestamp: "20210124", value: 0}, {datestamp: "20210125", value: 1}],
     }));
 
     expectFuzzyEndRate(r, 1 / 30);
@@ -75,7 +75,7 @@ describe("dial function", () => {
       kyoom: false,
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
-      datapoints: [["20210125", 1, "comment"]],
+      datapoints: [{datestamp: "20210125", value: 1}],
     }));
 
     expectEndRate(r, 0);
@@ -89,7 +89,7 @@ describe("dial function", () => {
       kyoom: false,
       runits: "w",
       roadall: [["20210125", 0, null], ["20210201", null, 1]],
-      datapoints: [["20210125", 1, "comment"]],
+      datapoints: [{datestamp: "20210125", value: 1}],
     }));
 
     expectFuzzyEndRate(r, 1);
@@ -103,7 +103,7 @@ describe("dial function", () => {
       kyoom: false,
       runits: "w",
       roadall: [["20210125", 0, null], ["20210225", null, 1]],
-      datapoints: [["20210126", 1, "comment"]],
+      datapoints: [{datestamp: "20210126", value: 1}],
     }),
     {min: 2});
 
@@ -119,9 +119,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 2, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 2},
       ],
     }));
 
@@ -137,9 +137,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 2, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 2},
       ],
     }));
 
@@ -155,9 +155,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 2, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 2},
       ],
     }));
 
@@ -173,9 +173,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 2, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 2},
       ],
     }));
 
@@ -191,9 +191,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 2, "comment"],
-        ["20210201", 1, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 2},
+        {datestamp: "20210201", value: 1},
       ],
     }));
 
@@ -209,9 +209,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 5, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 5},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -229,9 +229,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 5, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 5},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -247,9 +247,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 5, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 5},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -265,9 +265,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 0, "comment"],
-        ["20210202", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 0},
+        {datestamp: "20210202", value: 5},
       ],
     }));
 
@@ -283,9 +283,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 5, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 5},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -301,9 +301,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 5, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 5},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -319,9 +319,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 5, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 5},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -337,10 +337,10 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 4, "comment"],
-        ["20210201", 5, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 4},
+        {datestamp: "20210201", value: 5},
       ],
     }));
 
@@ -356,9 +356,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 1, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 1},
       ],
     }));
 
@@ -374,9 +374,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 2, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 2},
       ],
     }));
 
@@ -392,9 +392,9 @@ describe("dial function", () => {
       runits: "d",
       roadall: [["20210125", 0, null], ["20210301", null, 1]],
       datapoints: [
-        ["20210125", 0, "initial"],
-        ["20210201", 1, "comment"],
-        ["20210201", 1, "comment"],
+        {datestamp: "20210125", value: 0},
+        {datestamp: "20210201", value: 1},
+        {datestamp: "20210201", value: 1},
       ],
     }));
 

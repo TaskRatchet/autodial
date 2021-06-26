@@ -1,7 +1,11 @@
+// TODO: Only have one types.d.ts
 // TODO: Verify these types are correct
 type Roadall = [string | null, number | null, number | null][]
 type Fullroad = [string, number, number][]
-type Datapoint = [string, number, string]
+type Datapoint = {
+  datestamp: string,
+  value: number
+}
 type UnixDatapoint = [number, number]
 
 // https://help.beeminder.com/article/97-custom-goals#aggday

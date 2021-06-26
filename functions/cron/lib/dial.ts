@@ -10,7 +10,9 @@ function avgrate(data: Datapoint[], window: number) {
   if (!data || !data.length) return 0;
 
   // convert daystamps to unixtimes
-  const unixData: UnixDatapoint[] = data.map((p) => [parseDate(p[0]), p[1]]);
+  const unixData: UnixDatapoint[] = data.map((p) => {
+    return [parseDate(p.datestamp), p.value];
+  });
 
   // now we can stepify the data and get a data function, df, that maps any
   // unixtime to the most recent y-value as of that unixtime:
@@ -34,8 +36,8 @@ function clip(x: number, a: number, b: number) {
 function autoSum(data: Datapoint[]): Datapoint[] {
   return data.reduce((prev: Datapoint[], p) => {
     const last = prev[prev.length - 1];
-    const sum = last ? last[1] + p[1] : p[1];
-    return [...prev, [p[0], sum, p[2]]];
+    const sum = last ? last.value + p.value : p.value;
+    return [...prev, {...p, value: sum}];
   }, []);
 }
 
