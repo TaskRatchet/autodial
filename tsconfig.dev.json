@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
   "include": [
     "./.eslintrc.js"
   ]

@@ -13,6 +13,8 @@ function stepFunc(d: UnixDatapoint[], x: number): number {
 // Take a list of datapoints sorted by x-value and return a pure function that
 // interpolates a step function from the data, always mapping to the most
 // recent y-value.
-export default function stepify(d: UnixDatapoint[]): (unixDelta: number) => number {
-  return !d || !d.length ? (x) => 0 : (x) => stepFunc(d, x);
+function stepify(d: UnixDatapoint[]): (unixDelta: number) => number {
+  return !d || !d.length ? () => 0 : (x) => stepFunc(d, x);
 }
+
+export default stepify;

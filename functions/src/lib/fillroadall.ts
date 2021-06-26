@@ -1,5 +1,5 @@
-import moment from "moment";
 import {parseDate, unixToBeeminderDateString} from "./time";
+import {unix} from "moment";
 
 // TODO: Improve types throughout; get rid of `as [type]` as much as possible
 
@@ -12,7 +12,7 @@ type UnixRoadall = [number | null, number | null, number | null][]
 /* Fixes the supplied unixtime to 00:00:00 on the same day (uses Moment)
  @param {Number} ut Unix time  */
 const daysnap = (ut: number): number => {
-  const d = moment.unix(ut).utc();
+  const d = unix(ut).utc();
   d.hours(0);
   d.minutes(0);
   d.seconds(0);

@@ -26,11 +26,19 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "npx jest --watch",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "eslint:fix": "eslint --fix src functions"
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "\\.(css|jpg|jpeg|png|gif|eot|otf|webp|svg)$": "<rootDir>/src/__mocks__/fileMock.ts"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.ts"
+    ],
+    "resetMocks": true
   },
   "eslintConfig": {
     "extends": [
