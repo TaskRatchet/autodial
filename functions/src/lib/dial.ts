@@ -1,18 +1,8 @@
-import {now, parseDate} from "./time";
+import {now, parseDate, unixToBeeminderDateString} from "./time";
 
 import stepify from "./stepify";
 import aggregate from "./aggregate";
-
-const DIY = 365.25; // this is what physicists use, eg, to define a light year
-const SID = 86400; // seconds in a day (not used: DIM=DIY/12, WIM=DIY/12/7)
-
-const UNIT_SECONDS = {
-  "y": DIY * SID,
-  "m": DIY * SID / 12,
-  "w": 7 * SID,
-  "d": SID,
-  "h": 3600,
-};
+import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
@@ -54,6 +44,11 @@ type Options = {
   max?: number
 }
 
+function getAkrasiaDateString(t: number) {
+  const akrasiaTime = t + AKRASIA_HORIZON;
+  return unixToBeeminderDateString(akrasiaTime);
+}
+
 // Takes a goal g which includes roadall and data, returns new roadall
 export default function dial(g: Goal, opts: Options = {}): Roadall {
   const {min = -Infinity, max = Infinity} = opts;
@@ -61,9 +56,9 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
 
   const t = now();
 
-  const firstrow = g.roadall[0];
-  const lastrow = g.roadall[g.roadall.length - 1];
-  const st = parseDate(firstrow[0] || ""); // start time
+  const firstRow = g.roadall[0];
+  const lastRow = g.roadall[g.roadall.length - 1];
+  const st = parseDate(firstRow[0] || ""); // start time
 
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
 
@@ -73,10 +68,30 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
   const arps = avgrate(summed, window); // avg rate per second
 
   const shouldDial = window >= 30 * SID;
-  const newRate = shouldDial ? clip(arps * siru, min, max) : lastrow[2];
+  const newRate = shouldDial ? clip(arps * siru, min, max) : lastRow[2];
+
+  const tail = g.roadall.slice(0, -1);
+  const lastRowModified: Roadall[0] = [lastRow[0], lastRow[1], newRate];
+
+  const fullTail = g.fullroad.slice(0, -1);
+  const unixTimes = fullTail.map((r) => r[0] && parseDate(r[0]));
+  const shouldAddBoundary = !unixTimes.some((ut) => {
+    return ut && ut >= t + AKRASIA_HORIZON;
+  });
+
+  if (shouldAddBoundary) {
+    const akrasiaDateString = getAkrasiaDateString(t);
+    const akrasiaBoundary: Roadall[0] = [akrasiaDateString, null, lastRow[2]];
+
+    return [
+      ...tail,
+      akrasiaBoundary,
+      lastRowModified,
+    ];
+  }
 
   return [
-    ...g.roadall.slice(0, -1),
-    [lastrow[0], lastrow[1], newRate],
+    ...tail,
+    lastRowModified,
   ];
 }

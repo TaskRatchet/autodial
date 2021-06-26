@@ -9,3 +9,7 @@ export function parseDate(s: string): number {
   const d = +s.slice(6, 8);
   return Date.UTC(y, m - 1, d, 12) / 1000;
 }
+
+export function unixToBeeminderDateString(t: number): string {
+  return new Date(t * 1000).toISOString().slice(0, 10).replace(/-/g, "");
+}

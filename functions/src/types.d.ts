@@ -1,5 +1,6 @@
 // TODO: Verify these types are correct
 type Roadall = [string | null, number | null, number | null][]
+type Fullroad = [string, number, number][]
 type Datapoint = [string, number, string]
 type UnixDatapoint = [number, number]
 
@@ -26,11 +27,14 @@ type Aggday =
   | "cap1"
 
 type Goal = {
+  slug: string,
   aggday: Aggday,
   kyoom: boolean,
   runits: "h" | "d" | "w" | "m" | "y",
   roadall: Roadall,
+  fullroad: Fullroad
   datapoints: Datapoint[]
+  fineprint: string
 }
 
 type User = {

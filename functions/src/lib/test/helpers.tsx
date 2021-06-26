@@ -1,5 +1,7 @@
 import {expect} from "@jest/globals";
 import Matchers = jest.Matchers;
+import fillroadall from "../fillroadall";
+import {UNIT_SECONDS} from "../constants";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;
@@ -25,3 +27,27 @@ expect.extend({
 });
 
 export const e = expect as never as <T>(actual: T) => MyMatchers<T>;
+
+export function makeGoal(g: Partial<Goal> = {}): Goal {
+  const {
+    slug = "the_slug",
+    aggday = "last",
+    kyoom = false,
+    runits = "d",
+    roadall = [],
+    fullroad = fillroadall(roadall, UNIT_SECONDS[runits]),
+    datapoints = [],
+    fineprint = "",
+  } = g;
+
+  return {
+    slug,
+    aggday,
+    kyoom,
+    runits,
+    roadall,
+    fullroad,
+    datapoints,
+    fineprint,
+  };
+}

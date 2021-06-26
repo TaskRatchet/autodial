@@ -52,6 +52,13 @@ function App() {
 
   return <Container className={"App"}>
     <h1>Beeminder Autodialer</h1>
+
+    <Alert severity="warning">
+      This tool is in beta and may contain bugs. Use at your own risk. If you encounter any bugs that are not documented
+      in the known limitations section below, please report the issue to{" "}
+      <a href="mailto:nathan@taskratchet.com">nathan@taskratchet.com</a>. Thank you!
+    </Alert>
+
     <p>
       The Beeminder autodialer will automatically adjust the rate on your goals based on your historical
       performance.
@@ -150,7 +157,22 @@ function App() {
         otherwise influence dialing.
       </li>
       <li>Goals will not be dialed until they have at least 30 days of history.</li>
+      <li>
+        This tool assumes the akrasia horizon is eight days instead of seven in order to avoid needing to take the
+        user's timezone into account.
+      </li>
     </ul>
+
+    <h2>Acknowledgements</h2>
+    <p>Special thanks to:</p>
+    <ul>
+      <li><a href="https://www.beeminder.com/aboutus">Mary Renaud, Dept. of Treasury at Beeminder</a>, for creating the original autodialer and sharing her invaluable advice during the development of this tool.</li>
+      <li><a href="https://www.beeminder.com/aboutus">Daniel Reeves, co-founder & CEO of Beeminder</a>, for assisting with the specification and development of the tool.</li>
+      <li><a href="https://www.beeminder.com/home">The Beeminder company</a> for permitting code from their codebase to be copied into this project.</li>
+    </ul>
+    <p><a href="https://github.com/narthur/autodial">This open-source tool</a> is maintained by <a href="https://nathanarthur.com">Nathan Arthur</a>, <a href="https://beeminder.com">Beeminder</a> user and <a
+      href="https://taskratchet.com">TaskRatchet</a> founder.</p>
+
   </Container>;
 }
 
