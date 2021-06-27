@@ -11,6 +11,7 @@ function avgrate(data: Datapoint[], window: number) {
 
   // convert daystamps to unixtimes
   const unixData: UnixDatapoint[] = data.map((p) => {
+    console.log({m: "unixData > pD", p});
     return [parseDate(p.datestamp), p.value];
   });
 
@@ -60,13 +61,17 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
 
   const firstRow = g.roadall[0];
   const lastRow = g.roadall[g.roadall.length - 1];
-  const st = parseDate(firstRow[0] || ""); // start time
+  console.log({m: "firstRow > st > pD", firstRow});
+  if (!firstRow[0]) {
+    throw new Error("Goal road has no initial daystamp!");
+  }
+  const tini = parseDate(firstRow[0]);
 
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
 
   const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 
-  const window = Math.min(30 * SID, t - st);
+  const window = Math.min(30 * SID, t - tini);
   const arps = avgrate(summed, window); // avg rate per second
 
   const shouldDial = window >= 30 * SID;
@@ -76,7 +81,10 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
   const lastRowModified: Roadall[0] = [lastRow[0], lastRow[1], newRate];
 
   const fullTail = g.fullroad.slice(0, -1);
-  const unixTimes = fullTail.map((r) => r[0] && parseDate(r[0]));
+  const unixTimes = fullTail.map((r) => {
+    console.log({m: "fullTail > pD", r});
+    return r[0] && parseDate(r[0]);
+  });
   const shouldAddBoundary = !unixTimes.some((ut) => {
     return ut && ut >= t + AKRASIA_HORIZON;
   });
