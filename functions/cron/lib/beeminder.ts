@@ -3,8 +3,24 @@ import fetch from "node-fetch";
 export async function getGoals(
     user: string,
     token: string,
-): Promise<Goal[]> {
-  const url = `https://www.beeminder.com/api/v1/users/${user}/goals.json?access_token=${token}&filter=frontburner&datapoints=true`;
+): Promise<Omit<Goal, "datapoints">[]> {
+  const url = `https://www.beeminder.com/api/v1/users/${user}/goals.json?access_token=${token}&filter=frontburner`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data?.errors) {
+    throw new Error(data.errors.message);
+  }
+
+  return data;
+}
+
+export async function getGoal(
+    user: string,
+    token: string,
+    slug: string,
+): Promise<Goal> {
+  const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json&access_token=${token}&datapoints=true`;
   const response = await fetch(url);
   const data = await response.json();
 
@@ -20,7 +36,7 @@ export async function updateGoal(
     token: string,
     slug: string,
     {roadall}: {roadall: Roadall}
-): Promise<Goal> {
+): Promise<Omit<Goal, "datapoints">> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
   const options = {
     method: "post",

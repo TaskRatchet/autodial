@@ -1,6 +1,6 @@
 import doCron from "./doCron";
 import {getUsers} from "./lib/database";
-import {getGoals, updateGoal} from "./lib/beeminder";
+import {getGoal, getGoals, updateGoal} from "./lib/beeminder";
 import {makeGoal} from "./lib/test/helpers";
 import dial from "./lib/dial";
 
@@ -11,7 +11,13 @@ jest.mock("./lib/dial");
 
 const mockGetUsers = getUsers as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
+const mockGetGoal = getGoal as jest.Mock;
 const mockDial = dial as jest.Mock;
+
+function setGoal(g: Partial<Goal>) {
+  mockGetGoal.mockResolvedValue(g);
+  mockGetGoals.mockResolvedValue([g]);
+}
 
 describe("function", () => {
   beforeEach(() => {
@@ -34,7 +40,7 @@ describe("function", () => {
       fineprint: "#autodial",
     });
 
-    mockGetGoals.mockResolvedValue([goal]);
+    setGoal(goal);
 
     await doCron();
 
@@ -46,7 +52,7 @@ describe("function", () => {
       fineprint: "#autodialMin=1",
     });
 
-    mockGetGoals.mockResolvedValue([goal]);
+    setGoal(goal);
 
     await doCron();
 
@@ -58,7 +64,7 @@ describe("function", () => {
       fineprint: "#autodialMax=1",
     });
 
-    mockGetGoals.mockResolvedValue([goal]);
+    setGoal(goal);
 
     await doCron();
 
@@ -68,7 +74,7 @@ describe("function", () => {
   it("skips goals without hashtag", async () => {
     const goal = makeGoal();
 
-    mockGetGoals.mockResolvedValue([goal]);
+    setGoal(goal);
 
     await doCron();
 
@@ -82,7 +88,7 @@ describe("function", () => {
       fineprint: "#autodialMin=1",
     });
 
-    mockGetGoals.mockResolvedValue([goal]);
+    setGoal(goal);
 
     await doCron();
 
