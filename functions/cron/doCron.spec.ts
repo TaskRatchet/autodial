@@ -96,6 +96,20 @@ describe("function", () => {
         "the_user", "the_token", "the_slug", {roadall: "the_new_road"}
     );
   });
+
+  it("does not update goal if goal not dialed", async () => {
+    mockDial.mockReturnValue(false);
+
+    const goal = makeGoal({
+      fineprint: "#autodialMin=1",
+    });
+
+    setGoal(goal);
+
+    await doCron();
+
+    expect(updateGoal).not.toBeCalled();
+  });
 });
 
 // TODO:

@@ -35,20 +35,17 @@ export async function updateGoal(
     user: string,
     token: string,
     slug: string,
-    {roadall}: {roadall: Roadall}
+    fields: {roadall: Roadall}
 ): Promise<Omit<Goal, "datapoints">> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
   const options = {
     method: "post",
-    body: JSON.stringify({
-      access_token: token,
-      roadall,
-    }),
+    body: JSON.stringify(fields),
   };
-  const response = await fetch(url, options);
+  const response = await fetch(`${url}?access_token=${token}`, options);
 
   if (!response.ok) {
-    throw new Error(`Fetch error: ${response.status} - ${response.statusText}`);
+    throw new Error(`Fetch error: ${response.status} - ${response.statusText} - ${url}`);
   }
 
   const data = await response.json();

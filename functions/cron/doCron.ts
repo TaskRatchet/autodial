@@ -21,6 +21,8 @@ export default async function doCron(): Promise<void> {
 
       const roadall = dial(fullGoal, {min, max});
 
+      if (!roadall) return;
+
       await updateGoal(beeminder_user, beeminder_token, g.slug, {roadall});
     }));
   }));
