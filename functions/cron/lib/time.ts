@@ -1,3 +1,5 @@
+import {unix} from "moment";
+
 export function now(): number {
   return Date.now() / 1000;
 }
@@ -10,6 +12,13 @@ export function parseDate(s: string): number {
   return Date.UTC(y, m - 1, d, 12) / 1000;
 }
 
-export function unixToBeeminderDateString(t: number): string {
-  return new Date(t * 1000).toISOString().slice(0, 10).replace(/-/g, "");
-}
+/* Fixes the supplied unixtime to 00:00:00 on the same day (uses Moment)
+ @param {Number} ut Unix time  */
+export const daysnap = (ut: number): number => {
+  const d = unix(ut).utc();
+  d.hours(0);
+  d.minutes(0);
+  d.seconds(0);
+  d.milliseconds(0);
+  return d.unix();
+};

@@ -1,4 +1,4 @@
-import {now, parseDate, unixToBeeminderDateString} from "./time";
+import {daysnap, now, parseDate} from "./time";
 
 import stepify from "./stepify";
 import aggregate from "./aggregate";
@@ -11,7 +11,6 @@ function avgrate(data: Datapoint[], window: number) {
 
   // convert daystamps to unixtimes
   const unixData: UnixDatapoint[] = data.map((p) => {
-    console.log({m: "unixData > pD", p});
     return [parseDate(p.datestamp), p.value];
   });
 
@@ -47,14 +46,8 @@ type Options = {
   max?: number
 }
 
-function getAkrasiaDateString(t: number) {
-  const akrasiaTime = t + AKRASIA_HORIZON;
-  return unixToBeeminderDateString(akrasiaTime);
-}
-
 // Takes a goal g which includes roadall and data, returns new roadall
 export default function dial(g: Goal, opts: Options = {}): Roadall {
-  console.log({roadall: g.roadall});
   const {min = -Infinity, max = Infinity} = opts;
   const siru = UNIT_SECONDS[g.runits]; // seconds in rate units
 
@@ -62,17 +55,16 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
 
   const firstRow = g.roadall[0];
   const lastRow = g.roadall[g.roadall.length - 1];
-  console.log({m: "firstRow > st > pD", firstRow});
-  if (!firstRow[0]) {
-    throw new Error("Goal road has no initial daystamp!");
-  }
-  const tini = parseDate(firstRow[0]);
 
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
 
   const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 
-  const window = Math.min(30 * SID, t - tini);
+  if (!firstRow[0]) {
+    throw new Error("Goal road has no initial daystamp!");
+  }
+  const window = Math.min(30 * SID, t - firstRow[0]);
+
   const arps = avgrate(summed, window); // avg rate per second
 
   const shouldDial = window >= 30 * SID;
@@ -83,16 +75,14 @@ export default function dial(g: Goal, opts: Options = {}): Roadall {
 
   const fullTail = g.fullroad.slice(0, -1);
   const unixTimes = fullTail.map((r) => {
-    console.log({m: "fullTail > pD", r});
-    return r[0] && parseDate(r[0]);
+    return r[0];
   });
   const shouldAddBoundary = !unixTimes.some((ut) => {
     return ut && ut >= t + AKRASIA_HORIZON;
   });
 
   if (shouldAddBoundary) {
-    const akrasiaDateString = getAkrasiaDateString(t);
-    const akrasiaBoundary: Roadall[0] = [akrasiaDateString, null, lastRow[2]];
+    const akrasiaBoundary: Roadall[0] = [t + AKRASIA_HORIZON, null, lastRow[2]];
 
     return [
       ...tail,

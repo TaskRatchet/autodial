@@ -1,4 +1,5 @@
 import {sum} from "lodash";
+import {parseDate} from "./time";
 
 type DirtyData = (Datapoint | undefined)[]
 type Reducer = (values: number[]) => number | undefined
@@ -13,6 +14,7 @@ function aggregateByDate(data: Datapoint[], reduce: Reducer): DirtyData {
 
     return {
       datestamp: d,
+      timestamp: parseDate(d),
       value: reduced,
     };
   });
