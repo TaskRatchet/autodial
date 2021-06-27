@@ -20,7 +20,7 @@ export async function getGoal(
     token: string,
     slug: string,
 ): Promise<Goal> {
-  const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json&access_token=${token}&datapoints=true`;
+  const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json?access_token=${token}&datapoints=true`;
   const response = await fetch(url);
   const data = await response.json();
 
