@@ -3,7 +3,7 @@
 type Roadall = [number | null, number | null, number | null][]
 type Fullroad = [number, number, number][]
 type Datapoint = {
-  datestamp: string,
+  daystamp: string,
   timestamp: number,
   value: number
 }

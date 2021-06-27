@@ -11,7 +11,7 @@ function avgrate(data: Datapoint[], window: number) {
 
   // convert daystamps to unixtimes
   const unixData: UnixDatapoint[] = data.map((p) => {
-    return [parseDate(p.datestamp), p.value];
+    return [parseDate(p.daystamp), p.value];
   });
 
   // now we can stepify the data and get a data function, df, that maps any

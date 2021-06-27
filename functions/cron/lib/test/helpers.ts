@@ -53,7 +53,7 @@ export function makeGoal(g: GoalInput = {}): Goal {
     roadall,
     fullroad,
     datapoints: datapoints.map((d: DatapointInput) => ({
-      timestamp: parseDate(d.datestamp),
+      timestamp: parseDate(d.daystamp),
       ...d,
     })),
     fineprint,

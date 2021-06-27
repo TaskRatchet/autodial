@@ -51,7 +51,7 @@ describe("dial function", () => {
         [parseDate("20210125"), 0, null],
         [parseDate("20210201"), null, 1],
       ],
-      datapoints: [{datestamp: "20210125", value: 1}],
+      datapoints: [{daystamp: "20210125", value: 1}],
     }));
 
     expectEndRate(r, 1);
@@ -68,8 +68,8 @@ describe("dial function", () => {
         [parseDate("20210124"), 0, null],
         [parseDate("20210224"), null, 1],
       ],
-      datapoints: [{datestamp: "20210124", value: 0}, {
-        datestamp: "20210125",
+      datapoints: [{daystamp: "20210124", value: 0}, {
+        daystamp: "20210125",
         value: 1,
       }],
     }));
@@ -92,7 +92,7 @@ describe("dial function", () => {
         [parseDate("20210125"), 0, null],
         [parseDate("20210301"), null, 1],
       ],
-      datapoints: [{datestamp: "20210125", value: 1}],
+      datapoints: [{daystamp: "20210125", value: 1}],
     }));
 
     expectEndRate(r, 0);
@@ -109,7 +109,7 @@ describe("dial function", () => {
         [parseDate("20210125"), 0, null],
         [parseDate("20210201"), null, 1],
       ],
-      datapoints: [{datestamp: "20210125", value: 1}],
+      datapoints: [{daystamp: "20210125", value: 1}],
     }));
 
     expectFuzzyEndRate(r, 1);
@@ -127,7 +127,7 @@ describe("dial function", () => {
         [parseDate("20210125"), 0, null],
         [parseDate("20210225"), null, 1],
       ],
-      datapoints: [{datestamp: "20210126", value: 1}],
+      datapoints: [{daystamp: "20210126", value: 1}],
     }),
     {min: 2});
 
@@ -146,9 +146,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 2},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 2},
       ],
     }));
 
@@ -167,9 +167,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 2},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 2},
       ],
     }));
 
@@ -188,9 +188,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 2},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 2},
       ],
     }));
 
@@ -209,9 +209,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 2},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 2},
       ],
     }));
 
@@ -230,9 +230,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 2},
-        {datestamp: "20210201", value: 1},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 2},
+        {daystamp: "20210201", value: 1},
       ],
     }));
 
@@ -251,9 +251,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 5},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 5},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -274,9 +274,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 5},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 5},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -295,9 +295,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 5},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 5},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -316,9 +316,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 0},
-        {datestamp: "20210202", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 0},
+        {daystamp: "20210202", value: 5},
       ],
     }));
 
@@ -337,9 +337,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 5},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 5},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -358,9 +358,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 5},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 5},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -379,9 +379,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 5},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 5},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -400,10 +400,10 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 4},
-        {datestamp: "20210201", value: 5},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 4},
+        {daystamp: "20210201", value: 5},
       ],
     }));
 
@@ -422,9 +422,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 1},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 1},
       ],
     }));
 
@@ -443,9 +443,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 2},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 2},
       ],
     }));
 
@@ -464,9 +464,9 @@ describe("dial function", () => {
         [parseDate("20210301"), null, 1],
       ],
       datapoints: [
-        {datestamp: "20210125", value: 0},
-        {datestamp: "20210201", value: 1},
-        {datestamp: "20210201", value: 1},
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210201", value: 1},
+        {daystamp: "20210201", value: 1},
       ],
     }));
 
