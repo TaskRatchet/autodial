@@ -40,7 +40,10 @@ export async function updateGoal(
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
   const options = {
     method: "post",
-    body: JSON.stringify(fields),
+    body: JSON.stringify({
+      ...fields,
+      roadall: JSON.stringify(fields.roadall),
+    }),
   };
   const response = await fetch(`${url}?access_token=${token}`, options);
 
