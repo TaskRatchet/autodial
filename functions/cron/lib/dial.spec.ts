@@ -10,13 +10,21 @@ const setNow = (yyyy: number, m: number, d: number): number => {
   return value;
 };
 
-const expectEndRate = (roadall: Roadall, expected: number) => {
+const expectEndRate = (roadall: Roadall | false, expected: number) => {
+  if (!roadall) {
+    throw new Error("Rate not adjusted");
+  }
+
   const end = roadall[roadall.length - 1];
 
   e(end[2]).toEqual(expected);
 };
 
-const expectFuzzyEndRate = (roadall: Roadall, expected: number) => {
+const expectFuzzyEndRate = (roadall: Roadall | false, expected: number) => {
+  if (!roadall) {
+    throw new Error("Rate not adjusted");
+  }
+
   const end = roadall[roadall.length - 1];
 
   e(end[2]).toFuzzyEqual(expected);
@@ -54,7 +62,7 @@ describe("dial function", () => {
       datapoints: [{daystamp: "20210125", value: 1}],
     }));
 
-    expectEndRate(r, 1);
+    expect(r).toBeFalsy();
   });
 
   it("dials goal with datapoint after a month", () => {
@@ -99,7 +107,7 @@ describe("dial function", () => {
   });
 
   it("dials goal with datapoint after a week with runits=weekly", () => {
-    setNow(2021, 2, 1);
+    setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
       aggday: "last",
@@ -107,9 +115,12 @@ describe("dial function", () => {
       runits: "w",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210201"), null, 1],
+        [parseDate("20210325"), null, 1],
       ],
-      datapoints: [{daystamp: "20210125", value: 1}],
+      datapoints: [
+        {daystamp: "20210125", value: 0},
+        {daystamp: "20210126", value: 30 / 7},
+      ],
     }));
 
     expectFuzzyEndRate(r, 1);
@@ -474,7 +485,7 @@ describe("dial function", () => {
   });
 
   it("protects akrasia horizon", async () => {
-    setNow(2021, 2, 20);
+    setNow(2021, 3, 1);
 
     const r = dial(makeGoal({
       aggday: "last",
@@ -487,11 +498,11 @@ describe("dial function", () => {
       datapoints: [],
     }));
 
-    e(r[1]).toEqual([parseDate("20210228"), null, 1]);
+    e(r && r[1]).toEqual([parseDate("20210309"), null, 1]);
   });
 
   it("does not add row if last segment starts after horizon", async () => {
-    setNow(2021, 2, 20);
+    setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
       aggday: "last",
@@ -499,17 +510,17 @@ describe("dial function", () => {
       runits: "d",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210229"), null, 1],
+        [parseDate("20210305"), null, 1],
         [parseDate("20210325"), null, 1],
       ],
       datapoints: [],
     }));
 
-    e(r.length).toEqual(3);
+    e(r && r.length).toEqual(3);
   });
 
   it("uses fullroad to decide if akrasia boundary needed", async () => {
-    setNow(2021, 2, 20);
+    setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
       aggday: "last",
@@ -517,13 +528,13 @@ describe("dial function", () => {
       runits: "d",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [null, 36, 1],
+        [null, 40, 1],
         [parseDate("20210325"), null, 1],
       ],
       datapoints: [],
     }));
 
-    e(r.length).toEqual(3);
+    e(r && r.length).toEqual(3);
   });
 });
 

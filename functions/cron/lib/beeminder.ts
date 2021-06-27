@@ -46,6 +46,11 @@ export async function updateGoal(
     }),
   };
   const response = await fetch(url, options);
+
+  if (!response.ok) {
+    throw new Error(`Fetch error: ${response.status} - ${response.statusText}`);
+  }
+
   const data = await response.json();
 
   if (data?.errors) {
