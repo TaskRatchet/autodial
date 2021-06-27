@@ -54,6 +54,7 @@ function getAkrasiaDateString(t: number) {
 
 // Takes a goal g which includes roadall and data, returns new roadall
 export default function dial(g: Goal, opts: Options = {}): Roadall {
+  console.log({g});
   const {min = -Infinity, max = Infinity} = opts;
   const siru = UNIT_SECONDS[g.runits]; // seconds in rate units
 
