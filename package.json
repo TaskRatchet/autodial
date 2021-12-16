@@ -28,6 +28,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "netlify": "netlify dev --functions ./functions",
     "build": "react-scripts build",
     "test": "npx jest",
     "test:watch": "npx jest --watch",

@@ -3,15 +3,17 @@
 ## Local Development
 
 - Copy `.env.local.example` to `.env.local` and set variables
-- Run `npm run start`
-- Open <http://localhost:3000/>
+- `npm install netlify-cli -g`
+- `netlify link`
+- `npm run netlify`
+- Open <http://localhost:8888/>
 
 ### Creating your Beeminder test client
 
 - Go to your [account settings](https://www.beeminder.com/settings/account)
 - At the bottom of the page, click "Register a new app"
 - Name it something like `bm_autodial_dev`
-- Use `http://localhost:3000` as the redirect and post-deauthorize callback urls
+- Use `http://localhost:8888` as the redirect and post-deauthorize callback urls
 - Copy the client ID into your `.env.local` file
 
 ### Cloud Functions

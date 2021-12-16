@@ -148,6 +148,10 @@ function App(): JSX.Element {
               <TableCell>Slug</TableCell>
               <TableCell>#autodialMin=?</TableCell>
               <TableCell>#autodialMax=?</TableCell>
+              <TableCell>Current Rate</TableCell>
+              <TableCell>New Rate</TableCell>
+              <TableCell>Days of History</TableCell>
+              <TableCell>Datapoints Considered</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -165,6 +169,10 @@ function App(): JSX.Element {
                   rel={"nofollow noreferrer"}>{g.slug}</a></TableCell>
                 <TableCell>{min}</TableCell>
                 <TableCell>{max}</TableCell>
+                <TableCell>TODO</TableCell>
+                <TableCell>TODO</TableCell>
+                <TableCell>TODO</TableCell>
+                <TableCell>TODO</TableCell>
               </TableRow>;
             })}
           </TableBody>
@@ -174,10 +182,22 @@ function App(): JSX.Element {
 
     <h3>Step 3: Use Beeminder as normal</h3>
     <p>
-      Once a day, the autodialer will adjust the rates of your enabled goals to
-      equal your average for the last 30 days. Any goals with less than 30 days
-      of history will not be autodialed.
+      Once a day at minimum, the autodialer will adjust the rates of your
+      enabled goals to equal your average for the last 30 days. Any goals with
+      less than 30 days of history will not be autodialed.
     </p>
+
+    <p>
+      Or, if you don't feel like waiting, click this button to force the
+      autodialer to run:
+    </p>
+
+    {/* TODO: Display run result--success or error */}
+    <Button variant={"outlined"} color={"secondary"} onClick={async () => {
+      const result = await fetch("/.netlify/functions/cron");
+      console.log({result});
+    }
+    }>Force Run</Button>
 
     <h2>Known Issues & Limitations</h2>
     <ul>
