@@ -47,10 +47,11 @@ export async function updateGoal(
   };
   const response = await fetch(`${url}?access_token=${token}`, options);
 
-  console.log({user, token, slug, url, options, fields});
+  console.log({user, token, slug, url, options, fields, response});
 
   if (!response.ok) {
-    throw new Error(`Fetch error: ${response.status} - ${response.statusText} - ${url}`);
+    const msg = `Fetch error: ${response.status} - ${response.statusText} - ${url}`;
+    throw new Error(msg);
   }
 
   const data = await response.json();
