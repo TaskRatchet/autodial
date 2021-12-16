@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import axios from "axios";
 
 export async function getGoals(
     user: string,
@@ -38,28 +39,23 @@ export async function updateGoal(
     fields: {roadall: Roadall}
 ): Promise<Omit<Goal, "datapoints">> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
-  const options = {
-    method: "put",
-    body: JSON.stringify({
-      // ...fields,
-      yaxis: "TESTING AUTODIAL", // TODO
-      // roadall: JSON.stringify(fields.roadall),
-    }),
+  const putData = {
+    // ...fields,
+    yaxis: "TESTING AUTODIAL", // TODO
+    // roadall: JSON.stringify(fields.roadall),
   };
-  const response = await fetch(`${url}?access_token=${token}`, options);
+  const response = await axios.put(url, putData);
 
-  console.log({user, token, slug, url, options, fields, response});
+  console.log({user, token, slug, url, putData, fields, response});
 
-  if (!response.ok) {
+  if (response.status !== 200) {
     const msg = `Fetch error: ${response.status} - ${response.statusText} - ${url}`;
     throw new Error(msg);
   }
 
-  const data = await response.json();
-
-  if (data?.errors) {
-    throw new Error(data.errors.message);
+  if (response.data?.errors) {
+    throw new Error(response.data.errors.message);
   }
 
-  return data;
+  return response.data;
 }
