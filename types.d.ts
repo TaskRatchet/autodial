@@ -1,10 +1,8 @@
-// TODO: Only have one types.d.ts
-// TODO: Verify these types are correct
 type Roadall = [number | null, number | null, number | null][]
 type Fullroad = [number, number, number][]
 type Datapoint = {
   daystamp: string,
-  timestamp: number,
+  timestamp: number
   value: number
 }
 type UnixDatapoint = [number, number]
@@ -32,6 +30,7 @@ type Aggday =
   | "cap1"
 
 type Goal = {
+  rate: number;
   slug: string,
   aggday: Aggday,
   kyoom: boolean,
