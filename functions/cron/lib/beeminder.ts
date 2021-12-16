@@ -44,7 +44,7 @@ export async function updateGoal(
     yaxis: "TESTING AUTODIAL", // TODO
     // roadall: JSON.stringify(fields.roadall),
   };
-  const response = await axios.put(url, putData);
+  const response = await axios.put(`${url}?access_token=${token}`, putData);
 
   console.log({user, token, slug, url, putData, fields, response});
 
