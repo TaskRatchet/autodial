@@ -2,7 +2,7 @@
 
 ## Local Development
 
-- Copy `.env.local.example` to `.env.local` and set variables
+- Copy `.env.example` to `.env` and set variables
 - `npm install netlify-cli -g`
 - `netlify link`
 - `npm run netlify`

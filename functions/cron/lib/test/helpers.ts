@@ -35,6 +35,7 @@ type GoalInput = Partial<Omit<Goal, "datapoints">>
 
 export function makeGoal(g: GoalInput = {}): Goal {
   const {
+    rate = 1,
     slug = "the_slug",
     aggday = "last",
     kyoom = false,
@@ -46,6 +47,7 @@ export function makeGoal(g: GoalInput = {}): Goal {
   } = g;
 
   return {
+    rate,
     slug,
     aggday,
     kyoom,

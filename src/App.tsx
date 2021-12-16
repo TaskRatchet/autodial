@@ -150,8 +150,9 @@ function App(): JSX.Element {
               <TableCell>#autodialMax=?</TableCell>
               <TableCell>Current Rate</TableCell>
               <TableCell>New Rate</TableCell>
-              <TableCell>Days of History</TableCell>
-              <TableCell>Datapoints Considered</TableCell>
+              <TableCell>Days Count</TableCell>
+              <TableCell>Datapoints Count</TableCell>
+              <TableCell>Datapoints Sum</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -169,6 +170,7 @@ function App(): JSX.Element {
                   rel={"nofollow noreferrer"}>{g.slug}</a></TableCell>
                 <TableCell>{min}</TableCell>
                 <TableCell>{max}</TableCell>
+                <TableCell>{g.rate}/{g.runits}</TableCell>
                 <TableCell>TODO</TableCell>
                 <TableCell>TODO</TableCell>
                 <TableCell>TODO</TableCell>

@@ -24,5 +24,6 @@
     "src",
     "functions",
     "jest.config.js",
+    "types.d.ts",
   ]
 }

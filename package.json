@@ -36,15 +36,28 @@
     "eslint:fix": "eslint --fix src functions"
   },
   "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "\\.(css|jpg|jpeg|png|gif|eot|otf|webp|svg)$": "<rootDir>/src/__mocks__/fileMock.ts"
-    },
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.ts"
-    ],
-    "resetMocks": true
+    "projects": [
+      {
+        "displayName": "web",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "resetMocks": true,
+        "moduleNameMapper": {
+          "\\.(css|jpg|jpeg|png|gif|eot|otf|webp|svg)$": "<rootDir>/src/__mocks__/fileMock.ts"
+        },
+        "setupFilesAfterEnv": [
+          "<rootDir>/src/setupTests.ts"
+        ]
+      },
+      {
+        "displayName": "function",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "resetMocks": true,
+        "roots": ["<rootDir>/functions/"],
+        "testPathIgnorePatterns": ["<rootDir>/src/"]
+      }
+    ]
   },
   "eslintConfig": {
     "extends": [
