@@ -42,6 +42,7 @@ export async function updateGoal(
     method: "put",
     body: JSON.stringify({
       ...fields,
+      yaxis: "TESTING AUTODIAL", // TODO
       roadall: JSON.stringify(fields.roadall),
     }),
   };
