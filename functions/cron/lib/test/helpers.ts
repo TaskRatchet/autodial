@@ -1,8 +1,8 @@
 import {expect} from "@jest/globals";
 import Matchers = jest.Matchers;
-import fillroadall from "../fillroadall";
-import {UNIT_SECONDS} from "../constants";
-import {parseDate} from "../time";
+import fillroadall from "../../../../lib/fillroadall";
+import {UNIT_SECONDS} from "../../../../lib/constants";
+import {parseDate} from "../../../../lib/time";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;

@@ -23,6 +23,7 @@
   "include": [
     "src",
     "functions",
+    "lib",
     "jest.config.js",
     "types.d.ts",
   ]

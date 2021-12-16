@@ -2,12 +2,12 @@ import doCron from "./doCron";
 import {getUsers} from "./lib/database";
 import {getGoal, getGoals, updateGoal} from "./lib/beeminder";
 import {makeGoal} from "./lib/test/helpers";
-import dial from "./lib/dial";
+import dial from "../../lib/dial";
 
 jest.mock("firebase-functions");
 jest.mock("./lib/database");
 jest.mock("./lib/beeminder");
-jest.mock("./lib/dial");
+jest.mock("../../lib/dial");
 
 const mockGetUsers = getUsers as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
