@@ -40,9 +40,8 @@ export async function updateGoal(
 ): Promise<Omit<Goal, "datapoints">> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
   const putData = {
-    // ...fields,
-    yaxis: "TESTING AUTODIAL", // TODO
-    // roadall: JSON.stringify(fields.roadall),
+    ...fields,
+    roadall: JSON.stringify(fields.roadall),
   };
   const response = await axios.put(`${url}?access_token=${token}`, putData);
 
