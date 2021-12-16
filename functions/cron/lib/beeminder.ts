@@ -39,7 +39,7 @@ export async function updateGoal(
 ): Promise<Omit<Goal, "datapoints">> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
   const options = {
-    method: "post",
+    method: "put",
     body: JSON.stringify({
       ...fields,
       roadall: JSON.stringify(fields.roadall),
