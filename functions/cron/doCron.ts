@@ -1,6 +1,6 @@
 import {getUsers} from "./lib/database";
 import {getGoal, getGoals, updateGoal} from "./lib/beeminder";
-import dial from "./lib/dial";
+import dial from "../../lib/dial";
 
 export default async function doCron(): Promise<void> {
   const users = await getUsers();

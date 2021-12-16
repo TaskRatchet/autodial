@@ -1,7 +1,7 @@
 import dial from "./dial";
 import * as time from "./time";
 import {describe, it} from "@jest/globals";
-import {e, makeGoal} from "./test/helpers";
+import {e, makeGoal} from "../functions/cron/lib/test/helpers";
 import {parseDate} from "./time";
 
 const setNow = (yyyy: number, m: number, d: number): number => {
