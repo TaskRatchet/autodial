@@ -41,9 +41,9 @@ export async function updateGoal(
   const options = {
     method: "put",
     body: JSON.stringify({
-      ...fields,
+      // ...fields,
       yaxis: "TESTING AUTODIAL", // TODO
-      roadall: JSON.stringify(fields.roadall),
+      // roadall: JSON.stringify(fields.roadall),
     }),
   };
   const response = await fetch(`${url}?access_token=${token}`, options);
