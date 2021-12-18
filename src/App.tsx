@@ -15,13 +15,14 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import {getGoals} from "./lib/beeminder";
+import {getGoalsVerbose} from "shared-library";
 import Alert from "@material-ui/lab/Alert";
 import {useQuery, UseQueryResult} from "react-query";
+import GoalRow from "./component/molecule/goalRow";
 
 init();
 
-type Goals = Goal[]
+type Goals = GoalVerbose[]
 type GoalsError = Error
 
 function App(): JSX.Element {
@@ -41,13 +42,14 @@ function App(): JSX.Element {
     isLoading,
   }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
     if (!username || !accessToken) return;
-    const goals = await getGoals(username, accessToken);
+    const goals = await getGoalsVerbose(username, accessToken);
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
     });
     return goals.filter((g: Goal) => !!g.fineprint?.includes("#autodial"));
   });
-  const isAuthenticated = username && !disable && !isLoading && !isError;
+  const isAuthenticated = username && accessToken && !disable && !isLoading &&
+    !isError;
 
   useEffect(() => {
     if (!username || !accessToken || isLoading || isError) return;
@@ -149,34 +151,18 @@ function App(): JSX.Element {
               <TableCell>#autodialMin=?</TableCell>
               <TableCell>#autodialMax=?</TableCell>
               <TableCell>Current Rate</TableCell>
-              <TableCell>New Rate</TableCell>
+              <TableCell>Historical Average</TableCell>
               <TableCell>Days Count</TableCell>
               <TableCell>Datapoints Count</TableCell>
               <TableCell>Datapoints Sum</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {goals.map((g) => {
-              const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
-              const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
-              const min = minMatches ?
-                      `${minMatches[1]}/${g.runits}` : "Negative Infinity";
-              const max = maxMatches ?
-                      `${maxMatches[1]}/${g.runits}` : "Positive Infinity";
-              return <TableRow key={g.slug}>
-                <TableCell><a
-                  href={`https://beeminder.com/${username}/${g.slug}`}
-                  target={"_blank"}
-                  rel={"nofollow noreferrer"}>{g.slug}</a></TableCell>
-                <TableCell>{min}</TableCell>
-                <TableCell>{max}</TableCell>
-                <TableCell>{g.rate}/{g.runits}</TableCell>
-                <TableCell>TODO</TableCell>
-                <TableCell>TODO</TableCell>
-                <TableCell>TODO</TableCell>
-                <TableCell>TODO</TableCell>
-              </TableRow>;
-            })}
+            {goals.map((g) => <GoalRow
+              key={g.slug}
+              goal={g}
+              username={username}
+            /> )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -240,6 +226,7 @@ function App(): JSX.Element {
         permitting code from their codebase to
         be copied into this project.
       </li>
+      <li><a href="https://icons8.com/">Icons8</a> for providing the favicon.</li>
     </ul>
     <p><a href="https://github.com/narthur/autodial">This open-source
       tool</a> is maintained by <a

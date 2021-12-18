@@ -8,30 +8,45 @@ import App from "./App";
 
 import {getParams} from "./lib/browser";
 import {deleteUser, setUserAuth} from "./lib/database";
-import {getGoals} from "./lib/beeminder";
+import {getGoals, getGoal, getGoalsVerbose, setNow} from "shared-library";
 import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
+import {GoalInput, makeGoal} from "../functions/cron/lib/test/helpers";
+import {parseDate} from "shared-library/time";
 
 jest.mock("./lib/browser");
 jest.mock("./lib/database");
 jest.mock("./lib/firebase");
-jest.mock("./lib/beeminder");
+jest.mock("../shared/beeminder");
 
 const mockGetParams = getParams as jest.Mock;
 const mockSetUserAuth = setUserAuth as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
+const mockGetGoalsVerbose = getGoalsVerbose as jest.Mock;
+const mockGetGoal = getGoal as jest.Mock;
 
 function loadParams(params: string) {
   mockGetParams.mockReturnValue(new URLSearchParams(params));
 }
 
-function loadGoals(goals: Partial<Goal>[]) {
-  const goals_ = goals.map((g, i) => ({
+function loadGoals(goals: GoalInput[]) {
+  const goals_: Partial<GoalVerbose>[] = goals.map((g, i) => makeGoal({
     slug: `slug_${i}`,
     runits: "d",
     fineprint: "#autodial",
+    aggday: "sum",
     ...g,
   }));
 
+  mockGetGoal.mockImplementation((slug: string) => {
+    return {
+      datapoints: [],
+      ...goals_.find((g) => g.slug === slug),
+    };
+  });
+  mockGetGoalsVerbose.mockResolvedValue(goals_.map((g) => ({
+    datapoints: [],
+    ...g,
+  })));
   mockGetGoals.mockResolvedValue(goals_);
 }
 
@@ -129,13 +144,13 @@ describe("Home page", () => {
     await r(<App/>);
 
     await waitFor(() => {
-      expect(getGoals).toBeCalledWith("alice", "abc123");
+      expect(getGoalsVerbose).toBeCalledWith("alice", "abc123");
     });
   });
 
   it("displays Beeminder error message", async () => {
     await withMutedReactQueryLogger(async () => {
-      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText} = await r(<App/>);
 
@@ -147,7 +162,7 @@ describe("Home page", () => {
 
   it("does not set user auth if bm error", async () => {
     await withMutedReactQueryLogger(async () => {
-      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText} = await r(<App/>);
 
@@ -169,7 +184,7 @@ describe("Home page", () => {
 
   it("does not display beeminder username if auth failure", async () => {
     await withMutedReactQueryLogger(async () => {
-      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText, queryByText} = await r(<App/>);
 
@@ -217,7 +232,7 @@ describe("Home page", () => {
 
   it("displays min value", async () => {
     loadGoals([
-      {slug: "the_slug", fineprint: "#autodialMin=1"},
+      {slug: "the_slug", rate: 3, fineprint: "#autodialMin=1"},
     ]);
 
     const {getByText} = await r(<App/>);
@@ -253,7 +268,7 @@ describe("Home page", () => {
 
   it("displays positive value", async () => {
     loadGoals([
-      {slug: "the_slug", fineprint: "#autodialMax=1"},
+      {slug: "the_slug", rate: 3, fineprint: "#autodialMax=1"},
     ]);
 
     const {getByText} = await r(<App/>);
@@ -298,7 +313,7 @@ describe("Home page", () => {
       expect(getByText("Disable Autodialer").parentElement)
           .toHaveAttribute(
               "href",
-              "/?access_token=abc123&username=alice&disable=true"
+              "/?access_token=abc123&username=alice&disable=true",
           );
     });
   });
@@ -310,7 +325,7 @@ describe("Home page", () => {
 
     await waitFor(() => {
       expect(getByText(
-          "The autodialer has been disabled for Beeminder user alice"
+          "The autodialer has been disabled for Beeminder user alice",
       )).toBeInTheDocument();
     });
 
@@ -334,7 +349,7 @@ describe("Home page", () => {
 
     await waitFor(() => {
       expect(getByText(
-          "The autodialer has been disabled for Beeminder user alice"
+          "The autodialer has been disabled for Beeminder user alice",
       )).toBeInTheDocument();
     });
 
@@ -345,14 +360,14 @@ describe("Home page", () => {
     await withMutedReactQueryLogger(async () => {
       loadParams("?access_token=abc123&username=alice&disable=true");
 
-      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText} = await r(<App/>);
 
       await waitFor(() => {
         expect(getByText(
             "Unable to disable autodialer for Beeminder user alice: " +
-          "Beeminder authentication failed."
+          "Beeminder authentication failed.",
         )).toBeInTheDocument();
       });
     });
@@ -362,23 +377,23 @@ describe("Home page", () => {
     await withMutedReactQueryLogger(async () => {
       loadParams("?access_token=abc123&username=alice&disable=true");
 
-      mockGetGoals.mockRejectedValue(new Error("the_error_message"));
+      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
 
       const {getByText, queryByText} = await r(<App/>);
 
       expect(queryByText(
-          "The autodialer has been disabled for Beeminder user alice"
+          "The autodialer has been disabled for Beeminder user alice",
       )).not.toBeInTheDocument();
 
       await waitFor(() => {
         expect(getByText(
             "Unable to disable autodialer for Beeminder user alice: " +
-          "Beeminder authentication failed."
+          "Beeminder authentication failed.",
         )).toBeInTheDocument();
       });
 
       expect(queryByText(
-          "The autodialer has been disabled for Beeminder user alice"
+          "The autodialer has been disabled for Beeminder user alice",
       )).not.toBeInTheDocument();
     });
   });
@@ -433,6 +448,61 @@ describe("Home page", () => {
 
     await waitFor(() => {
       expect(getByText("alice")).toHaveAttribute("href", "https://beeminder.com/alice");
+    });
+  });
+
+  it("includes historical average", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([{
+      slug: "the_slug",
+      rate: 3,
+      roadall: [
+        [parseDate("20090210"), 0, null],
+        [parseDate("20090315"), null, 1],
+      ],
+      datapoints: [
+        {value: 0, daystamp: "20090210"},
+        {
+          value: 30,
+          daystamp: "20090213",
+        },
+      ],
+    },
+    ]);
+
+    const {getByText} = await r(<App/>);
+
+    await waitFor(() => {
+      expect(getByText("1/d")).toBeInTheDocument();
+    });
+  });
+
+  it("reports average in terms of runits", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([{
+      slug: "the_slug",
+      rate: 3,
+      runits: "m",
+      roadall: [
+        [parseDate("20090210"), 0, null],
+        [parseDate("20090315"), null, 1],
+      ],
+      datapoints: [
+        {value: 0, daystamp: "20090210"},
+        {
+          value: 30,
+          daystamp: "20090213",
+        },
+      ],
+    },
+    ]);
+
+    const {getByText} = await r(<App/>);
+
+    await waitFor(() => {
+      expect(getByText("30.44/m")).toBeInTheDocument();
     });
   });
 });

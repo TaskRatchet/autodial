@@ -1,10 +1,18 @@
 import fetch from "node-fetch";
 import axios from "axios";
 
+export async function getGoalsVerbose(
+    user: string,
+    token: string,
+): Promise<GoalVerbose[]> {
+  const goals = await getGoals(user, token);
+  return Promise.all(goals.map((g) => getGoal(user, token, g.slug)));
+}
+
 export async function getGoals(
     user: string,
     token: string,
-): Promise<Omit<Goal, "datapoints">[]> {
+): Promise<Goal[]> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals.json?access_token=${token}&filter=frontburner`;
   const response = await fetch(url);
   const data = await response.json();
@@ -20,7 +28,7 @@ export async function getGoal(
     user: string,
     token: string,
     slug: string,
-): Promise<Goal> {
+): Promise<GoalVerbose> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json?access_token=${token}&datapoints=true`;
   const response = await fetch(url);
   const data = await response.json();
@@ -48,7 +56,8 @@ export async function updateGoal(
   console.log({user, token, slug, url, putData, fields, response});
 
   if (response.status !== 200) {
-    const msg = `Fetch error: ${response.status} - ${response.statusText} - ${url}`;
+    const msg =
+      `Fetch error: ${response.status} - ${response.statusText} - ${url}`;
     throw new Error(msg);
   }
 

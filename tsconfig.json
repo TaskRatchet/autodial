@@ -18,13 +18,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "."
   },
   "include": [
     "src",
     "functions",
-    "lib",
+    "shared",
     "jest.config.js",
-    "types.d.ts",
+    "types.d.ts"
   ]
 }
