@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import "./App.css";
 import {deleteUser, setUserAuth} from "./lib/database";
 import {getParams} from "./lib/browser";
@@ -6,7 +6,7 @@ import {getParams} from "./lib/browser";
 import {init} from "./lib/firebase";
 import Container from "@material-ui/core/Container";
 import {
-  Button, Color,
+  Button,
   Paper,
   Table,
   TableBody,
