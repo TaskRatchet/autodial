@@ -34,6 +34,10 @@ function loadGoals(goals: GoalInput[]) {
     runits: "d",
     fineprint: "#autodial",
     aggday: "sum",
+    roadall: [
+      [parseDate("20090210"), 0, null],
+      [parseDate("20090315"), null, 1],
+    ],
     ...g,
   }));
 

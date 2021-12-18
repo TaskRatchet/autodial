@@ -1,7 +1,9 @@
 import {TableCell, TableRow} from "@material-ui/core";
 import getRollingAverageRate from "shared-library/getRollingAverageRate";
-import React, {useEffect} from "react";
+import React from "react";
 import {UNIT_SECONDS} from "shared-library/constants";
+import getGoalAge from "shared-library/getGoalAge";
+import moment from "moment";
 
 interface Props {
   goal: GoalVerbose,
@@ -21,8 +23,9 @@ export default function GoalRow(
   const max = maxMatches ?
     `${maxMatches[1]}/${goal.runits}` : "Positive Infinity";
   const arps = getRollingAverageRate(goal);
-  const ratePerUnit = arps * UNIT_SECONDS[goal.runits];
-  const formattedRate = ratePerUnit.toFixed(2).replace(/\.0+$/, "");
+  const arpn = arps * UNIT_SECONDS[goal.runits];
+  const formattedAverage = arpn.toFixed(2).replace(/\.0+$/, "");
+  const formattedRate = goal.rate.toFixed(2).replace(/\.0+$/, "");
   return <TableRow>
     <TableCell><a
       href={`https://beeminder.com/${username}/${goal.slug}`}
@@ -30,10 +33,8 @@ export default function GoalRow(
       rel={"nofollow noreferrer"}>{goal.slug}</a></TableCell>
     <TableCell>{min}</TableCell>
     <TableCell>{max}</TableCell>
-    <TableCell>{goal.rate}/{goal.runits}</TableCell>
     <TableCell>{formattedRate}/{goal.runits}</TableCell>
-    <TableCell>TODO</TableCell>
-    <TableCell>TODO</TableCell>
-    <TableCell>TODO</TableCell>
+    <TableCell>{formattedAverage}/{goal.runits}</TableCell>
+    <TableCell>{moment.duration(getGoalAge(goal) * 1000).humanize()}</TableCell>
   </TableRow>;
 }

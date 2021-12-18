@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 import {deleteUser, setUserAuth} from "./lib/database";
 import {getParams} from "./lib/browser";
@@ -6,7 +6,7 @@ import {getParams} from "./lib/browser";
 import {init} from "./lib/firebase";
 import Container from "@material-ui/core/Container";
 import {
-  Button,
+  Button, Color,
   Paper,
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import {getGoalsVerbose} from "shared-library";
 import Alert from "@material-ui/lab/Alert";
-import {useQuery, UseQueryResult} from "react-query";
+import {useMutation, useQuery, UseQueryResult} from "react-query";
 import GoalRow from "./component/molecule/goalRow";
 
 init();
@@ -35,6 +35,7 @@ function App(): JSX.Element {
   const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
   const disableUrl =
     `/?access_token=${accessToken}&username=${username}&disable=true`;
+
   const {
     data: goals,
     error,
@@ -48,6 +49,23 @@ function App(): JSX.Element {
     });
     return goals.filter((g: Goal) => !!g.fineprint?.includes("#autodial"));
   });
+
+  const {
+    mutate: forceRun,
+    status: forceStatus,
+  } = useMutation("force", async () => {
+    const result = await fetch("/.netlify/functions/cron");
+    console.log({result});
+    return result;
+  });
+
+  const forceMap: { label: string} = {
+    "idle": {label: "Force Run"},
+    "loading": {label: "Running..."},
+    "error": {label: "Error"},
+    "success": {label: "Success"},
+  }[forceStatus];
+
   const isAuthenticated = username && accessToken && !disable && !isLoading &&
     !isError;
 
@@ -151,10 +169,8 @@ function App(): JSX.Element {
               <TableCell>#autodialMin=?</TableCell>
               <TableCell>#autodialMax=?</TableCell>
               <TableCell>Current Rate</TableCell>
-              <TableCell>Historical Average</TableCell>
-              <TableCell>Days Count</TableCell>
-              <TableCell>Datapoints Count</TableCell>
-              <TableCell>Datapoints Sum</TableCell>
+              <TableCell>30d Unit Average</TableCell>
+              <TableCell>Goal Age</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -162,7 +178,7 @@ function App(): JSX.Element {
               key={g.slug}
               goal={g}
               username={username}
-            /> )}
+            />)}
           </TableBody>
         </Table>
       </TableContainer>
@@ -180,12 +196,8 @@ function App(): JSX.Element {
       autodialer to run:
     </p>
 
-    {/* TODO: Display run result--success or error */}
-    <Button variant={"outlined"} color={"secondary"} onClick={async () => {
-      const result = await fetch("/.netlify/functions/cron");
-      console.log({result});
-    }
-    }>Force Run</Button>
+    <Button variant={"outlined"} color={"secondary"}
+      onClick={() => forceRun()}>{forceMap.label}</Button>
 
     <h2>Known Issues & Limitations</h2>
     <ul>
@@ -226,7 +238,8 @@ function App(): JSX.Element {
         permitting code from their codebase to
         be copied into this project.
       </li>
-      <li><a href="https://icons8.com/">Icons8</a> for providing the favicon.</li>
+      <li><a href="https://icons8.com/">Icons8</a> for providing the favicon.
+      </li>
     </ul>
     <p><a href="https://github.com/narthur/autodial">This open-source
       tool</a> is maintained by <a
