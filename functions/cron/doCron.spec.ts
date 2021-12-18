@@ -1,13 +1,13 @@
 import doCron from "./doCron";
 import {getUsers} from "./lib/database";
-import {getGoal, getGoals, updateGoal} from "./lib/beeminder";
+import {getGoal, getGoals, updateGoal} from "shared-library";
 import {makeGoal} from "./lib/test/helpers";
-import dial from "../../lib/dial";
+import dial from "../../shared/dial";
 
 jest.mock("firebase-functions");
 jest.mock("./lib/database");
-jest.mock("./lib/beeminder");
-jest.mock("../../lib/dial");
+jest.mock("../../shared/beeminder");
+jest.mock("../../shared/dial");
 
 const mockGetUsers = getUsers as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
@@ -117,3 +117,4 @@ describe("function", () => {
 // persists changes
 // log dial exceptions
 // log beeminder exceptions
+// weekends off?

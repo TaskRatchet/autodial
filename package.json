@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.4.3",
     "@material-ui/core": "^4.11.4",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@netlify/functions": "^0.7.2",
@@ -24,12 +25,14 @@
     "react-dom": "^17.0.2",
     "react-query": "^3.17.0",
     "react-scripts": "4.0.3",
+    "shared-library": "file:shared",
+    "ts-loader": "8.2.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "netlify": "netlify dev --functions ./functions",
-    "build": "react-scripts build",
+    "build": "craco build",
     "test": "npx jest",
     "test:watch": "npx jest --watch",
     "eject": "react-scripts eject",
@@ -54,8 +57,12 @@
         "preset": "ts-jest",
         "testEnvironment": "node",
         "resetMocks": true,
-        "roots": ["<rootDir>/functions/"],
-        "testPathIgnorePatterns": ["<rootDir>/src/"]
+        "roots": [
+          "<rootDir>/functions/"
+        ],
+        "testPathIgnorePatterns": [
+          "<rootDir>/src/"
+        ]
       }
     ]
   },

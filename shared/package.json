@@ -1,0 +1,11 @@
+{
+  "name": "shared-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no ../functions/cron/lib/test specified\\\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

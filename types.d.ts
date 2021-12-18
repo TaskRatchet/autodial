@@ -37,9 +37,12 @@ type Goal = {
   runits: "h" | "d" | "w" | "m" | "y",
   roadall: Roadall,
   fullroad: Fullroad
-  datapoints: Datapoint[]
   fineprint: string | null
 }
+
+type GoalVerbose = {
+  datapoints: Datapoint[]
+} & Goal
 
 type User = {
   "beeminder_token": string,

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 import {deleteUser, setUserAuth} from "./lib/database";
 import {getParams} from "./lib/browser";
@@ -6,7 +6,7 @@ import {getParams} from "./lib/browser";
 import {init} from "./lib/firebase";
 import Container from "@material-ui/core/Container";
 import {
-  Button,
+  Button, Color,
   Paper,
   Table,
   TableBody,
@@ -15,13 +15,14 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import {getGoals} from "./lib/beeminder";
+import {getGoalsVerbose} from "shared-library";
 import Alert from "@material-ui/lab/Alert";
-import {useQuery, UseQueryResult} from "react-query";
+import {useMutation, useQuery, UseQueryResult} from "react-query";
+import GoalRow from "./component/molecule/goalRow";
 
 init();
 
-type Goals = Goal[]
+type Goals = GoalVerbose[]
 type GoalsError = Error
 
 function App(): JSX.Element {
@@ -34,6 +35,7 @@ function App(): JSX.Element {
   const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
   const disableUrl =
     `/?access_token=${accessToken}&username=${username}&disable=true`;
+
   const {
     data: goals,
     error,
@@ -41,13 +43,31 @@ function App(): JSX.Element {
     isLoading,
   }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
     if (!username || !accessToken) return;
-    const goals = await getGoals(username, accessToken);
+    const goals = await getGoalsVerbose(username, accessToken);
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
     });
     return goals.filter((g: Goal) => !!g.fineprint?.includes("#autodial"));
   });
-  const isAuthenticated = username && !disable && !isLoading && !isError;
+
+  const {
+    mutate: forceRun,
+    status: forceStatus,
+  } = useMutation("force", async () => {
+    const result = await fetch("/.netlify/functions/cron");
+    console.log({result});
+    return result;
+  });
+
+  const forceMap: { label: string} = {
+    "idle": {label: "Force Run"},
+    "loading": {label: "Running..."},
+    "error": {label: "Error"},
+    "success": {label: "Success"},
+  }[forceStatus];
+
+  const isAuthenticated = username && accessToken && !disable && !isLoading &&
+    !isError;
 
   useEffect(() => {
     if (!username || !accessToken || isLoading || isError) return;
@@ -149,34 +169,16 @@ function App(): JSX.Element {
               <TableCell>#autodialMin=?</TableCell>
               <TableCell>#autodialMax=?</TableCell>
               <TableCell>Current Rate</TableCell>
-              <TableCell>New Rate</TableCell>
-              <TableCell>Days Count</TableCell>
-              <TableCell>Datapoints Count</TableCell>
-              <TableCell>Datapoints Sum</TableCell>
+              <TableCell>30d Unit Average</TableCell>
+              <TableCell>Goal Age</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {goals.map((g) => {
-              const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
-              const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
-              const min = minMatches ?
-                      `${minMatches[1]}/${g.runits}` : "Negative Infinity";
-              const max = maxMatches ?
-                      `${maxMatches[1]}/${g.runits}` : "Positive Infinity";
-              return <TableRow key={g.slug}>
-                <TableCell><a
-                  href={`https://beeminder.com/${username}/${g.slug}`}
-                  target={"_blank"}
-                  rel={"nofollow noreferrer"}>{g.slug}</a></TableCell>
-                <TableCell>{min}</TableCell>
-                <TableCell>{max}</TableCell>
-                <TableCell>{g.rate}/{g.runits}</TableCell>
-                <TableCell>TODO</TableCell>
-                <TableCell>TODO</TableCell>
-                <TableCell>TODO</TableCell>
-                <TableCell>TODO</TableCell>
-              </TableRow>;
-            })}
+            {goals.map((g) => <GoalRow
+              key={g.slug}
+              goal={g}
+              username={username}
+            />)}
           </TableBody>
         </Table>
       </TableContainer>
@@ -194,12 +196,8 @@ function App(): JSX.Element {
       autodialer to run:
     </p>
 
-    {/* TODO: Display run result--success or error */}
-    <Button variant={"outlined"} color={"secondary"} onClick={async () => {
-      const result = await fetch("/.netlify/functions/cron");
-      console.log({result});
-    }
-    }>Force Run</Button>
+    <Button variant={"outlined"} color={"secondary"}
+      onClick={() => forceRun()}>{forceMap.label}</Button>
 
     <h2>Known Issues & Limitations</h2>
     <ul>
@@ -239,6 +237,8 @@ function App(): JSX.Element {
       <li><a href="https://www.beeminder.com/home">The Beeminder company</a> for
         permitting code from their codebase to
         be copied into this project.
+      </li>
+      <li><a href="https://icons8.com/">Icons8</a> for providing the favicon.
       </li>
     </ul>
     <p><a href="https://github.com/narthur/autodial">This open-source
