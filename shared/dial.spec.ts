@@ -534,6 +534,5 @@ describe("dial function", () => {
 });
 
 // TODO:
-// does not add akrasia row if end segment does not intersect akrasia horizon
-// does not dial goal if end of road is within akrasia horizon
 // reject odom goals
+// weekends off?
