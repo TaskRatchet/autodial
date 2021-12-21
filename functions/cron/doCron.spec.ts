@@ -8,6 +8,7 @@ jest.mock("firebase-functions");
 jest.mock("./lib/database");
 jest.mock("../../shared/beeminder");
 jest.mock("../../shared/dial");
+jest.mock("./lib/log");
 
 const mockGetUsers = getUsers as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
@@ -109,6 +110,19 @@ describe("function", () => {
     await doCron();
 
     expect(updateGoal).not.toBeCalled();
+  });
+
+  it("handles getGoal 404s", async () => {
+    const g = makeGoal({
+      fineprint: "#autodial",
+    });
+
+    mockGetGoals.mockResolvedValue([g, g]);
+    mockGetGoal.mockRejectedValue("the_error");
+
+    await doCron();
+
+    expect(mockGetGoal).toBeCalledTimes(2);
   });
 });
 
