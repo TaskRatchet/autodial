@@ -1,6 +1,7 @@
 import {getUsers} from "./lib/database";
 import {getGoal, getGoals, updateGoal} from "shared-library";
 import dial from "../../shared/dial";
+import log from "./lib/log";
 
 export default async function doCron(): Promise<void> {
   const users = await getUsers();
@@ -17,13 +18,19 @@ export default async function doCron(): Promise<void> {
       const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
       const min = minMatches ? parseInt(minMatches[1]) : undefined;
       const max = maxMatches ? parseInt(maxMatches[1]) : undefined;
-      const fullGoal = await getGoal(beeminder_user, beeminder_token, g.slug);
 
-      const roadall = dial(fullGoal, {min, max});
+      try {
+        const fullGoal = await getGoal(beeminder_user, beeminder_token, g.slug);
 
-      if (!roadall) return;
+        const roadall = dial(fullGoal, {min, max});
 
-      await updateGoal(beeminder_user, beeminder_token, g.slug, {roadall});
+        if (!roadall) return;
+
+        await updateGoal(beeminder_user, beeminder_token, g.slug, {roadall});
+      } catch (e) {
+        log({m: "failed to dial goal", g, e});
+        return;
+      }
     }));
   }));
 }

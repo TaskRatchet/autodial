@@ -41,6 +41,7 @@ function App(): JSX.Element {
     error,
     isError,
     isLoading,
+    refetch,
   }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
     if (!username || !accessToken) return;
     const goals = await getGoalsVerbose(username, accessToken);
@@ -56,6 +57,7 @@ function App(): JSX.Element {
   } = useMutation("force", async () => {
     const result = await fetch("/.netlify/functions/cron");
     console.log({result});
+    await refetch();
     return result;
   });
 

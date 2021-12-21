@@ -6,7 +6,17 @@ export async function getGoalsVerbose(
     token: string,
 ): Promise<GoalVerbose[]> {
   const goals = await getGoals(user, token);
-  return Promise.all(goals.map((g) => getGoal(user, token, g.slug)));
+  const results = await Promise.allSettled(goals.map((g) => {
+    return getGoal(user, token, g.slug);
+  }));
+  return results.flatMap((r) => {
+    if (r.status === "fulfilled") {
+      return [r.value];
+    } else {
+      console.log(r);
+      return [];
+    }
+  });
 }
 
 export async function getGoals(
@@ -52,8 +62,6 @@ export async function updateGoal(
     roadall: JSON.stringify(fields.roadall),
   };
   const response = await axios.put(`${url}?access_token=${token}`, putData);
-
-  console.log({user, token, slug, url, putData, fields, response});
 
   if (response.status !== 200) {
     const msg =
