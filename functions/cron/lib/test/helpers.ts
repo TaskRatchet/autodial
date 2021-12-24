@@ -3,6 +3,7 @@ import Matchers = jest.Matchers;
 import fillroadall from "shared-library/fillroadall";
 import {UNIT_SECONDS} from "shared-library/constants";
 import {parseDate} from "shared-library/time";
+import fuzzyEquals from "shared-library/fuzzyEquals";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;
@@ -10,7 +11,7 @@ interface MyMatchers<R> extends Matchers<R> {
 
 expect.extend({
   toFuzzyEqual(received: number, expected: number) {
-    const pass = Math.abs(received - expected) <= 1e-12;
+    const pass = fuzzyEquals(expected, received);
     if (pass) {
       return {
         message: () =>

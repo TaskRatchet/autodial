@@ -105,6 +105,7 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
+      rate: 2,
       aggday: "last",
       kyoom: false,
       runits: "w",
@@ -530,6 +531,24 @@ describe("dial function", () => {
     }));
 
     e(r && r.length).toEqual(3);
+  });
+
+  it("does not dial goal if new rate ~= old rate", async () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      rate: 0.000000000000000000001,
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [parseDate("20210225"), null, 1],
+      ],
+      datapoints: [],
+    }));
+
+    expect(r).toBeFalsy();
   });
 });
 
