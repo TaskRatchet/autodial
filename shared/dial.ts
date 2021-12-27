@@ -1,7 +1,6 @@
 import {now} from "./time";
 import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
 import getRollingAverageRate from "./getRollingAverageRate";
-import getGoalAge from "./getGoalAge";
 import fuzzyEquals from "./fuzzyEquals";
 
 // Clip x to be at least a and at most b: min(b,max(a,x)). Swaps a & b if a > b.
@@ -20,8 +19,6 @@ export default function dial(
     g: GoalVerbose,
     opts: Options = {}
 ): Roadall | false {
-  if (getGoalAge(g) < SID * 30) return false;
-
   const {min = -Infinity, max = Infinity} = opts;
   const siru = UNIT_SECONDS[g.runits]; // seconds in rate units
   const arps = getRollingAverageRate(g);
