@@ -189,8 +189,7 @@ function App(): JSX.Element {
     <h3>Step 3: Use Beeminder as normal</h3>
     <p>
       Once a day at minimum, the autodialer will adjust the rates of your
-      enabled goals to equal your average for the last 30 days. Any goals with
-      less than 30 days of history will not be autodialed.
+      enabled goals to equal your average for the last 30 days.
     </p>
 
     <p>
@@ -213,9 +212,6 @@ function App(): JSX.Element {
       <li>The aggregated value of a goal's initial day is considered the
         starting value of the road and does not
         otherwise influence dialing.
-      </li>
-      <li>Goals will not be dialed until they have at least 30 days of
-        history.
       </li>
       <li>
         This tool assumes the akrasia horizon is eight days instead of seven in

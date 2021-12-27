@@ -1,5 +1,4 @@
 import dial from "./dial";
-import * as time from "./time";
 import {describe, it} from "@jest/globals";
 import {e, makeGoal} from "../functions/cron/lib/test/helpers";
 import {parseDate} from "./time";
@@ -43,7 +42,7 @@ describe("dial function", () => {
     expectEndRate(r, 0);
   });
 
-  it("does not adjust goal with less than 30d history", () => {
+  it("dials goal with less than 30d history", () => {
     setNow(2021, 1, 25);
 
     const r = dial(makeGoal({
@@ -57,7 +56,7 @@ describe("dial function", () => {
       datapoints: [{daystamp: "20210125", value: 1}],
     }));
 
-    expect(r).toBeFalsy();
+    expectFuzzyEndRate(r, 0);
   });
 
   it("dials goal with datapoint after a month", () => {
