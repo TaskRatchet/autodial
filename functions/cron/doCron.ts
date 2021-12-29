@@ -2,6 +2,7 @@ import {getUsers} from "./lib/database";
 import {getGoal, getGoals, updateGoal} from "shared-library";
 import dial from "../../shared/dial";
 import log from "./lib/log";
+import getSettings from "shared-library/getSettings";
 
 export default async function doCron(): Promise<void> {
   const users = await getUsers();
@@ -9,19 +10,12 @@ export default async function doCron(): Promise<void> {
   // eslint-disable-next-line camelcase
   await Promise.all(users.map(async ({beeminder_user, beeminder_token}) => {
     const all = await getGoals(beeminder_user, beeminder_token);
-    const toDial = all.filter((g: Omit<Goal, "datapoints">) => {
-      return g.fineprint?.includes("#autodial");
-    });
+    const toDial = all.filter((g: Goal) => getSettings(g).autodial);
 
     await Promise.all(toDial.map(async (g) => {
-      const minMatches = g.fineprint?.match(/#autodialMin=([\d.]+\d)/);
-      const maxMatches = g.fineprint?.match(/#autodialMax=([\d.]+\d)/);
-      const min = minMatches ? parseFloat(minMatches[1]) : undefined;
-      const max = maxMatches ? parseFloat(maxMatches[1]) : undefined;
-
       try {
+        const {min, max} = getSettings(g);
         const fullGoal = await getGoal(beeminder_user, beeminder_token, g.slug);
-
         const roadall = dial(fullGoal, {min, max});
 
         if (!roadall) return;

@@ -4,6 +4,7 @@ import React from "react";
 import {UNIT_SECONDS} from "shared-library/constants";
 import getGoalAge from "shared-library/getGoalAge";
 import moment from "moment";
+import getSettings from "shared-library/getSettings";
 
 interface Props {
   goal: GoalVerbose,
@@ -16,12 +17,12 @@ export default function GoalRow(
       username,
     }: Props,
 ): JSX.Element {
-  const minMatches = goal.fineprint?.match(/#autodialMin=(\d+)/);
-  const maxMatches = goal.fineprint?.match(/#autodialMax=(\d+)/);
-  const min = minMatches ?
-    `${minMatches[1]}/${goal.runits}` : "Negative Infinity";
-  const max = maxMatches ?
-    `${maxMatches[1]}/${goal.runits}` : "Positive Infinity";
+  const settings = getSettings(goal);
+  const min = settings.min === -Infinity ?
+    "Negative Infinity" : `${settings.min}/${goal.runits}`;
+  const max = settings.max === Infinity ?
+     "Positive Infinity" : `${settings.max}/${goal.runits}`;
+
   const arps = getRollingAverageRate(goal);
   const arpn = arps * UNIT_SECONDS[goal.runits];
   const formattedAverage = arpn.toFixed(2).replace(/\.0+$/, "");

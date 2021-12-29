@@ -19,6 +19,7 @@ import {getGoalsVerbose} from "shared-library";
 import Alert from "@material-ui/lab/Alert";
 import {useMutation, useQuery, UseQueryResult} from "react-query";
 import GoalRow from "./component/molecule/goalRow";
+import getSettings from "shared-library/getSettings";
 
 init();
 
@@ -48,7 +49,7 @@ function App(): JSX.Element {
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
     });
-    return goals.filter((g: Goal) => !!g.fineprint?.includes("#autodial"));
+    return goals.filter((g: Goal) => getSettings(g).autodial);
   });
 
   const {
