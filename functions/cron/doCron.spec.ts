@@ -50,26 +50,26 @@ describe("function", () => {
 
   it("supports min", async () => {
     const goal = makeGoal({
-      fineprint: "#autodialMin=1",
+      fineprint: "#autodialMin=1.5",
     });
 
     setGoal(goal);
 
     await doCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1}));
+    expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
   });
 
   it("supports max", async () => {
     const goal = makeGoal({
-      fineprint: "#autodialMax=1",
+      fineprint: "#autodialMax=1.5",
     });
 
     setGoal(goal);
 
     await doCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1}));
+    expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1.5}));
   });
 
   it("skips goals without hashtag", async () => {
