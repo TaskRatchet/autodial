@@ -14,10 +14,10 @@ export default async function doCron(): Promise<void> {
     });
 
     await Promise.all(toDial.map(async (g) => {
-      const minMatches = g.fineprint?.match(/#autodialMin=(\d+)/);
-      const maxMatches = g.fineprint?.match(/#autodialMax=(\d+)/);
-      const min = minMatches ? parseInt(minMatches[1]) : undefined;
-      const max = maxMatches ? parseInt(maxMatches[1]) : undefined;
+      const minMatches = g.fineprint?.match(/#autodialMin=([\d.]+\d)/);
+      const maxMatches = g.fineprint?.match(/#autodialMax=([\d.]+\d)/);
+      const min = minMatches ? parseFloat(minMatches[1]) : undefined;
+      const max = maxMatches ? parseFloat(maxMatches[1]) : undefined;
 
       try {
         const fullGoal = await getGoal(beeminder_user, beeminder_token, g.slug);
