@@ -236,13 +236,13 @@ describe("Home page", () => {
 
   it("displays min value", async () => {
     loadGoals([
-      {slug: "the_slug", rate: 3, fineprint: "#autodialMin=1"},
+      {slug: "the_slug", rate: 3, fineprint: "#autodialMin=1.5"},
     ]);
 
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
-      expect(getByText("1/d")).toBeInTheDocument();
+      expect(getByText("1.5/d")).toBeInTheDocument();
     });
   });
 
