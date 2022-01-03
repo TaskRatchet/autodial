@@ -1,11 +1,11 @@
 import {now, parseDate} from "./time";
 import stepify from "./stepify";
 import aggregate from "./aggregate";
-import {SID, UNIT_SECONDS} from "./constants";
+import {SID} from "./constants";
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
-function avgrate(data: Datapoint[], window: number): number {
+function avgrate(data: Datapoint[], window: number, weekendsOff: boolean): number {
   if (!data || !data.length) return 0;
 
   // convert daystamps to unixtimes
@@ -20,8 +20,9 @@ function avgrate(data: Datapoint[], window: number): number {
   const valNow = df(now());
   const valBefore = df(preTime);
   const vdelta = valNow - valBefore;
+  const divisor = weekendsOff ? window * 5 / 7 : window;
 
-  return vdelta / window;
+  return vdelta / divisor;
 }
 
 function autoSum(data: Datapoint[]): Datapoint[] {
@@ -37,5 +38,6 @@ export default function getRollingAverageRate(g: GoalVerbose): number {
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
   const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 
-  return avgrate(summed, SID * 30); // avg rate per second
+  // avg rate per second
+  return avgrate(summed, SID * 30, g.weekends_off);
 }

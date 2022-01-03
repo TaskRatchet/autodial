@@ -20,7 +20,8 @@ export default function dial(
     opts: Options = {}
 ): Roadall | false {
   const {min = -Infinity, max = Infinity} = opts;
-  const siru = UNIT_SECONDS[g.runits]; // seconds in rate units
+  // seconds in rate units
+  const siru = UNIT_SECONDS[g.runits];
   const arps = getRollingAverageRate(g);
   const newRate = clip(arps * siru, min, max);
 

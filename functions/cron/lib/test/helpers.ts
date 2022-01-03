@@ -45,6 +45,8 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
     fullroad = fillroadall(roadall, UNIT_SECONDS[runits]),
     datapoints = [],
     fineprint = "",
+    // eslint-disable-next-line camelcase
+    weekends_off = false,
   } = g;
 
   return {
@@ -60,5 +62,6 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
       ...d,
     })),
     fineprint,
+    weekends_off,
   };
 }

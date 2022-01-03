@@ -1,5 +1,10 @@
-type Roadall = [number | null, number | null, number | null][]
-type Fullroad = [number, number, number][]
+type RoadTime = number;
+type RoadGoal = number;
+type RoadRate = number;
+type SparseSegment = [RoadTime | null, RoadGoal | null, RoadRate | null]
+type DenseSegment = [RoadTime, RoadGoal, RoadRate]
+type Roadall = SparseSegment[]
+type Fullroad = DenseSegment[]
 type Datapoint = {
   daystamp: string,
   timestamp: number
@@ -38,6 +43,8 @@ type Goal = {
   roadall: Roadall,
   fullroad: Fullroad
   fineprint: string | null
+  // eslint-disable-next-line camelcase
+  weekends_off: boolean
 }
 
 type GoalVerbose = {
