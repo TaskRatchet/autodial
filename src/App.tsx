@@ -219,9 +219,6 @@ function App(): JSX.Element {
         order to avoid needing to take the
         user's timezone into account.
       </li>
-      <li>
-        Weekends Off is not accounted for when calculating average rate.
-      </li>
     </ul>
 
     <h2>Acknowledgements</h2>

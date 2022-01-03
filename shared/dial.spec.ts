@@ -82,7 +82,7 @@ describe("dial function", () => {
   // for now we'll expect this to autodial to zero when you've entered no data
   // in a month but eventually we'll want to treat that as a bug. autodialer
   // should never give you an infinitely flat road that never makes you do
-  // anything ever again.
+  // anything ever again. -- Dreev
   it("dials goal with more than a month of data", () => {
     setNow(2021, 3, 1);
 
@@ -548,6 +548,34 @@ describe("dial function", () => {
     }));
 
     expect(r).toBeFalsy();
+  });
+
+  it("takes weekends off into account", async () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      rate: 5,
+      weekends_off: true,
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [parseDate("20210325"), null, 5],
+      ],
+      datapoints: [
+        {
+          daystamp: "20210125",
+          value: 0,
+        },
+        {
+          daystamp: "20210220",
+          value: 30 * 5 / 7,
+        },
+      ],
+    }));
+
+    expectFuzzyEndRate(r, 1);
   });
 });
 
