@@ -1,4 +1,4 @@
-import {TableCell, TableRow} from "@material-ui/core";
+import {TableCell, TableRow} from "@mui/material";
 import getRollingAverageRate from "shared-library/getRollingAverageRate";
 import React from "react";
 import {UNIT_SECONDS} from "shared-library/constants";
@@ -36,6 +36,7 @@ export default function GoalRow(
     <TableCell>{max}</TableCell>
     <TableCell>{formattedRate}/{goal.runits}</TableCell>
     <TableCell>{formattedAverage}/{goal.runits}</TableCell>
+    <TableCell>{goal.weekends_off ? "yes" : "no"}</TableCell>
     <TableCell>{moment.duration(getGoalAge(goal) * 1000).humanize()}</TableCell>
   </TableRow>;
 }
