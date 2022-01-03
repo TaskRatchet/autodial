@@ -4,20 +4,27 @@ import {deleteUser, setUserAuth} from "./lib/database";
 import {getParams} from "./lib/browser";
 
 import {init} from "./lib/firebase";
-import Container from "@material-ui/core/Container";
 import {
-  Button,
+  Alert,
+  Button, LinearProgress,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  Container,
   TableHead,
   TableRow,
-} from "@material-ui/core";
+
+} from "@mui/material";
+import {LoadingButton} from "@mui/lab";
 import {getGoalsVerbose} from "shared-library";
-import Alert from "@material-ui/lab/Alert";
-import {useMutation, useQuery, UseQueryResult} from "react-query";
+import {
+  useIsFetching,
+  useMutation,
+  useQuery,
+  UseQueryResult,
+} from "react-query";
 import GoalRow from "./component/molecule/goalRow";
 import getSettings from "shared-library/getSettings";
 
@@ -36,6 +43,7 @@ function App(): JSX.Element {
   const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
   const disableUrl =
     `/?access_token=${accessToken}&username=${username}&disable=true`;
+  const isFetching = useIsFetching();
 
   const {
     data: goals,
@@ -55,6 +63,7 @@ function App(): JSX.Element {
   const {
     mutate: forceRun,
     status: forceStatus,
+    isLoading: forceIsLoading,
   } = useMutation("force", async () => {
     const result = await fetch("/.netlify/functions/cron");
     console.log({result});
@@ -62,7 +71,7 @@ function App(): JSX.Element {
     return result;
   });
 
-  const forceMap: { label: string} = {
+  const forceMap: { label: string } = {
     "idle": {label: "Force Run"},
     "loading": {label: "Running..."},
     "error": {label: "Error"},
@@ -81,7 +90,7 @@ function App(): JSX.Element {
       setUserAuth(username, accessToken);
     }
   },
-  [username, accessToken, isLoading, isError, disable]);
+  [username, accessToken, isLoading, isError]);
 
   return <Container className={"App"}>
     <h1>Beeminder Autodialer</h1>
@@ -114,12 +123,11 @@ function App(): JSX.Element {
     <Alert severity="success">The autodialer has been disabled for Beeminder
         user {username}</Alert>}
 
-    {isLoading && <p>loading...</p>}
-
-    {!isAuthenticated && !isLoading && <p>
-      <Button variant={"contained"} color={"primary"} href={enableUrl}>Enable
-            Autodialer</Button>
-    </p>}
+    {!isAuthenticated &&
+    <LoadingButton variant={"contained"} color={"primary"} href={enableUrl}
+      loading={isLoading}>Enable
+        Autodialer</LoadingButton>
+    }
 
     {isAuthenticated && <>
       <p>Connected Beeminder user: <strong><a
@@ -132,6 +140,7 @@ function App(): JSX.Element {
     <h3>Step 2: Configure specific goals to use the autodialer</h3>
     <p>Add one or more of the following three tags to the fineprint of the goals
       you wish to autodial:</p>
+
     <TableContainer component={Paper} variant="outlined">
       <Table size={"small"}>
         <TableHead>
@@ -164,6 +173,8 @@ function App(): JSX.Element {
     {isAuthenticated && goals && <>
       <p>Here are your goals for which autodialing is enabled:</p>
 
+      {isFetching ? <LinearProgress/> : null}
+
       <TableContainer component={Paper} variant="outlined">
         <Table size={"small"}>
           <TableHead>
@@ -173,6 +184,7 @@ function App(): JSX.Element {
               <TableCell>#autodialMax=?</TableCell>
               <TableCell>Current Rate</TableCell>
               <TableCell>30d Unit Average</TableCell>
+              <TableCell>Weekends Off</TableCell>
               <TableCell>Goal Age</TableCell>
             </TableRow>
           </TableHead>
@@ -198,8 +210,9 @@ function App(): JSX.Element {
       autodialer to run:
     </p>
 
-    <Button variant={"outlined"} color={"secondary"}
-      onClick={() => forceRun()}>{forceMap.label}</Button>
+    <LoadingButton variant={"outlined"} color={"secondary"}
+      onClick={() => forceRun()}
+      loading={forceIsLoading}>{forceMap.label}</LoadingButton>
 
     <h2>Known Issues & Limitations</h2>
     <ul>

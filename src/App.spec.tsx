@@ -8,7 +8,7 @@ import App from "./App";
 
 import {getParams} from "./lib/browser";
 import {deleteUser, setUserAuth} from "./lib/database";
-import {getGoals, getGoal, getGoalsVerbose, setNow} from "shared-library";
+import {getGoal, getGoals, getGoalsVerbose, setNow} from "shared-library";
 import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
 import {GoalInput, makeGoal} from "../functions/cron/lib/test/helpers";
 import {parseDate} from "shared-library/time";
@@ -78,10 +78,7 @@ describe("Home page", () => {
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
-      const link = getByText("Enable Autodialer")
-          .parentElement as HTMLLinkElement;
-
-      expect(link.href).toContain("https://www.beeminder.com/apps/authorize");
+      expect(getByText("Enable Autodialer")).toHaveAttribute("href", expect.stringContaining("https://www.beeminder.com/apps/authorize"));
     });
   });
 
@@ -105,10 +102,8 @@ describe("Home page", () => {
       const {getByText} = await r(<App/>);
 
       await waitFor(() => {
-        const link = getByText("Enable Autodialer")
-            .parentElement as HTMLLinkElement;
-
-        expect(link.href).toContain("the_client_id");
+        expect(getByText("Enable Autodialer"))
+            .toHaveAttribute( "href", expect.stringContaining("the_client_id"));
       });
     });
 
@@ -120,10 +115,8 @@ describe("Home page", () => {
       const {getByText} = await r(<App/>);
 
       await waitFor(() => {
-        const link = getByText("Enable Autodialer")
-            .parentElement as HTMLLinkElement;
-
-        expect(link.href).toContain(encodeURIComponent("http://the_app_url"));
+        expect(getByText("Enable Autodialer"))
+            .toHaveAttribute("href", expect.stringContaining(encodeURIComponent("http://the_app_url")));
       });
     });
   });
@@ -314,7 +307,7 @@ describe("Home page", () => {
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
-      expect(getByText("Disable Autodialer").parentElement)
+      expect(getByText("Disable Autodialer"))
           .toHaveAttribute(
               "href",
               "/?access_token=abc123&username=alice&disable=true",
@@ -400,18 +393,6 @@ describe("Home page", () => {
           "The autodialer has been disabled for Beeminder user alice",
       )).not.toBeInTheDocument();
     });
-  });
-
-  it("displays loading indicator while loading", async () => {
-    const {getByText} = await r(<App/>);
-
-    expect(getByText("loading...")).toBeInTheDocument();
-  });
-
-  it("does not display enable button while loading", async () => {
-    const {queryByText} = await r(<App/>);
-
-    expect(queryByText("Enable Autodialer")).not.toBeInTheDocument();
   });
 
   it("does not get goals if no username", async () => {
