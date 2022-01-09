@@ -19,22 +19,29 @@ export default function dial(
     g: GoalVerbose,
     opts: Options = {}
 ): Roadall | false {
+  const t = now();
   const {min = -Infinity, max = Infinity} = opts;
   // seconds in rate units
   const siru = UNIT_SECONDS[g.runits];
+  // average rate per second
   const arps = getRollingAverageRate(g);
-  const newRate = clip(arps * siru, min, max);
+  const len = t - g.fullroad[0][0];
   const oldRate = g.mathishard[2];
+  const newRate = arps * siru;
+  const monthCompletion = Math.min(len / (SID * 30), 1);
+  const rateDiff = oldRate - newRate;
+  const modulatedRate = oldRate - (rateDiff * monthCompletion);
+  const clippedRate = clip(modulatedRate, min, max);
 
-  if (fuzzyEquals(newRate, oldRate)) return false;
+  if (fuzzyEquals(clippedRate, oldRate)) return false;
 
   const lastRow = g.roadall[g.roadall.length - 1];
   const tail = g.roadall.slice(0, -1);
-  const lastRowModified: Roadall[0] = [lastRow[0], lastRow[1], newRate];
+  const lastRowModified: Roadall[0] = [lastRow[0], lastRow[1], clippedRate];
   const fullTail = g.fullroad.slice(0, -1);
   const unixTimes = fullTail.map((r) => r[0]);
   const shouldAddBoundary = !unixTimes.some((ut) => {
-    return ut >= now() + AKRASIA_HORIZON;
+    return ut >= t + AKRASIA_HORIZON;
   });
 
   if (!shouldAddBoundary) {
@@ -46,7 +53,7 @@ export default function dial(
 
   return [
     ...tail,
-    [now() + AKRASIA_HORIZON, null, lastRow[2]],
+    [t + AKRASIA_HORIZON, null, lastRow[2]],
     lastRowModified,
   ];
 }
