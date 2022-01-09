@@ -26,7 +26,8 @@ export default function GoalRow(
   const arps = getRollingAverageRate(goal);
   const arpn = arps * UNIT_SECONDS[goal.runits];
   const formattedAverage = arpn.toFixed(2).replace(/\.0+$/, "");
-  const formattedRate = goal.rate.toFixed(2).replace(/\.0+$/, "");
+  const rate = goal.mathishard[2];
+  const formattedRate = rate.toFixed(2).replace(/\.0+$/, "");
   return <TableRow>
     <TableCell><a
       href={`https://beeminder.com/${username}/${goal.slug}`}

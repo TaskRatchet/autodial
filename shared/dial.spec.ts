@@ -104,13 +104,12 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
-      rate: 2,
       aggday: "last",
       kyoom: false,
       runits: "w",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210325"), null, 1],
+        [parseDate("20210325"), null, 2],
       ],
       datapoints: [
         {daystamp: "20210125", value: 0},
@@ -536,13 +535,12 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
-      rate: 0.000000000000000000001,
       aggday: "last",
       kyoom: false,
       runits: "d",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), null, 1],
+        [parseDate("20210225"), null, 0.000000000000000000001],
       ],
       datapoints: [],
     }));

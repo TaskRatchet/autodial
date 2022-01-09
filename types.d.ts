@@ -35,7 +35,7 @@ type Aggday =
   | "cap1"
 
 type Goal = {
-  rate: number;
+  rate: number | null;
   slug: string,
   aggday: Aggday,
   kyoom: boolean,
@@ -45,6 +45,7 @@ type Goal = {
   fineprint: string | null
   // eslint-disable-next-line camelcase
   weekends_off: boolean
+  mathishard: DenseSegment
 }
 
 type GoalVerbose = {

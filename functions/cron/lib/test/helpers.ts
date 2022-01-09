@@ -36,7 +36,7 @@ export type GoalInput = Partial<Goal>
 
 export function makeGoal(g: GoalInput = {}): GoalVerbose {
   const {
-    rate = 1,
+    rate,
     slug = "the_slug",
     aggday = "last",
     kyoom = false,
@@ -50,7 +50,7 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
   } = g;
 
   return {
-    rate,
+    rate: rate === undefined ? fullroad[fullroad.length - 1]?.[2] : rate,
     slug,
     aggday,
     kyoom,
@@ -63,5 +63,6 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
     })),
     fineprint,
     weekends_off,
+    mathishard: fullroad[fullroad.length - 1],
   };
 }

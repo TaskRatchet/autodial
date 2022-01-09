@@ -24,8 +24,9 @@ export default function dial(
   const siru = UNIT_SECONDS[g.runits];
   const arps = getRollingAverageRate(g);
   const newRate = clip(arps * siru, min, max);
+  const oldRate = g.mathishard[2];
 
-  if (fuzzyEquals(newRate, g.rate)) return false;
+  if (fuzzyEquals(newRate, oldRate)) return false;
 
   const lastRow = g.roadall[g.roadall.length - 1];
   const tail = g.roadall.slice(0, -1);
