@@ -43,7 +43,7 @@ describe("dial function", () => {
   });
 
   it("dials goal with less than 30d history", () => {
-    setNow(2021, 1, 25);
+    setNow(2021, 2, 1);
 
     const r = dial(makeGoal({
       aggday: "last",
@@ -53,10 +53,12 @@ describe("dial function", () => {
         [parseDate("20210125"), 0, null],
         [parseDate("20210201"), null, 1],
       ],
-      datapoints: [{daystamp: "20210125", value: 1}],
+      datapoints: [
+        {daystamp: "20210125", value: 1},
+      ],
     }));
 
-    expectFuzzyEndRate(r, 0);
+    expectFuzzyEndRate(r, 1 - (7/30));
   });
 
   it("dials goal with datapoint after a month", () => {
@@ -104,13 +106,12 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
-      rate: 2,
       aggday: "last",
       kyoom: false,
       runits: "w",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210325"), null, 1],
+        [parseDate("20210325"), null, 2],
       ],
       datapoints: [
         {daystamp: "20210125", value: 0},
@@ -536,13 +537,12 @@ describe("dial function", () => {
     setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
-      rate: 0.000000000000000000001,
       aggday: "last",
       kyoom: false,
       runits: "d",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), null, 1],
+        [parseDate("20210225"), null, 0.000000000000000000001],
       ],
       datapoints: [],
     }));
@@ -576,6 +576,25 @@ describe("dial function", () => {
     }));
 
     expectFuzzyEndRate(r, 1);
+  });
+
+  it("adjusts rate slowly for new do-less goal", async () => {
+    setNow(2021, 2, 1);
+
+    const r = dial(makeGoal({
+      rate: 5,
+      weekends_off: true,
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [parseDate("20210325"), null, 5],
+      ],
+      datapoints: [],
+    }));
+
+    expectFuzzyEndRate(r, 5 - (7 / 30 * 5));
   });
 });
 

@@ -5,7 +5,11 @@ import {SID} from "./constants";
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
-function avgrate(data: Datapoint[], window: number, weekendsOff: boolean): number {
+function avgrate(
+    data: Datapoint[],
+    window: number,
+    weekendsOff: boolean
+): number {
   if (!data || !data.length) return 0;
 
   // convert daystamps to unixtimes

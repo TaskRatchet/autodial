@@ -36,7 +36,7 @@ function loadGoals(goals: GoalInput[]) {
     aggday: "sum",
     roadall: [
       [parseDate("20090210"), 0, null],
-      [parseDate("20090315"), null, 1],
+      [parseDate("20090315"), null, g.rate === undefined ? 1 : g.rate],
     ],
     ...g,
   }));
@@ -444,7 +444,7 @@ describe("Home page", () => {
       rate: 3,
       roadall: [
         [parseDate("20090210"), 0, null],
-        [parseDate("20090315"), null, 1],
+        [parseDate("20090315"), null, 3],
       ],
       datapoints: [
         {value: 0, daystamp: "20090210"},
