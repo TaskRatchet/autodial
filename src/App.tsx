@@ -232,6 +232,10 @@ function App(): JSX.Element {
         order to avoid needing to take the
         user's timezone into account.
       </li>
+      <li>
+        Logging into the autodialer in one window will log you out in all
+        other windows.
+      </li>
     </ul>
 
     <h2>Acknowledgements</h2>
