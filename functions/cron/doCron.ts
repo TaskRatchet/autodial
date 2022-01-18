@@ -13,10 +13,13 @@ export default async function doCron(): Promise<void> {
     const toDial = all.filter((g: Goal) => getSettings(g).autodial);
 
     await Promise.all(toDial.map(async (g) => {
+      log({m: `start dial goal ${g.slug}`, t: new Date()});
       try {
         const {min, max} = getSettings(g);
         const fullGoal = await getGoal(beeminder_user, beeminder_token, g.slug);
         const roadall = dial(fullGoal, {min, max});
+
+        log({m: `end dial goal ${g.slug}`, t: new Date()});
 
         if (!roadall) return;
 
