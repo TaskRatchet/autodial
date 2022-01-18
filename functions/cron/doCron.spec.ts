@@ -6,6 +6,7 @@ import dial from "../../shared/dial";
 import * as querystring from "querystring";
 import {handler} from "../dial";
 import fetch from "node-fetch";
+import doDial from "../dial/doDial";
 
 jest.mock("firebase-functions");
 jest.mock("./lib/database");
@@ -25,6 +26,8 @@ function setGoal(g: Partial<Goal>) {
   mockGetGoals.mockResolvedValue([g]);
 }
 
+const rawUrl = "https://deploy-preview-23--autodial.netlify.app/.netlify/functions/cron";
+
 describe("function", () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -34,7 +37,7 @@ describe("function", () => {
     }]);
     mockGetGoals.mockResolvedValue([]);
     mockFetch.mockImplementation(async (url: unknown): Promise<Response> => {
-      if (typeof url === "string" && url.startsWith("https://autodial.taskratchet.com/.netlify/functions/dial")) {
+      if (typeof url === "string" && url.includes(".netlify/functions/dial")) {
         const qs = querystring.parse(url.split("?")[1]);
         const h = (handler as unknown) as (e: any) => Promise<Response>;
         return h({queryStringParameters: qs});
@@ -44,7 +47,9 @@ describe("function", () => {
   });
 
   it("gets beeminder goals", async () => {
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(getGoals).toBeCalledWith("the_user", "the_token");
   });
@@ -56,7 +61,9 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(dial).toBeCalledWith(goal, expect.anything());
   });
@@ -68,7 +75,9 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
   });
@@ -80,7 +89,9 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1.5}));
   });
@@ -90,7 +101,9 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(dial).not.toBeCalled();
   });
@@ -104,7 +117,9 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(updateGoal).toBeCalledWith(
         "the_user", "the_token", "the_slug", {roadall: "the_new_road"}
@@ -120,7 +135,9 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(updateGoal).not.toBeCalled();
   });
@@ -133,9 +150,21 @@ describe("function", () => {
     mockGetGoals.mockResolvedValue([g, g]);
     mockGetGoal.mockRejectedValue("the_error");
 
-    await doCron();
+    await doCron({
+      rawUrl,
+    });
 
     expect(mockGetGoal).toBeCalledTimes(2);
+  });
+
+  it("uses raw url", async () => {
+    await doCron({
+      rawUrl,
+    });
+
+    expect(fetch).toBeCalledWith(
+        expect.stringContaining("deploy-preview-23--autodial.netlify.app")
+    );
   });
 });
 
