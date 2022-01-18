@@ -232,6 +232,10 @@ function App(): JSX.Element {
         order to avoid needing to take the
         user's timezone into account.
       </li>
+      <li>
+        The end state of a dialed goal will always be in terms of date and
+        rate, regardless of how the goal's end was originally defined.
+      </li>
     </ul>
 
     <h2>Acknowledgements</h2>

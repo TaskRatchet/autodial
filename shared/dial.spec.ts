@@ -4,12 +4,16 @@ import {e, makeGoal} from "../functions/cron/lib/test/helpers";
 import {parseDate} from "./time";
 import {setNow} from "./test/helpers";
 
-const expectEndRate = (roadall: Roadall | false, expected: number) => {
+function getRoadEnd(roadall: Roadall | false) {
   if (!roadall) {
     throw new Error("Rate not adjusted");
   }
 
-  const end = roadall[roadall.length - 1];
+  return roadall[roadall.length - 1];
+}
+
+const expectEndRate = (roadall: Roadall | false, expected: number) => {
+  const end = getRoadEnd(roadall);
 
   e(end[2]).toEqual(expected);
 };
@@ -595,6 +599,66 @@ describe("dial function", () => {
     }));
 
     expectFuzzyEndRate(r, 5 - (7 / 30 * 5));
+  });
+
+  it("does not use future datapoints when calculating rate", async () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [parseDate("20210225"), null, 0.000000000000000000001],
+      ],
+      datapoints: [
+        {
+          daystamp: "20210226",
+          value: 100000,
+        },
+      ],
+    }));
+
+    expect(r).toBeFalsy();
+  });
+
+  it("unsets end value when dialing goal with end value", async () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [parseDate("20210225"), 10, null],
+      ],
+      datapoints: [],
+    }));
+
+    const end = getRoadEnd(r);
+
+    expect(end[1]).toBeFalsy();
+  });
+
+  it("sets end date for goals without end date", async () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [null, 10, 1],
+      ],
+      datapoints: [],
+    }));
+
+    const end = getRoadEnd(r);
+
+    expect(end[0]).not.toBeFalsy();
   });
 });
 
