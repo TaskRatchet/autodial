@@ -236,6 +236,10 @@ function App(): JSX.Element {
         Logging into the autodialer in one window will log you out in all
         other windows.
       </li>
+      <li>
+        The end state of a dialed goal will always be in terms of date and
+        rate, regardless of how the goal's end was originally defined.
+      </li>
     </ul>
 
     <h2>Acknowledgements</h2>

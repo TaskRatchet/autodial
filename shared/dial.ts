@@ -35,9 +35,9 @@ export default function dial(
 
   if (fuzzyEquals(clippedRate, oldRate)) return false;
 
-  const lastRow = g.roadall[g.roadall.length - 1];
+  const lastRow = g.fullroad[g.fullroad.length - 1];
   const tail = g.roadall.slice(0, -1);
-  const lastRowModified: Roadall[0] = [lastRow[0], lastRow[1], clippedRate];
+  const lastRowModified: Roadall[0] = [lastRow[0], null, clippedRate];
   const fullTail = g.fullroad.slice(0, -1);
   const unixTimes = fullTail.map((r) => r[0]);
   const shouldAddBoundary = !unixTimes.some((ut) => {
