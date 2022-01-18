@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import {getGoal, getGoals, updateGoal} from "shared-library";
 import getSettings from "shared-library/getSettings";
-import log from "../cron/lib/log";
+import log from "./lib/log";
 import dial from "shared-library/dial";
 
 export default async function doDial(
