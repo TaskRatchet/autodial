@@ -33,14 +33,13 @@ describe("function", () => {
       "beeminder_token": "the_token",
     }]);
     mockGetGoals.mockResolvedValue([]);
-    mockFetch.mockImplementation(async (url): Promise<Response> => {
-      if (typeof url !== "string") return {} as Response;
-      if (url.startsWith("https://autodial.taskratchet.com/.netlify/functions/dial")) {
+    mockFetch.mockImplementation(async (url: unknown): Promise<Response> => {
+      if (typeof url === "string" && url.startsWith("https://autodial.taskratchet.com/.netlify/functions/dial")) {
         const qs = querystring.parse(url.split("?")[1]);
         const h = (handler as unknown) as (e: any) => Promise<Response>;
         return h({queryStringParameters: qs});
       }
-      return {} as Response;
+      throw new Error("Invalid function call");
     });
   });
 
