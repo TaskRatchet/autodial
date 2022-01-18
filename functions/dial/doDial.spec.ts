@@ -44,6 +44,8 @@ describe("function", () => {
       "beeminder_token": "the_token",
     });
 
+    await new Promise(process.nextTick);
+
     expect(dial).toBeCalledWith(goal, expect.anything());
   });
 
@@ -59,6 +61,8 @@ describe("function", () => {
       "beeminder_token": "the_token",
     });
 
+    await new Promise(process.nextTick);
+
     expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
   });
 
@@ -73,6 +77,8 @@ describe("function", () => {
       "beeminder_user": "the_user",
       "beeminder_token": "the_token",
     });
+
+    await new Promise(process.nextTick);
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1.5}));
   });
@@ -103,6 +109,8 @@ describe("function", () => {
       "beeminder_user": "the_user",
       "beeminder_token": "the_token",
     });
+
+    await new Promise(process.nextTick);
 
     expect(updateGoal).toBeCalledWith(
         "the_user", "the_token", "the_slug", {roadall: "the_new_road"}

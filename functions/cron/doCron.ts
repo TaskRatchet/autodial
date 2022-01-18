@@ -5,8 +5,8 @@ import fetch from "node-fetch";
 export default async function doCron(e: {rawUrl: string}): Promise<void> {
   const users = await getUsers();
 
-  users.forEach(({beeminder_user, beeminder_token}) => {
+  await Promise.all(users.map(async ({beeminder_user, beeminder_token}) => {
     const url = new URL(e.rawUrl);
-    fetch(`https://${url.hostname}/.netlify/functions/dial?beeminder_user=${beeminder_user}&beeminder_token=${beeminder_token}`);
-  });
+    await fetch(`https://${url.hostname}/.netlify/functions/dial?beeminder_user=${beeminder_user}&beeminder_token=${beeminder_token}`);
+  }));
 }
