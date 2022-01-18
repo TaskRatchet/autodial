@@ -25,4 +25,10 @@ module.exports = {
     "quotes": ["error", "double"],
     "require-jsdoc": 0,
   },
+  overrides: [{
+    files: "**/*.spec.+(ts|tsx)",
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  }],
 };

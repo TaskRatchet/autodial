@@ -3,17 +3,22 @@ import {getUsers} from "./lib/database";
 import {getGoal, getGoals, updateGoal} from "shared-library";
 import {makeGoal} from "./lib/test/helpers";
 import dial from "../../shared/dial";
+import * as querystring from "querystring";
+import {handler} from "../dial";
+import fetch from "node-fetch";
 
 jest.mock("firebase-functions");
 jest.mock("./lib/database");
 jest.mock("../../shared/beeminder");
 jest.mock("../../shared/dial");
 jest.mock("./lib/log");
+jest.mock("node-fetch");
 
 const mockGetUsers = getUsers as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
 const mockGetGoal = getGoal as jest.Mock;
 const mockDial = dial as jest.Mock;
+const mockFetch = (fetch as unknown) as jest.Mock;
 
 function setGoal(g: Partial<Goal>) {
   mockGetGoal.mockResolvedValue(g);
@@ -28,6 +33,15 @@ describe("function", () => {
       "beeminder_token": "the_token",
     }]);
     mockGetGoals.mockResolvedValue([]);
+    mockFetch.mockImplementation(async (url): Promise<Response> => {
+      if (typeof url !== "string") return {} as Response;
+      if (url.startsWith("https://autodial.taskratchet.com/.netlify/functions/dial")) {
+        const qs = querystring.parse(url.split("?")[1]);
+        const h = (handler as unknown) as (e: any) => Promise<Response>;
+        return h({queryStringParameters: qs});
+      }
+      return {} as Response;
+    });
   });
 
   it("gets beeminder goals", async () => {
