@@ -4,6 +4,7 @@ import fillroadall from "shared-library/fillroadall";
 import {UNIT_SECONDS} from "shared-library/constants";
 import {parseDate} from "shared-library/time";
 import fuzzyEquals from "shared-library/fuzzyEquals";
+import {Datapoint, Goal, GoalVerbose} from "shared-library";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;

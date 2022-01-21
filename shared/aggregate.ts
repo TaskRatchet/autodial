@@ -1,5 +1,6 @@
 import {sum} from "lodash";
 import {parseDate} from "./time";
+import {Aggday, Datapoint} from "./types";
 
 type DirtyData = (Datapoint | undefined)[]
 type Reducer = (values: number[]) => number | undefined

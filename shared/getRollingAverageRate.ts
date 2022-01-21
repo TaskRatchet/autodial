@@ -2,6 +2,7 @@ import {now, parseDate} from "./time";
 import stepify from "./stepify";
 import aggregate from "./aggregate";
 import {SID} from "./constants";
+import {Datapoint, GoalVerbose, UnixDatapoint} from "./types";
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.

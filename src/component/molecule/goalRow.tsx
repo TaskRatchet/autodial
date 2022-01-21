@@ -5,6 +5,7 @@ import {UNIT_SECONDS} from "shared-library/constants";
 import getGoalAge from "shared-library/getGoalAge";
 import moment from "moment";
 import getSettings from "shared-library/getSettings";
+import {GoalVerbose} from "../../../shared";
 
 interface Props {
   goal: GoalVerbose,

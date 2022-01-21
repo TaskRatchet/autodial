@@ -2,6 +2,7 @@ import {now} from "./time";
 import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
 import getRollingAverageRate from "./getRollingAverageRate";
 import fuzzyEquals from "./fuzzyEquals";
+import {GoalVerbose, Roadall} from ".";
 
 // Clip x to be at least a and at most b: min(b,max(a,x)). Swaps a & b if a > b.
 function clip(x: number, a: number, b: number) {
@@ -15,7 +16,7 @@ type Options = {
 }
 
 // Takes a goal g which includes roadall and data, returns new roadall
-export default function dial(
+export function dial(
     g: GoalVerbose,
     opts: Options = {}
 ): Roadall | false {

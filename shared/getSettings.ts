@@ -1,3 +1,5 @@
+import {Goal} from "./types";
+
 interface Settings {
   autodial: boolean,
   min: number,

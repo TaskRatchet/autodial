@@ -27,7 +27,6 @@
     "react-dom": "^17.0.2",
     "react-query": "^3.17.0",
     "react-scripts": "4.0.3",
-    "shared-library": "file:shared",
     "ts-loader": "8.2.0",
     "web-vitals": "^1.0.1"
   },
@@ -52,18 +51,9 @@
         },
         "setupFilesAfterEnv": [
           "<rootDir>/src/setupTests.ts"
-        ]
-      },
-      {
-        "displayName": "function",
-        "preset": "ts-jest",
-        "testEnvironment": "node",
-        "resetMocks": true,
-        "roots": [
-          "<rootDir>/functions/"
         ],
         "testPathIgnorePatterns": [
-          "<rootDir>/src/"
+          "<rootDir>/functions/"
         ]
       }
     ]

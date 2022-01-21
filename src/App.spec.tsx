@@ -8,9 +8,15 @@ import App from "./App";
 
 import {getParams} from "./lib/browser";
 import {deleteUser, setUserAuth} from "./lib/database";
-import {getGoal, getGoals, getGoalsVerbose, setNow} from "shared-library";
+import {
+  getGoal,
+  getGoals,
+  getGoalsVerbose,
+  setNow,
+  GoalVerbose,
+} from "shared-library";
 import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
-import {GoalInput, makeGoal} from "../functions/cron/lib/test/helpers";
+import {GoalInput, makeGoal} from "../functions/src/test/helpers";
 import {parseDate} from "shared-library/time";
 
 jest.mock("./lib/browser");
@@ -103,7 +109,7 @@ describe("Home page", () => {
 
       await waitFor(() => {
         expect(getByText("Enable Autodialer"))
-            .toHaveAttribute( "href", expect.stringContaining("the_client_id"));
+            .toHaveAttribute("href", expect.stringContaining("the_client_id"));
       });
     });
 

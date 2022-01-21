@@ -1,19 +1,19 @@
-type RoadTime = number;
-type RoadGoal = number;
-type RoadRate = number;
-type SparseSegment = [RoadTime | null, RoadGoal | null, RoadRate | null]
-type DenseSegment = [RoadTime, RoadGoal, RoadRate]
-type Roadall = SparseSegment[]
-type Fullroad = DenseSegment[]
-type Datapoint = {
+export type RoadTime = number;
+export type RoadGoal = number;
+export type RoadRate = number;
+export type SparseSegment = [RoadTime | null, RoadGoal | null, RoadRate | null]
+export type DenseSegment = [RoadTime, RoadGoal, RoadRate]
+export type Roadall = SparseSegment[]
+export type Fullroad = DenseSegment[]
+export type Datapoint = {
   daystamp: string,
   timestamp: number
   value: number
 }
-type UnixDatapoint = [number, number]
+export type UnixDatapoint = [number, number];
 
 // https://help.beeminder.com/article/97-custom-goals#aggday
-type Aggday =
+export type Aggday =
   "last"
   | "first"
   | "min"
@@ -34,7 +34,7 @@ type Aggday =
   | "skatesum"
   | "cap1"
 
-type Goal = {
+export type Goal = {
   rate: number | null;
   slug: string,
   aggday: Aggday,
@@ -48,11 +48,13 @@ type Goal = {
   mathishard: DenseSegment
 }
 
-type GoalVerbose = {
+export type GoalVerbose = {
   datapoints: Datapoint[]
 } & Goal
 
-type User = {
+export type User = {
   "beeminder_token": string,
   "beeminder_user": string
 }
+
+

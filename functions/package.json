@@ -7,7 +7,24 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "npx jest",
+    "test:watch": "npx jest --watch"
+  },
+  "jest": {
+    "projects": [{
+      "displayName": "function",
+      "preset": "ts-jest",
+      "testEnvironment": "node",
+      "resetMocks": true,
+      "roots": [
+        "<rootDir>"
+      ],
+      "testPathIgnorePatterns": [
+        "<rootDir>/node_modules/",
+        "<rootDir>/lib/"
+      ]
+    }]
   },
   "engines": {
     "node": "16"

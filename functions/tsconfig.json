@@ -1,15 +1,26 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
     "outDir": "lib",
-    "sourceMap": true,
-    "strict": true,
-    "target": "es2017"
+    "noEmit": false,
+    "jsx": "preserve",
   },
   "compileOnSave": true,
-  "include": [
-    "src"
-  ]
 }
+//{
+//  "compilerOptions": {
+//    "module": "commonjs",
+//    "esModuleInterop": true,
+//    "noImplicitReturns": true,
+//    "noUnusedLocals": true,
+//    "outDir": "lib",
+//    "sourceMap": true,
+//    "strict": true,
+//    "target": "es2017"
+//  },
+//  "compileOnSave": true,
+//  "include": [
+//    "src",
+//    "../shared"
+//  ],
+//}

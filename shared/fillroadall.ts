@@ -1,5 +1,6 @@
 import _ from "lodash";
 import {daysnap} from "./time";
+import {Fullroad, Roadall} from "./types";
 
 // TODO: Improve types throughout; get rid of `as [type]` as much as possible
 

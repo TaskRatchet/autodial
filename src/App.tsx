@@ -27,6 +27,7 @@ import {
 } from "react-query";
 import GoalRow from "./component/molecule/goalRow";
 import getSettings from "shared-library/getSettings";
+import {Goal, GoalVerbose} from "shared-library/types";
 
 init();
 

@@ -1,4 +1,5 @@
 import {searchLow} from "./search";
+import {UnixDatapoint} from "./types";
 
 // Utility function for stepify. Takes a list of datapoints sorted by x-value
 // and a given x-value and finds the most recent y-value (the one with the
