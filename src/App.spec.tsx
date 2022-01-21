@@ -14,10 +14,10 @@ import {
   getGoalsVerbose,
   setNow,
   GoalVerbose,
-} from "shared-library";
+  parseDate,
+} from "../shared";
 import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
 import {GoalInput, makeGoal} from "../functions/src/test/helpers";
-import {parseDate} from "shared-library/time";
 
 jest.mock("./lib/browser");
 jest.mock("./lib/database");

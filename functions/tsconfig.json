@@ -4,8 +4,9 @@
     "outDir": "lib",
     "noEmit": false,
     "jsx": "preserve",
+    "esModuleInterop": true,
   },
-  "compileOnSave": true,
+  "compileOnSave": true
 }
 //{
 //  "compilerOptions": {

@@ -18,7 +18,7 @@ import {
 
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {getGoalsVerbose} from "shared-library";
+import {getGoalsVerbose, getSettings, Goal, GoalVerbose} from "../shared";
 import {
   useIsFetching,
   useMutation,
@@ -26,8 +26,6 @@ import {
   UseQueryResult,
 } from "react-query";
 import GoalRow from "./component/molecule/goalRow";
-import getSettings from "shared-library/getSettings";
-import {Goal, GoalVerbose} from "shared-library/types";
 
 init();
 

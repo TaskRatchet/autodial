@@ -39,7 +39,7 @@ function autoSum(data: Datapoint[]): Datapoint[] {
 }
 
 // TODO: Accept per-period; default to second
-export default function getRollingAverageRate(g: GoalVerbose): number {
+export function getRollingAverageRate(g: GoalVerbose): number {
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
   const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 

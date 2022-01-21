@@ -53,12 +53,13 @@ const tvr = (
 };
 
 // Version of fillroad that assumes tini/vini is the first row of road
-const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
+export const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
   if (!roadall.length) return [];
   // clone array to avoid modifying reference
   const rd = _.cloneDeep(roadall);
   const tini = rd[0][0];
   const vini = rd[0][1];
+
   if (tini === null || vini === null) {
     throw new Error("Initial time or value was null");
   }
@@ -75,5 +76,3 @@ const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
     ...rd,
   ] as Fullroad;
 };
-
-export default fillroadall;

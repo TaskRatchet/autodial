@@ -1,12 +1,21 @@
 import doCron from "./doCron";
-import {getGoal, getGoals, updateGoal, dial, Goal} from "../../shared";
+import {
+  dial,
+  getGoals,
+  Goal,
+  GoalVerbose,
+  Roadall,
+  updateGoal,
+  getGoal
+} from "../../shared";
 import {getUsers} from "./database";
 import {makeGoal} from "./test/helpers";
 
 jest.mock("firebase-functions");
 jest.mock("./log");
 jest.mock("./database");
-jest.mock("../../shared");
+jest.mock('../../shared/dial')
+jest.mock('../../shared/beeminder')
 
 const mockGetGoals = getGoals as jest.Mock;
 const mockGetGoal = getGoal as jest.Mock;
@@ -14,8 +23,8 @@ const mockDial = dial as jest.Mock;
 const mockGetUsers = getUsers as jest.Mock;
 
 function setGoal(g: Partial<Goal>) {
-  mockGetGoal.mockResolvedValue(g);
-  mockGetGoals.mockResolvedValue([g]);
+  mockGetGoal.mockResolvedValue(g as GoalVerbose);
+  mockGetGoals.mockResolvedValue([g as Goal]);
 }
 
 describe("function", () => {
@@ -87,7 +96,7 @@ describe("function", () => {
   });
 
   it("persists modified road", async () => {
-    mockDial.mockReturnValue("the_new_road");
+    mockDial.mockReturnValue("the_new_road" as unknown as Roadall);
 
     const goal = makeGoal({
       fineprint: "#autodialMin=1",

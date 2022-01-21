@@ -1,7 +1,7 @@
 import {getUsers} from "./database";
 import log from "./log";
 import {getGoal, getGoals, updateGoal, dial, Goal} from "../../shared";
-import getSettings from "shared-library/getSettings";
+import {getSettings} from "../../shared";
 
 /* eslint-disable camelcase */
 

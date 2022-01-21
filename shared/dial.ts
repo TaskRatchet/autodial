@@ -1,7 +1,7 @@
 import {now} from "./time";
 import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
-import getRollingAverageRate from "./getRollingAverageRate";
-import fuzzyEquals from "./fuzzyEquals";
+import {getRollingAverageRate} from "./getRollingAverageRate";
+import {fuzzyEquals} from "./fuzzyEquals";
 import {GoalVerbose, Roadall} from ".";
 
 // Clip x to be at least a and at most b: min(b,max(a,x)). Swaps a & b if a > b.
