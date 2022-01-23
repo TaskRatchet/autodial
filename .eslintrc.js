@@ -24,6 +24,14 @@ module.exports = {
   rules: {
     "quotes": ["error", "double"],
     "require-jsdoc": 0,
+    "max-len": "error",
+    "comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "always-multiline",
+    }],
   },
   overrides: [{
     files: "**/*.spec.+(ts|tsx)",

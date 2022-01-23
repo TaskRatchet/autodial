@@ -55,7 +55,7 @@ export async function updateGoal(
     user: string,
     token: string,
     slug: string,
-    fields: {roadall: Roadall}
+    fields: {roadall: Roadall},
 ): Promise<Omit<Goal, "datapoints">> {
   const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json`;
   const putData = {

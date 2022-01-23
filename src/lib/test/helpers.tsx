@@ -24,7 +24,7 @@ export function r(ui: ReactElement): RenderResult {
 }
 
 export async function withMutedReactQueryLogger<T>(
-    func: () => Promise<T>
+    func: () => Promise<T>,
 ): Promise<T> {
   const noop = () => {
     // do nothing

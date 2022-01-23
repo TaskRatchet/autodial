@@ -18,7 +18,7 @@ type Options = {
 // Takes a goal g which includes roadall and data, returns new roadall
 export function dial(
     g: GoalVerbose,
-    opts: Options = {}
+    opts: Options = {},
 ): Roadall | false {
   const t = now();
   const {min = -Infinity, max = Infinity} = opts;

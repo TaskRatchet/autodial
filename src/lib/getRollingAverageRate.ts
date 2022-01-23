@@ -9,7 +9,7 @@ import {Datapoint, GoalVerbose, UnixDatapoint} from "./types";
 function avgrate(
     data: Datapoint[],
     window: number,
-    weekendsOff: boolean
+    weekendsOff: boolean,
 ): number {
   if (!data || !data.length) return 0;
 

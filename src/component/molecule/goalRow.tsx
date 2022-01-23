@@ -1,5 +1,11 @@
 import {TableCell, TableRow} from "@mui/material";
-import {getRollingAverageRate, GoalVerbose, UNIT_SECONDS, getGoalAge, getSettings} from "../../lib";
+import {
+  getRollingAverageRate,
+  GoalVerbose,
+  UNIT_SECONDS,
+  getGoalAge,
+  getSettings,
+} from "../../lib";
 import React from "react";
 import moment from "moment";
 
@@ -18,7 +24,7 @@ export default function GoalRow(
   const min = settings.min === -Infinity ?
     "Negative Infinity" : `${settings.min}/${goal.runits}`;
   const max = settings.max === Infinity ?
-     "Positive Infinity" : `${settings.max}/${goal.runits}`;
+    "Positive Infinity" : `${settings.max}/${goal.runits}`;
 
   const arps = getRollingAverageRate(goal);
   const arpn = arps * UNIT_SECONDS[goal.runits];

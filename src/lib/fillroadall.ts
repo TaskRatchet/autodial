@@ -11,7 +11,7 @@ const BDUSK = 2147317201;
 // Helper for fillroad for propagating forward filling in all the nulls
 const nextrow = (
     or: [number, number, number],
-    nr: [number|null, number|null, number|null]
+    nr: [number|null, number|null, number|null],
 ): [number, number, number] => {
   const tprev = or[0];
   const vprev = or[1];
@@ -38,7 +38,7 @@ const tvr = (
     vp: number,
     t: number|null,
     v: number|null,
-    r: number|null
+    r: number|null,
 ) => {
   if (t === null && v !== null && r !== null) {
     if (r === 0) return BDUSK;

@@ -58,7 +58,7 @@ const methodMap: Partial<{[k in Aggday]: Reducer}> = {
 
 function getDirtyAggregates(
     data: Datapoint[],
-    method: Aggday
+    method: Aggday,
 ): DirtyData {
   const reducer = methodMap[method];
 
@@ -71,7 +71,7 @@ function getDirtyAggregates(
 
 export default function aggregate(
     data: Datapoint[],
-    method: Aggday
+    method: Aggday,
 ): Datapoint[] {
   const aggregated = getDirtyAggregates(data, method);
 
