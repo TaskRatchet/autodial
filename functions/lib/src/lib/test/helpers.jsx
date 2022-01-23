@@ -37,6 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import React from "react";
 import { render } from "@testing-library/react";
 import { QueryClient, QueryClientProvider, setLogger } from "react-query";
+import * as time from "../time";
+export var setNow = function (yyyy, m, d) {
+    var value = Date.UTC(yyyy, m - 1, d, 12) / 1000;
+    jest.spyOn(time, "now").mockReturnValue(value);
+    return value;
+};
 export function r(ui) {
     var queryClient = new QueryClient({
         defaultOptions: {

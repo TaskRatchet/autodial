@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import axios from "axios";
-import {GoalVerbose, Goal, Roadall} from ".";
+import {GoalVerbose, Goal, Roadall} from "./index";
 
 export async function getGoalsVerbose(
     user: string,

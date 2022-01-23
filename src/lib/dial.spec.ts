@@ -1,6 +1,6 @@
 import {dial} from "./dial";
 import {describe, it} from "@jest/globals";
-import {e, makeGoal} from "../functions/src/test/helpers";
+import {e, makeGoal} from "../../functions/src/test/helpers";
 import {parseDate} from "./time";
 import {setNow} from "./test/helpers";
 import {Roadall} from "./types";

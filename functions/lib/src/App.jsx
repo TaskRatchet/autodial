@@ -41,7 +41,7 @@ import { getParams } from "./lib/browser";
 import { init } from "./lib/firebase";
 import { Alert, Button, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, Container, TableHead, TableRow, } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { getGoalsVerbose, getSettings } from "../shared";
+import { getGoalsVerbose, getSettings } from "./lib";
 import { useIsFetching, useMutation, useQuery, } from "react-query";
 import GoalRow from "./component/molecule/goalRow";
 init();
@@ -179,7 +179,7 @@ function App() {
       </Table>
     </TableContainer>
 
-    {isAuthenticated && goals && <>
+    {isAuthenticated && username && goals && <>
       <p>Here are your goals for which autodialing is enabled:</p>
 
       {isFetching ? <LinearProgress /> : null}

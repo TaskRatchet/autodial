@@ -3,7 +3,7 @@ import {firestore} from "firebase-admin/lib/firestore";
 import Firestore = firestore.Firestore;
 import QueryDocumentSnapshot = firestore.QueryDocumentSnapshot;
 import DocumentData = firestore.DocumentData;
-import {User} from "../../shared";
+import {User} from "../../src/lib";
 
 let _db: Firestore;
 

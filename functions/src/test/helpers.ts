@@ -8,7 +8,7 @@ import {
   Datapoint,
   Goal,
   GoalVerbose,
-} from "../../../shared";
+} from "../../../src/lib";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;

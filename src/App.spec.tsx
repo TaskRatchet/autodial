@@ -14,15 +14,14 @@ import {
   getGoalsVerbose,
   setNow,
   GoalVerbose,
-  parseDate,
-} from "../shared";
-import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
+  parseDate, r, withMutedReactQueryLogger,
+} from "./lib";
 import {GoalInput, makeGoal} from "../functions/src/test/helpers";
 
 jest.mock("./lib/browser");
 jest.mock("./lib/database");
 jest.mock("./lib/firebase");
-jest.mock("../shared/beeminder");
+jest.mock("./lib/beeminder");
 
 const mockGetParams = getParams as jest.Mock;
 const mockSetUserAuth = setUserAuth as jest.Mock;

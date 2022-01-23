@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@mui/material";
-import { getRollingAverageRate, UNIT_SECONDS, getGoalAge, getSettings } from "../../../shared";
+import { getRollingAverageRate, UNIT_SECONDS, getGoalAge, getSettings } from "../../lib";
 import React from "react";
 import moment from "moment";
 export default function GoalRow(_a) {

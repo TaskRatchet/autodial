@@ -18,7 +18,7 @@ import {
 
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {getGoalsVerbose, getSettings, Goal, GoalVerbose} from "../shared";
+import {getGoalsVerbose, getSettings, Goal, GoalVerbose} from "./lib";
 import {
   useIsFetching,
   useMutation,
@@ -169,7 +169,7 @@ function App(): JSX.Element {
       </Table>
     </TableContainer>
 
-    {isAuthenticated && goals && <>
+    {isAuthenticated && username && goals && <>
       <p>Here are your goals for which autodialing is enabled:</p>
 
       {isFetching ? <LinearProgress/> : null}
