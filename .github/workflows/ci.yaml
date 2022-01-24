@@ -33,23 +33,3 @@ jobs:
       - name: Run tests
         run: npm test
         working-directory: ./functions
-  deploy-function:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Install root dependencies
-        run: npm ci
-      - name: Install function dependenciesfire
-        run: npm ci
-        working-directory: ./functions
-      - name: Install Firebase
-        run: curl -sL https://firebase.tools | bash
-      - name: Deploy function
-        run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
-        working-directory: ./functions
