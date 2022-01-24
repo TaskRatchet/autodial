@@ -39,3 +39,4 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy function
         run: npm run deploy
+        working-directory: ./functions
