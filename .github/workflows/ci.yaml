@@ -27,7 +27,7 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install root dependencies
         run: npm ci
-      - name: Install function dependencies
+      - name: Install function dependenciesfire
         run: npm ci
         working-directory: ./functions
       - name: Run tests
@@ -40,5 +40,5 @@ jobs:
       - name: Install Firebase
         run: curl -sL https://firebase.tools | bash
       - name: Deploy function
-        run: npm run deploy
+        run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
         working-directory: ./functions
