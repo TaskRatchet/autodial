@@ -17,9 +17,6 @@ jobs:
         run: npm test
   test-function:
     runs-on: ubuntu-latest
-    defaults: 
-      run:
-        working-directory: ./functions
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -28,8 +25,11 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - run: pwd
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
+      - name: Install function dependencies
+        run: npm ci
+        working-directory: ./functions
       - name: Run tests
         run: npm test
+        working-directory: ./functions
