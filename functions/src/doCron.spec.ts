@@ -6,7 +6,7 @@ import {
   GoalVerbose,
   Roadall,
   updateGoal,
-  getGoal
+  getGoal,
 } from "../../src/lib";
 import {getUsers} from "./database";
 import {makeGoal} from "./test/helpers";
@@ -14,8 +14,8 @@ import {makeGoal} from "./test/helpers";
 jest.mock("firebase-functions");
 jest.mock("./log");
 jest.mock("./database");
-jest.mock('../../src/lib/dial')
-jest.mock('../../src/lib/beeminder')
+jest.mock("../../src/lib/dial");
+jest.mock("../../src/lib/beeminder");
 
 const mockGetGoals = getGoals as jest.Mock;
 const mockGetGoal = getGoal as jest.Mock;

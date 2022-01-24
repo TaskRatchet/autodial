@@ -33,3 +33,9 @@ jobs:
       - name: Run tests
         run: npm test
         working-directory: ./functions
+  deploy-function:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy function
+        run: npm run deploy

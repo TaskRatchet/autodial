@@ -1,7 +1,13 @@
 import {getUsers} from "./database";
 import log from "./log";
-import {getGoal, getGoals, updateGoal, dial, Goal} from "../../src/lib";
-import {getSettings} from "../../src/lib";
+import {
+  getGoal,
+  getGoals,
+  updateGoal,
+  dial,
+  Goal,
+  getSettings,
+} from "../../src/lib";
 
 /* eslint-disable camelcase */
 
@@ -24,7 +30,7 @@ export default async function doCron(): Promise<void> {
           const fullGoal = await getGoal(
               beeminder_user,
               beeminder_token,
-              g.slug
+              g.slug,
           );
           const roadall = dial(fullGoal, {min, max});
 
