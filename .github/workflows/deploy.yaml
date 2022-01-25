@@ -1,5 +1,8 @@
 name: Deploy
 on: push
+#  push:
+#    branches:
+#      - master
 jobs:
   deploy-function:
     runs-on: ubuntu-latest

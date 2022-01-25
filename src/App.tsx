@@ -64,7 +64,7 @@ function App(): JSX.Element {
     status: forceStatus,
     isLoading: forceIsLoading,
   } = useMutation("force", async () => {
-    const result = await fetch("/.netlify/functions/cron");
+    const result = await fetch("https://us-central1-autodial-dfeb8.cloudfunctions.net/cron");
     console.log({result});
     await refetch();
     return result;
