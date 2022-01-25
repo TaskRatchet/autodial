@@ -1,16 +1,13 @@
-import {Firestore, QueryDocumentSnapshot} from "@google-cloud/firestore";
-// import admin from "firebase-admin";
+// import functions from "firebase-functions";
+import admin, {firestore} from "firebase-admin";
 // import {firestore} from "firebase-admin/lib/firestore";
 // import Firestore = firestore.Firestore;
 // import QueryDocumentSnapshot = firestore.QueryDocumentSnapshot;
 // import DocumentData = firestore.DocumentData;
 import {User} from "../../src/lib";
+import QueryDocumentSnapshot = firestore.QueryDocumentSnapshot;
 
-const firestore = new Firestore({
-  projectId: "autodial-dfeb8",
-  timestampsInSnapshots: true,
-});
-
+admin.initializeApp();
 
 //
 // let _db: Firestore;
@@ -33,6 +30,6 @@ const firestore = new Firestore({
 // }
 //
 export async function getUsers(): Promise<User[]> {
-  const {docs} = await firestore.collection("users").get();
+  const {docs} = await admin.firestore().collection("users").get();
   return docs.map((d: QueryDocumentSnapshot) => d.data() as User);
 }
