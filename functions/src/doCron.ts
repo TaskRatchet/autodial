@@ -34,7 +34,7 @@ export default async function doCron(): Promise<void> {
           );
           const roadall = dial(fullGoal, {min, max});
 
-          log({m: `end dial goal ${g.slug}`, t: new Date()});
+          log({m: `end dial goal ${beeminder_user}/${g.slug}`, t: new Date()});
 
           if (!roadall) return;
 
