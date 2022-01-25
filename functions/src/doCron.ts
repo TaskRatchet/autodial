@@ -24,7 +24,7 @@ export default async function doCron(): Promise<void> {
       const toDial = all.filter((g: Goal) => getSettings(g).autodial);
 
       toDial.forEach(async (g) => {
-        log({m: `start dial goal ${g.slug}`, t: new Date()});
+        log({m: `start dial goal ${beeminder_user}/${g.slug}`, t: new Date()});
         try {
           const {min, max} = getSettings(g);
           const fullGoal = await getGoal(
