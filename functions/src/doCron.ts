@@ -25,7 +25,6 @@ const doCron = async (
   await Promise.all(users.map(async ({beeminder_user, beeminder_token}) => {
     if (!beeminder_user || !beeminder_token) {
       log("missing user auth");
-      res.end();
       return;
     }
 
@@ -65,7 +64,7 @@ const doCron = async (
     }));
   }));
 
-  res.end();
+  res.status(200).send("Success");
 };
 
 export default doCron;
