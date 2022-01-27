@@ -1,0 +1,3 @@
+# Disable Neltify functions so we can deploy with Firebase
+[functions]
+  directory = "noop"

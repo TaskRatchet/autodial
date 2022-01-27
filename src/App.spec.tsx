@@ -8,15 +8,20 @@ import App from "./App";
 
 import {getParams} from "./lib/browser";
 import {deleteUser, setUserAuth} from "./lib/database";
-import {getGoal, getGoals, getGoalsVerbose, setNow} from "shared-library";
-import {r, withMutedReactQueryLogger} from "./lib/test/helpers";
-import {GoalInput, makeGoal} from "../functions/cron/lib/test/helpers";
-import {parseDate} from "shared-library/time";
+import {
+  getGoal,
+  getGoals,
+  getGoalsVerbose,
+  setNow,
+  GoalVerbose,
+  parseDate, r, withMutedReactQueryLogger, now, SID,
+} from "./lib";
+import {GoalInput, makeGoal} from "../functions/src/test/helpers";
 
 jest.mock("./lib/browser");
 jest.mock("./lib/database");
 jest.mock("./lib/firebase");
-jest.mock("../shared/beeminder");
+jest.mock("./lib/beeminder");
 
 const mockGetParams = getParams as jest.Mock;
 const mockSetUserAuth = setUserAuth as jest.Mock;
@@ -103,7 +108,7 @@ describe("Home page", () => {
 
       await waitFor(() => {
         expect(getByText("Enable Autodialer"))
-            .toHaveAttribute( "href", expect.stringContaining("the_client_id"));
+            .toHaveAttribute("href", expect.stringContaining("the_client_id"));
       });
     });
 
@@ -138,10 +143,13 @@ describe("Home page", () => {
   });
 
   it("gets user goals", async () => {
+    setNow(2021, 2, 29);
+    const diffSince = now() - (SID * 31);
+
     await r(<App/>);
 
     await waitFor(() => {
-      expect(getGoalsVerbose).toBeCalledWith("alice", "abc123");
+      expect(getGoalsVerbose).toBeCalledWith("alice", "abc123", diffSince);
     });
   });
 

@@ -23,9 +23,6 @@
   },
   "include": [
     "src",
-    "functions",
-    "shared",
     "jest.config.js",
-    "types.d.ts"
-  ]
+  ],
 }

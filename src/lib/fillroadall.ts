@@ -1,5 +1,6 @@
 import _ from "lodash";
 import {daysnap} from "./time";
+import {Fullroad, Roadall} from "./types";
 
 // TODO: Improve types throughout; get rid of `as [type]` as much as possible
 
@@ -10,7 +11,7 @@ const BDUSK = 2147317201;
 // Helper for fillroad for propagating forward filling in all the nulls
 const nextrow = (
     or: [number, number, number],
-    nr: [number|null, number|null, number|null]
+    nr: [number|null, number|null, number|null],
 ): [number, number, number] => {
   const tprev = or[0];
   const vprev = or[1];
@@ -37,7 +38,7 @@ const tvr = (
     vp: number,
     t: number|null,
     v: number|null,
-    r: number|null
+    r: number|null,
 ) => {
   if (t === null && v !== null && r !== null) {
     if (r === 0) return BDUSK;
@@ -52,12 +53,13 @@ const tvr = (
 };
 
 // Version of fillroad that assumes tini/vini is the first row of road
-const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
+export const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
   if (!roadall.length) return [];
   // clone array to avoid modifying reference
   const rd = _.cloneDeep(roadall);
   const tini = rd[0][0];
   const vini = rd[0][1];
+
   if (tini === null || vini === null) {
     throw new Error("Initial time or value was null");
   }
@@ -74,5 +76,3 @@ const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
     ...rd,
   ] as Fullroad;
 };
-
-export default fillroadall;

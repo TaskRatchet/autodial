@@ -1,7 +1,9 @@
 import {now} from "./time";
 import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
-import getRollingAverageRate from "./getRollingAverageRate";
-import fuzzyEquals from "./fuzzyEquals";
+import {getRollingAverageRate} from "./getRollingAverageRate";
+import {fuzzyEquals} from "./fuzzyEquals";
+import {GoalVerbose, Roadall} from "./index";
+// import log from "./log";
 
 // Clip x to be at least a and at most b: min(b,max(a,x)). Swaps a & b if a > b.
 function clip(x: number, a: number, b: number) {
@@ -15,9 +17,9 @@ type Options = {
 }
 
 // Takes a goal g which includes roadall and data, returns new roadall
-export default function dial(
+export function dial(
     g: GoalVerbose,
-    opts: Options = {}
+    opts: Options = {},
 ): Roadall | false {
   const t = now();
   const {min = -Infinity, max = Infinity} = opts;
@@ -32,6 +34,8 @@ export default function dial(
   const rateDiff = oldRate - newRate;
   const modulatedRate = oldRate - (rateDiff * monthCompletion);
   const clippedRate = clip(modulatedRate, min, max);
+
+  // log({g: g.slug, modulatedRate, clippedRate});
 
   if (fuzzyEquals(clippedRate, oldRate)) return false;
 

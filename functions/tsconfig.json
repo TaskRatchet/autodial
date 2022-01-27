@@ -1,0 +1,33 @@
+//{
+//  "extends": "../tsconfig.json",
+//  "compilerOptions": {
+//    "outDir": "lib",
+//    "noEmit": false,
+//    "jsx": "react-jsx",
+//    "module": "commonjs",
+//    "esModuleInterop": true,
+//    "target": "es2017",
+//  },
+//  "compileOnSave": true,
+//  "include": [
+//    "src",
+//    "./.eslintrc.js"
+//  ]
+//}
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017",
+    "jsx": "react-jsx"
+  },
+  "compileOnSave": true,
+  "include": [
+    "src"
+  ],
+}

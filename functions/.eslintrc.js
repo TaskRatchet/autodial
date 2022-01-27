@@ -14,24 +14,20 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: ["tsconfig.json", "tsconfig.dev.json", "types.d.ts"],
+    project: ["tsconfig.json", "tsconfig.dev.json"],
     sourceType: "module",
   },
+  ignorePatterns: [
+    "/lib/**/*", // Ignore built files.
+  ],
   plugins: [
     "@typescript-eslint",
     "import",
   ],
   rules: {
     "quotes": ["error", "double"],
+    "import/no-unresolved": 0,
     "require-jsdoc": 0,
-    "max-len": "error",
-    "comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "always-multiline",
-      "exports": "always-multiline",
-      "functions": "always-multiline",
-    }],
   },
   overrides: [{
     files: "**/*.spec.+(ts|tsx)",

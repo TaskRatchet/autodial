@@ -18,7 +18,7 @@ import {
 
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {getGoalsVerbose} from "shared-library";
+import {getGoalsVerbose, getSettings, Goal, GoalVerbose, now, SID} from "./lib";
 import {
   useIsFetching,
   useMutation,
@@ -26,7 +26,6 @@ import {
   UseQueryResult,
 } from "react-query";
 import GoalRow from "./component/molecule/goalRow";
-import getSettings from "shared-library/getSettings";
 
 init();
 
@@ -53,7 +52,11 @@ function App(): JSX.Element {
     refetch,
   }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
     if (!username || !accessToken) return;
-    const goals = await getGoalsVerbose(username, accessToken);
+    const goals = await getGoalsVerbose(
+        username,
+        accessToken,
+        now() - (SID * 31),
+    );
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
     });
@@ -65,7 +68,7 @@ function App(): JSX.Element {
     status: forceStatus,
     isLoading: forceIsLoading,
   } = useMutation("force", async () => {
-    const result = await fetch("/.netlify/functions/cron");
+    const result = await fetch("https://us-central1-autodial-dfeb8.cloudfunctions.net/cron");
     console.log({result});
     await refetch();
     return result;
@@ -170,7 +173,7 @@ function App(): JSX.Element {
       </Table>
     </TableContainer>
 
-    {isAuthenticated && goals && <>
+    {isAuthenticated && username && goals && <>
       <p>Here are your goals for which autodialing is enabled:</p>
 
       {isFetching ? <LinearProgress/> : null}

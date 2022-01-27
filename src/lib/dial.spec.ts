@@ -1,8 +1,9 @@
-import dial from "./dial";
+import {dial} from "./dial";
 import {describe, it} from "@jest/globals";
-import {e, makeGoal} from "../functions/cron/lib/test/helpers";
+import {e, makeGoal} from "../../functions/src/test/helpers";
 import {parseDate} from "./time";
 import {setNow} from "./test/helpers";
+import {Roadall} from "./types";
 
 function getRoadEnd(roadall: Roadall | false) {
   if (!roadall) {
@@ -83,27 +84,6 @@ describe("dial function", () => {
     }));
 
     expectFuzzyEndRate(r, 1 / 30);
-  });
-
-  // for now we'll expect this to autodial to zero when you've entered no data
-  // in a month but eventually we'll want to treat that as a bug. autodialer
-  // should never give you an infinitely flat road that never makes you do
-  // anything ever again. -- Dreev
-  it("dials goal with more than a month of data", () => {
-    setNow(2021, 3, 1);
-
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [{daystamp: "20210125", value: 1}],
-    }));
-
-    expectEndRate(r, 0);
   });
 
   it("dials goal with datapoint after a week with runits=weekly", () => {

@@ -2,13 +2,14 @@ import {now, parseDate} from "./time";
 import stepify from "./stepify";
 import aggregate from "./aggregate";
 import {SID} from "./constants";
+import {Datapoint, GoalVerbose, UnixDatapoint} from "./types";
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
 function avgrate(
     data: Datapoint[],
     window: number,
-    weekendsOff: boolean
+    weekendsOff: boolean,
 ): number {
   if (!data || !data.length) return 0;
 
@@ -38,10 +39,9 @@ function autoSum(data: Datapoint[]): Datapoint[] {
 }
 
 // TODO: Accept per-period; default to second
-export default function getRollingAverageRate(g: GoalVerbose): number {
+export function getRollingAverageRate(g: GoalVerbose): number {
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
   const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 
-  // avg rate per second
   return avgrate(summed, SID * 30, g.weekends_off);
 }
