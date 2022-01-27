@@ -30,13 +30,7 @@ function setGoal(g: Partial<Goal>) {
 }
 
 async function runCron() {
-  await doCron(
-    null as any,
-    {
-      end: jest.fn(),
-      status: jest.fn(() => ({send: jest.fn()})),
-    } as any
-  );
+  await doCron();
 }
 
 describe("function", () => {

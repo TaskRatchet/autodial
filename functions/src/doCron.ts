@@ -8,14 +8,10 @@ import {
   Goal,
   getSettings, now, SID,
 } from "../../src/lib";
-import * as functions from "firebase-functions";
 
 /* eslint-disable camelcase */
 
-const doCron = async (
-    req: functions.Request,
-    res: functions.Response
-): Promise<void> => {
+const doCron = async (): Promise<void> => {
   const isDev = process.env.FUNCTIONS_EMULATOR === "true";
 
   log(isDev);
@@ -63,8 +59,6 @@ const doCron = async (
       }
     }));
   }));
-
-  res.status(200).send("Success");
 };
 
 export default doCron;
