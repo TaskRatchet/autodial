@@ -5,10 +5,11 @@ import {GoalVerbose, Goal, Roadall} from "./index";
 export async function getGoalsVerbose(
     user: string,
     token: string,
+    diffSince: number,
 ): Promise<GoalVerbose[]> {
   const goals = await getGoals(user, token);
   const results = await Promise.allSettled(goals.map((g) => {
-    return getGoal(user, token, g.slug);
+    return getGoal(user, token, g.slug, diffSince);
   }));
   return results.flatMap((r) => {
     if (r.status === "fulfilled") {
@@ -39,8 +40,9 @@ export async function getGoal(
     user: string,
     token: string,
     slug: string,
+    diffSince: number,
 ): Promise<GoalVerbose> {
-  const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json?access_token=${token}&datapoints=true`;
+  const url = `https://www.beeminder.com/api/v1/users/${user}/goals/${slug}.json?access_token=${token}&diff_since=${diffSince}&datapoints=true`;
   const response = await fetch(url);
   const data = await response.json();
 

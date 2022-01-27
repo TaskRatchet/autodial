@@ -37,6 +37,12 @@ cd functions/
 npm run test
 ```
 
+Serve the function locally:
+
+```bash
+firebase serve --only functions
+```
+
 ## Todos
 
 - Set up automatic functions deploy via gh actions on master branch

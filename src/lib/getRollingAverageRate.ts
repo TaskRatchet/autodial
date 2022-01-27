@@ -43,6 +43,5 @@ export function getRollingAverageRate(g: GoalVerbose): number {
   const aggregatedPoints = aggregate(g.datapoints, g.aggday);
   const summed = g.kyoom ? autoSum(aggregatedPoints) : aggregatedPoints;
 
-  // avg rate per second
   return avgrate(summed, SID * 30, g.weekends_off);
 }

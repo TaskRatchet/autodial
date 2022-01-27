@@ -1,48 +1,71 @@
 import {getUsers} from "./database";
-import log from "./log";
+import log from "../../src/lib/log";
 import {
   getGoal,
   getGoals,
   updateGoal,
   dial,
   Goal,
-  getSettings,
+  getSettings, now, SID,
 } from "../../src/lib";
+import * as functions from "firebase-functions";
 
 /* eslint-disable camelcase */
 
-export default async function doCron(): Promise<void> {
+const doCron = async (
+    req: functions.Request,
+    res: functions.Response
+): Promise<void> => {
+  const isDev = process.env.FUNCTIONS_EMULATOR === "true";
+
+  log(isDev);
+
   const users = await getUsers();
 
   await Promise.all(users.map(async ({beeminder_user, beeminder_token}) => {
     if (!beeminder_user || !beeminder_token) {
       log("missing user auth");
+      res.end();
       return;
     }
 
-    getGoals(beeminder_user, beeminder_token).then((all) => {
-      const toDial = all.filter((g: Goal) => getSettings(g).autodial);
+    const all = await getGoals(beeminder_user, beeminder_token);
 
-      toDial.forEach(async (g) => {
-        log({m: `start dial goal ${beeminder_user}/${g.slug}`, t: new Date()});
-        try {
-          const {min, max} = getSettings(g);
-          const fullGoal = await getGoal(
+    const toDial = all.filter((g: Goal) => getSettings(g).autodial);
+
+    await Promise.all(toDial.map(async (g) => {
+      log(`start dial goal ${beeminder_user}/${g.slug}`);
+      try {
+        const {min, max} = getSettings(g);
+        const fullGoal = await getGoal(
+            beeminder_user,
+            beeminder_token,
+            g.slug,
+            now() - (SID * 31),
+        );
+        const roadall = dial(fullGoal, {min, max});
+        const newRate = roadall && roadall[roadall.length - 1][2];
+        const id = `${beeminder_user}/${g.slug}`;
+
+        log(`end dial goal ${id}: ${newRate}`);
+
+        if (!roadall) return;
+
+        if (!isDev) {
+          await updateGoal(
               beeminder_user,
               beeminder_token,
               g.slug,
+              {roadall}
           );
-          const roadall = dial(fullGoal, {min, max});
-
-          log({m: `end dial goal ${beeminder_user}/${g.slug}`, t: new Date()});
-
-          if (!roadall) return;
-
-          await updateGoal(beeminder_user, beeminder_token, g.slug, {roadall});
-        } catch (e) {
-          log({m: "failed to dial goal", g, e});
         }
-      });
-    });
+      } catch (e) {
+        log({m: "failed to dial goal", g, e});
+      }
+    }));
   }));
-}
+
+  res.end();
+};
+
+export default doCron;

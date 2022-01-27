@@ -7,12 +7,14 @@ import {
   Roadall,
   updateGoal,
   getGoal,
+  setNow,
+  now, SID,
 } from "../../src/lib";
 import {getUsers} from "./database";
 import {makeGoal} from "./test/helpers";
 
 jest.mock("firebase-functions");
-jest.mock("./log");
+jest.mock("../../src/lib/log");
 jest.mock("./database");
 jest.mock("../../src/lib/dial");
 jest.mock("../../src/lib/beeminder");
@@ -27,6 +29,10 @@ function setGoal(g: Partial<Goal>) {
   mockGetGoals.mockResolvedValue([g as Goal]);
 }
 
+async function runCron() {
+  await doCron(null as any, {end: jest.fn()} as any);
+}
+
 describe("function", () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -38,7 +44,7 @@ describe("function", () => {
   });
 
   it("gets beeminder goals", async () => {
-    await doCron();
+    await runCron();
 
     expect(getGoals).toBeCalledWith("the_user", "the_token");
   });
@@ -50,7 +56,7 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await runCron();
 
     await new Promise(process.nextTick);
 
@@ -64,7 +70,7 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await runCron();
 
     await new Promise(process.nextTick);
 
@@ -78,7 +84,7 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await runCron();
 
     await new Promise(process.nextTick);
 
@@ -90,7 +96,7 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await runCron();
 
     expect(dial).not.toBeCalled();
   });
@@ -104,7 +110,7 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await runCron();
 
     await new Promise(process.nextTick);
 
@@ -112,7 +118,7 @@ describe("function", () => {
         "the_user",
         "the_token",
         "the_slug",
-        {roadall: "the_new_road"}
+        {roadall: "the_new_road"},
     );
   });
 
@@ -125,7 +131,7 @@ describe("function", () => {
 
     setGoal(goal);
 
-    await doCron();
+    await runCron();
 
     expect(updateGoal).not.toBeCalled();
   });
@@ -138,9 +144,29 @@ describe("function", () => {
     mockGetGoals.mockResolvedValue([g, g]);
     mockGetGoal.mockRejectedValue("the_error");
 
-    await doCron();
+    await runCron();
 
     expect(mockGetGoal).toBeCalledTimes(2);
+  });
+
+  it("gets verbose goal with diffSince", async () => {
+    setNow(2021, 2, 29);
+    const diffSince = now() - (SID * 31);
+
+    const goal = makeGoal({
+      fineprint: "#autodial",
+    });
+
+    setGoal(goal);
+
+    await runCron();
+
+    expect(getGoal).toBeCalledWith(
+        "the_user",
+        "the_token",
+        "the_slug",
+        diffSince
+    );
   });
 });
 

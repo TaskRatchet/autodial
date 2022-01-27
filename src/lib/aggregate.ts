@@ -1,24 +1,18 @@
-import {sum} from "lodash";
+import _, {sum} from "lodash";
 import {parseDate} from "./time";
 import {Aggday, Datapoint} from "./types";
 
-type DirtyData = (Datapoint | undefined)[]
 type Reducer = (values: number[]) => number | undefined
 
-function aggregateByDate(data: Datapoint[], reduce: Reducer): DirtyData {
-  const dates: string[] = Array.from(new Set(data.map((p) => p.daystamp)));
-  return dates.map((d: string) => {
-    const points = data.filter((p) => p.daystamp === d);
-    const reduced = reduce(points.map((p) => p.value));
-
-    if (reduced === undefined) return;
-
-    return {
-      daystamp: d,
-      timestamp: parseDate(d),
-      value: reduced,
-    };
-  });
+function aggregateByDate(data: Datapoint[], reduce: Reducer): Datapoint[] {
+  const sets = _.groupBy(data, (d) => d.daystamp);
+  return _.map(sets, (s, k) =>
+    ({
+      daystamp: k,
+      timestamp: parseDate(k),
+      value: reduce(s.map((d) => d.value)) || 0,
+    }),
+  );
 }
 
 const uniqueMean = (vals: number[]) => {
@@ -56,10 +50,10 @@ const methodMap: Partial<{[k in Aggday]: Reducer}> = {
   "triangle": (vals) => (sum(vals) * (sum(vals) + 1)) / 2,
 };
 
-function getDirtyAggregates(
+export default function aggregate(
     data: Datapoint[],
     method: Aggday,
-): DirtyData {
+): Datapoint[] {
   const reducer = methodMap[method];
 
   if (!reducer) {
@@ -67,13 +61,4 @@ function getDirtyAggregates(
   }
 
   return aggregateByDate(data, reducer);
-}
-
-export default function aggregate(
-    data: Datapoint[],
-    method: Aggday,
-): Datapoint[] {
-  const aggregated = getDirtyAggregates(data, method);
-
-  return aggregated.filter((p): p is Datapoint => p !== undefined);
 }

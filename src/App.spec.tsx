@@ -14,7 +14,7 @@ import {
   getGoalsVerbose,
   setNow,
   GoalVerbose,
-  parseDate, r, withMutedReactQueryLogger,
+  parseDate, r, withMutedReactQueryLogger, now, SID,
 } from "./lib";
 import {GoalInput, makeGoal} from "../functions/src/test/helpers";
 
@@ -143,10 +143,13 @@ describe("Home page", () => {
   });
 
   it("gets user goals", async () => {
+    setNow(2021, 2, 29);
+    const diffSince = now() - (SID * 31);
+
     await r(<App/>);
 
     await waitFor(() => {
-      expect(getGoalsVerbose).toBeCalledWith("alice", "abc123");
+      expect(getGoalsVerbose).toBeCalledWith("alice", "abc123", diffSince);
     });
   });
 

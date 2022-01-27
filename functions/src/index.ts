@@ -5,6 +5,8 @@ import doCron from "./doCron";
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const cron = functions.https.onRequest(async () => {
-  await doCron();
+export const cron = functions.runWith({
+  timeoutSeconds: 540,
+}).https.onRequest(async (req: functions.Request, res: functions.Response) => {
+  await doCron(req, res);
 });

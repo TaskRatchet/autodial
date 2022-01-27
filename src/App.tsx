@@ -18,7 +18,7 @@ import {
 
 } from "@mui/material";
 import {LoadingButton} from "@mui/lab";
-import {getGoalsVerbose, getSettings, Goal, GoalVerbose} from "./lib";
+import {getGoalsVerbose, getSettings, Goal, GoalVerbose, now, SID} from "./lib";
 import {
   useIsFetching,
   useMutation,
@@ -52,7 +52,11 @@ function App(): JSX.Element {
     refetch,
   }: UseQueryResult<Goals, GoalsError> = useQuery("goals", async () => {
     if (!username || !accessToken) return;
-    const goals = await getGoalsVerbose(username, accessToken);
+    const goals = await getGoalsVerbose(
+        username,
+        accessToken,
+        now() - (SID * 31),
+    );
     goals.sort(function(a: Goal, b: Goal) {
       return a.slug.localeCompare(b.slug);
     });

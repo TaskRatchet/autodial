@@ -3,6 +3,7 @@ import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
 import {getRollingAverageRate} from "./getRollingAverageRate";
 import {fuzzyEquals} from "./fuzzyEquals";
 import {GoalVerbose, Roadall} from "./index";
+// import log from "./log";
 
 // Clip x to be at least a and at most b: min(b,max(a,x)). Swaps a & b if a > b.
 function clip(x: number, a: number, b: number) {
@@ -33,6 +34,8 @@ export function dial(
   const rateDiff = oldRate - newRate;
   const modulatedRate = oldRate - (rateDiff * monthCompletion);
   const clippedRate = clip(modulatedRate, min, max);
+
+  // log({g: g.slug, modulatedRate, clippedRate});
 
   if (fuzzyEquals(clippedRate, oldRate)) return false;
 
