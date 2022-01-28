@@ -185,7 +185,7 @@ function App(): JSX.Element {
               <TableCell>Slug</TableCell>
               <TableCell>#autodialMin=?</TableCell>
               <TableCell>#autodialMax=?</TableCell>
-              <TableCell>Current Rate</TableCell>
+              <TableCell>Rate</TableCell>
               <TableCell>30d Unit Average</TableCell>
               <TableCell>Weekends Off</TableCell>
               <TableCell>Goal Age</TableCell>

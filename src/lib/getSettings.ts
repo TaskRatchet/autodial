@@ -1,12 +1,12 @@
 import {Goal} from "./types";
 
-interface Settings {
+export type AutodialSettings = {
   autodial: boolean,
   min: number,
   max: number,
 }
 
-export function getSettings(g: Goal): Settings {
+export function getSettings(g: Goal): AutodialSettings {
   const minMatches = g.fineprint?.match(/#autodialMin=(-?\d*\.?\d+)/);
   const maxMatches = g.fineprint?.match(/#autodialMax=(-?\d*\.?\d+)/);
   const min = minMatches ? parseFloat(minMatches[1]) : -Infinity;
