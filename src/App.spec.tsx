@@ -498,6 +498,63 @@ describe("Home page", () => {
       expect(getByText("30.44/m")).toBeInTheDocument();
     });
   });
+
+  it("shows rate changes", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([{
+      slug: "the_slug",
+      rate: 3,
+      runits: "m",
+      roadall: [
+        [parseDate("20090210"), 0, null],
+        [parseDate("20090315"), null, 1],
+      ],
+      datapoints: [
+        {value: 0, daystamp: "20090210"},
+        {
+          value: 30,
+          daystamp: "20090213",
+        },
+      ],
+    },
+    ]);
+
+    const {getByLabelText, getByText} = await r(<App/>);
+
+    await waitFor(() => {
+      expect(getByLabelText("pending change")).toBeInTheDocument();
+      expect(getByText("22.59/m")).toBeInTheDocument();
+    });
+  });
+
+  it("does not show rate change when none pending", async () => {
+    setNow(2009, 3, 4);
+
+    const oldRate = 0;
+
+    loadGoals([{
+      slug: "the_slug",
+      rate: oldRate,
+      runits: "m",
+      roadall: [
+        [parseDate("20090210"), 0, null],
+        [parseDate("20090315"), null, oldRate],
+      ],
+      datapoints: [
+        {value: 0, daystamp: "20090210"},
+      ],
+    },
+    ]);
+
+    const {queryByLabelText, getAllByText} = await r(<App/>);
+
+    await waitFor(() => {
+      expect(getAllByText("0/m")).toBeTruthy();
+    });
+
+    expect(queryByLabelText("pending change")).not.toBeInTheDocument();
+  });
 });
 
 // TODO:
