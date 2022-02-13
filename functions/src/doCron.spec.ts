@@ -168,6 +168,20 @@ describe("function", () => {
         diffSince
     );
   });
+
+  it("pulls tags from goal title", async () => {
+    const goal = makeGoal({
+      title: "#autodial",
+    });
+
+    setGoal(goal);
+
+    await runCron();
+
+    await new Promise(process.nextTick);
+
+    expect(dial).toBeCalledWith(goal, expect.anything());
+  });
 });
 
 // TODO:

@@ -37,6 +37,7 @@ export type Aggday =
 export type Goal = {
   rate: number | null;
   slug: string,
+  title: string,
   aggday: Aggday,
   kyoom: boolean,
   runits: "h" | "d" | "w" | "m" | "y",
