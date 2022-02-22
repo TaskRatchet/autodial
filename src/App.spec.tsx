@@ -555,6 +555,22 @@ describe("Home page", () => {
 
     expect(queryByLabelText("pending change")).not.toBeInTheDocument();
   });
+
+  it("shows strict setting", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([{
+      slug: "the_slug",
+      fineprint: "#autodialStrict",
+    },
+    ]);
+
+    const {getByText} = await r(<App/>);
+
+    await waitFor(() => {
+      expect(getByText("yes")).toBeInTheDocument();
+    });
+  });
 });
 
 // TODO:

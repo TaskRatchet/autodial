@@ -31,14 +31,14 @@ const doCron = async (): Promise<void> => {
       await Promise.all(toDial.map(async (g) => {
         log(`start dial goal ${beeminder_user}/${g.slug}`);
         try {
-          const {min, max} = getSettings(g);
+          const settings = getSettings(g);
           const fullGoal = await getGoal(
               beeminder_user,
               beeminder_token,
               g.slug,
               now() - (SID * 31),
           );
-          const roadall = dial(fullGoal, {min, max});
+          const roadall = dial(fullGoal, settings);
           const newRate = roadall && roadall[roadall.length - 1][2];
           const id = `${beeminder_user}/${g.slug}`;
 

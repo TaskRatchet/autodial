@@ -640,6 +640,49 @@ describe("dial function", () => {
 
     expect(end[0]).not.toBeFalsy();
   });
+
+  it("does not make strict goal easier", () => {
+    setNow(2021, 2, 24);
+
+    const r = dial(makeGoal({
+      aggday: "last",
+      kyoom: false,
+      rate: 5,
+      runits: "d",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210224"), null, 5],
+      ],
+      datapoints: [{daystamp: "20210124", value: 0}, {
+        daystamp: "20210125",
+        value: 1,
+      }],
+    }), {strict: true});
+
+    expect(r).toBeFalsy();
+  });
+
+  it("does not make strict do-less goal easier", () => {
+    setNow(2021, 2, 24);
+
+    const r = dial(makeGoal({
+      aggday: "last",
+      kyoom: false,
+      yaw: -1,
+      rate: 0,
+      runits: "d",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210224"), null, 0],
+      ],
+      datapoints: [{daystamp: "20210124", value: 0}, {
+        daystamp: "20210125",
+        value: 1,
+      }],
+    }), {strict: true});
+
+    expect(r).toBeFalsy();
+  });
 });
 
 // TODO:

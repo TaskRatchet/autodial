@@ -4,6 +4,7 @@ export type AutodialSettings = {
   autodial: boolean,
   min: number,
   max: number,
+  strict: boolean,
 }
 
 export function getSettings(g: Goal): AutodialSettings {
@@ -17,5 +18,6 @@ export function getSettings(g: Goal): AutodialSettings {
     autodial: text.includes("#autodial") || false,
     min,
     max,
+    strict: text.includes("#autodialStrict") || false,
   };
 }
