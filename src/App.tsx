@@ -169,6 +169,11 @@ function App(): JSX.Element {
               autodialer will set for the goal, in terms
               of your goal's current time unit.</TableCell>
           </TableRow>
+          <TableRow>
+            <TableCell>#autodialStrict</TableCell>
+            <TableCell>Enables autodialing and prevents autodialer from ever
+              making goal easier.</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
@@ -185,10 +190,11 @@ function App(): JSX.Element {
               <TableCell>Slug</TableCell>
               <TableCell>#autodialMin=?</TableCell>
               <TableCell>#autodialMax=?</TableCell>
+              <TableCell>#autodialStrict</TableCell>
               <TableCell>Rate</TableCell>
-              <TableCell>30d Unit Average</TableCell>
+              <TableCell>30d Average</TableCell>
               <TableCell>Weekends Off</TableCell>
-              <TableCell>Goal Age</TableCell>
+              <TableCell>Age</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

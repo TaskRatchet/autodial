@@ -58,6 +58,7 @@ export default function GoalRow(
       rel={"nofollow noreferrer"}>{goal.slug}</a></TableCell>
     <TableCell>{min}</TableCell>
     <TableCell>{max}</TableCell>
+    <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
     <TableCell>
       {fn(rate)}/{goal.runits}
       {pendingRate && <>

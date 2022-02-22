@@ -40,6 +40,7 @@ export type Goal = {
   title: string,
   aggday: Aggday,
   kyoom: boolean,
+  yaw: 1|-1,
   runits: "h" | "d" | "w" | "m" | "y",
   roadall: Roadall,
   fullroad: Fullroad

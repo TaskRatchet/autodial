@@ -58,8 +58,6 @@ describe("function", () => {
 
     await runCron();
 
-    await new Promise(process.nextTick);
-
     expect(dial).toBeCalledWith(goal, expect.anything());
   });
 
@@ -72,8 +70,6 @@ describe("function", () => {
 
     await runCron();
 
-    await new Promise(process.nextTick);
-
     expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
   });
 
@@ -85,8 +81,6 @@ describe("function", () => {
     setGoal(goal);
 
     await runCron();
-
-    await new Promise(process.nextTick);
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1.5}));
   });
@@ -111,8 +105,6 @@ describe("function", () => {
     setGoal(goal);
 
     await runCron();
-
-    await new Promise(process.nextTick);
 
     expect(updateGoal).toBeCalledWith(
         "the_user",
@@ -178,9 +170,19 @@ describe("function", () => {
 
     await runCron();
 
-    await new Promise(process.nextTick);
-
     expect(dial).toBeCalledWith(goal, expect.anything());
+  });
+
+  it("supports strict", async () => {
+    const goal = makeGoal({
+      fineprint: "#autodialStrict",
+    });
+
+    setGoal(goal);
+
+    await runCron();
+
+    expect(dial).toBeCalledWith(goal, expect.objectContaining({strict: true}));
   });
 });
 
