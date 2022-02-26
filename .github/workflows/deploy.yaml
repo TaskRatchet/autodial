@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  deploy-functions:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,9 +21,5 @@ jobs:
         working-directory: ./functions
       - name: Install Firebase
         run: curl -sL https://firebase.tools | bash
-      - name: Deploy security rules
+      - name: Deploy to Firebase
         run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
-        working-directory: .
-      - name: Deploy functions
-        run: firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
-        working-directory: ./functions
