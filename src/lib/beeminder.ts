@@ -53,6 +53,23 @@ export async function getGoal(
   return data;
 }
 
+export async function getUser(user: string, token: string): Promise<unknown> {
+  const url = `https://www.beeminder.com/api/v1/users/${user}.json`;
+  const response = await axios.get(`${url}?access_token=${token}`);
+
+  if (response.status !== 200) {
+    const msg =
+      `Fetch error: ${response.status} - ${response.statusText} - ${url}`;
+    throw new Error(msg);
+  }
+
+  if (response.data?.errors) {
+    throw new Error(response.data.errors.message);
+  }
+
+  return response.data;
+}
+
 export async function updateGoal(
     user: string,
     token: string,
