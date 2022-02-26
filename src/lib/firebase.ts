@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/analytics";
 import "firebase/auth";
+import "firebase/functions";
 
 let didInit = false;
 
@@ -21,4 +22,5 @@ export function init(): void {
 
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
+  firebase.functions();
 }

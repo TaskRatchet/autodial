@@ -3,11 +3,10 @@
  */
 
 import React from "react";
-import {waitFor} from "@testing-library/react";
+import {waitFor, screen} from "@testing-library/react";
 import App from "./App";
 
 import {getParams} from "./lib/browser";
-import {deleteUser, setUserAuth} from "./lib/database";
 import {
   getGoal,
   getGoals,
@@ -17,14 +16,18 @@ import {
   parseDate, r, withMutedReactQueryLogger, now, SID,
 } from "./lib";
 import {GoalInput, makeGoal} from "../functions/src/test/helpers";
+import {remove, update} from "./lib/functions";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("./lib/browser");
-jest.mock("./lib/database");
+jest.mock("./lib/functions");
 jest.mock("./lib/firebase");
 jest.mock("./lib/beeminder");
+jest.mock("./lib/force");
 
 const mockGetParams = getParams as jest.Mock;
-const mockSetUserAuth = setUserAuth as jest.Mock;
+const mockUpdate = update as jest.Mock;
+const mockRemove = remove as jest.Mock;
 const mockGetGoals = getGoals as jest.Mock;
 const mockGetGoalsVerbose = getGoalsVerbose as jest.Mock;
 const mockGetGoal = getGoal as jest.Mock;
@@ -62,7 +65,7 @@ function loadGoals(goals: GoalInput[]) {
 describe("Home page", () => {
   beforeEach(() => {
     mockGetParams.mockReturnValue(new URLSearchParams(""));
-    mockSetUserAuth.mockResolvedValue(null);
+    mockUpdate.mockResolvedValue(null);
     loadGoals([{slug: "the_slug"}]);
     loadParams("?access_token=abc123&username=alice");
   });
@@ -130,7 +133,7 @@ describe("Home page", () => {
     await r(<App/>);
 
     await waitFor(() => {
-      expect(setUserAuth).toBeCalledWith("alice", "abc123");
+      expect(update).toBeCalledWith("alice", "abc123");
     });
   });
 
@@ -139,7 +142,7 @@ describe("Home page", () => {
 
     await r(<App/>);
 
-    expect(setUserAuth).not.toBeCalled();
+    expect(update).not.toBeCalled();
   });
 
   it("gets user goals", async () => {
@@ -165,39 +168,11 @@ describe("Home page", () => {
     });
   });
 
-  it("does not set user auth if bm error", async () => {
-    await withMutedReactQueryLogger(async () => {
-      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
-
-      const {getByText} = await r(<App/>);
-
-      await waitFor(() => {
-        expect(getByText("the_error_message")).toBeInTheDocument();
-      });
-
-      expect(setUserAuth).not.toBeCalled();
-    });
-  });
-
   it("displays beeminder username", async () => {
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
       expect(getByText("alice")).toBeInTheDocument();
-    });
-  });
-
-  it("does not display beeminder username if auth failure", async () => {
-    await withMutedReactQueryLogger(async () => {
-      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
-
-      const {getByText, queryByText} = await r(<App/>);
-
-      await waitFor(() => {
-        expect(getByText("the_error_message")).toBeInTheDocument();
-      });
-
-      expect(queryByText("alice")).not.toBeInTheDocument();
     });
   });
 
@@ -334,7 +309,7 @@ describe("Home page", () => {
       )).toBeInTheDocument();
     });
 
-    expect(setUserAuth).not.toBeCalled();
+    expect(update).not.toBeCalled();
   });
 
   it("deletes database user on disable", async () => {
@@ -343,7 +318,7 @@ describe("Home page", () => {
     await r(<App/>);
 
     await waitFor(() => {
-      expect(deleteUser).toBeCalledWith("alice");
+      expect(remove).toBeCalledWith("alice", "abc123");
     });
   });
 
@@ -359,48 +334,6 @@ describe("Home page", () => {
     });
 
     expect(queryByText("Here are your goals:")).not.toBeInTheDocument();
-  });
-
-  it("displays error on disable if Beeminder auth fails", async () => {
-    await withMutedReactQueryLogger(async () => {
-      loadParams("?access_token=abc123&username=alice&disable=true");
-
-      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
-
-      const {getByText} = await r(<App/>);
-
-      await waitFor(() => {
-        expect(getByText(
-            "Unable to disable autodialer for Beeminder user alice: " +
-          "Beeminder authentication failed.",
-        )).toBeInTheDocument();
-      });
-    });
-  });
-
-  it("does not display disable success message if auth fails", async () => {
-    await withMutedReactQueryLogger(async () => {
-      loadParams("?access_token=abc123&username=alice&disable=true");
-
-      mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
-
-      const {getByText, queryByText} = await r(<App/>);
-
-      expect(queryByText(
-          "The autodialer has been disabled for Beeminder user alice",
-      )).not.toBeInTheDocument();
-
-      await waitFor(() => {
-        expect(getByText(
-            "Unable to disable autodialer for Beeminder user alice: " +
-          "Beeminder authentication failed.",
-        )).toBeInTheDocument();
-      });
-
-      expect(queryByText(
-          "The autodialer has been disabled for Beeminder user alice",
-      )).not.toBeInTheDocument();
-    });
   });
 
   it("does not get goals if no username", async () => {
@@ -569,6 +502,43 @@ describe("Home page", () => {
 
     await waitFor(() => {
       expect(getByText("yes")).toBeInTheDocument();
+    });
+  });
+
+  it("displays update error", async () => {
+    await withMutedReactQueryLogger(async () => {
+      mockUpdate.mockRejectedValue({message: "the_error"});
+
+      await r(<App/>);
+
+      await waitFor(() => {
+        expect(screen.getByText("the_error")).toBeInTheDocument();
+      });
+    });
+  });
+
+  it("displays remove error", async () => {
+    await withMutedReactQueryLogger(async () => {
+      mockRemove.mockRejectedValue({message: "the_error"});
+      loadParams("?access_token=abc123&username=alice&disable=true");
+
+      await r(<App/>);
+
+      await waitFor(() => {
+        expect(screen.getByText("the_error")).toBeInTheDocument();
+      });
+    });
+  });
+
+  it("refetches goals after force run", async () => {
+    loadParams("?access_token=abc123&username=alice");
+
+    await r(<App/>);
+
+    userEvent.click(screen.getByText("Force Run"));
+
+    await waitFor(() => {
+      expect(getGoalsVerbose).toBeCalledTimes(2);
     });
   });
 });

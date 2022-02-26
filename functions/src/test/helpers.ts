@@ -9,6 +9,7 @@ import {
   Goal,
   GoalVerbose,
 } from "../../../src/lib";
+import {setLogger} from "react-query";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;
@@ -74,4 +75,24 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
     weekends_off,
     mathishard: fullroad[fullroad.length - 1],
   };
+}
+
+export async function withMutedReactQueryLogger<T>(
+    func: () => Promise<T>
+): Promise<T> {
+  const noop = () => {
+    // do nothing
+  };
+
+  setLogger({
+    log: noop,
+    warn: noop,
+    error: noop,
+  });
+
+  const result = await func();
+
+  setLogger(window.console);
+
+  return result;
 }
