@@ -15,8 +15,8 @@ export function dial(
 ): Roadall | false {
   const t = now();
   const {min = -Infinity, max = Infinity, strict = false} = opts;
-  const strictMin = strict && g.rate !== null ? Math.max(min, g.rate) : min;
-  const strictMax = strict && g.rate !== null ? Math.min(max, g.rate) : max;
+  const strictMin = strict && g.rate !== null && g.yaw == 1 ? Math.max(min, g.rate) : min;
+  const strictMax = strict && g.rate !== null && g.yaw == -1 ? Math.min(max, g.rate) : max;
   const rateSeconds = UNIT_SECONDS[g.runits];
   const averagePerSecond = getRollingAverageRate(g);
   const len = t - g.fullroad[0][0];
