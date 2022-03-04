@@ -541,7 +541,6 @@ describe("Home page", () => {
       expect(getGoalsVerbose).toBeCalledTimes(2);
     });
   });
-});
 
 // TODO:
 // add route to handle de-authorizing the app from Beeminder side (will need
