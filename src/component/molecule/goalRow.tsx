@@ -1,4 +1,4 @@
-import {TableCell, TableRow} from "@mui/material";
+import {Box, TableCell, TableRow} from "@mui/material";
 import {
   AutodialSettings,
   dial,
@@ -81,16 +81,18 @@ export default function GoalRow(
     <TableCell>{min}</TableCell>
     <TableCell>{max}</TableCell>
     <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
-    <TableCell sx={{display: "flex", alignItems: "center"}}>
-      {fn(rate)}/{goal.runits}
-      {pendingRate && <>
-        <DoubleArrowIcon
-          aria-label={"pending change"}
-          fontSize={"inherit"}
-          sx={{pl: 1, pr: 1}}
-        />
-        <span>{fn(pendingRate)}/{goal.runits}</span>
-      </>}
+    <TableCell>
+      <Box sx={{display: "flex", alignItems: "center"}}>
+        {fn(rate)}/{goal.runits}
+        {pendingRate && <>
+          <DoubleArrowIcon
+            aria-label={"pending change"}
+            fontSize={"inherit"}
+            sx={{pl: 1, pr: 1}}
+          />
+          <span>{fn(pendingRate)}/{goal.runits}</span>
+        </>}
+      </Box>
     </TableCell>
     <TableCell>{arpn !== undefined && `${fn(arpn)}/${goal.runits}`}</TableCell>
     <TableCell>{goal.weekends_off ? "yes" : "no"}</TableCell>
