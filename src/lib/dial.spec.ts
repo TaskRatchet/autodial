@@ -603,7 +603,7 @@ describe("dial function", () => {
     expect(r).toBeFalsy();
   });
 
-  it("unsets end value when dialing goal with end value", async () => {
+  it("does not dial goal without end rate", async () => {
     setNow(2021, 2, 25);
 
     const r = dial(makeGoal({
@@ -612,33 +612,12 @@ describe("dial function", () => {
       runits: "d",
       roadall: [
         [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), 10, null],
+        [parseDate("20220125"), 10, null],
       ],
       datapoints: [],
     }));
 
-    const end = getRoadEnd(r);
-
-    expect(end[1]).toBeFalsy();
-  });
-
-  it("sets end date for goals without end date", async () => {
-    setNow(2021, 2, 25);
-
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [null, 10, 1],
-      ],
-      datapoints: [],
-    }));
-
-    const end = getRoadEnd(r);
-
-    expect(end[0]).not.toBeFalsy();
+    expect(r).toBeFalsy();
   });
 
   it("does not make strict goal easier", () => {
@@ -682,6 +661,25 @@ describe("dial function", () => {
     }), {strict: true});
 
     expect(r).toBeFalsy();
+  });
+
+  it("preserves end value", () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [null, 300, 1],
+      ],
+      datapoints: [],
+    }));
+
+    const end = getRoadEnd(r);
+
+    expect(end).toEqual([null, 300, 0]);
   });
 });
 

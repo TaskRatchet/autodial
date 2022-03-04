@@ -192,13 +192,13 @@ describe("Home page", () => {
       {slug: "a_slug"},
     ]);
 
-    const {getByText} = await r(<App/>);
+    await r(<App/>);
 
     await waitFor(() => {
-      const a = getByText("a_slug");
-      const el = a.parentElement?.parentElement
-          ?.nextSibling?.firstChild?.textContent;
-      expect(el).toEqual("b_slug");
+      const html = document.body.innerHTML;
+      const a = html.search("a_slug");
+      const b = html.search("b_slug");
+      expect(a).toBeLessThan(b);
     });
   });
 

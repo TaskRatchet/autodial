@@ -25,8 +25,8 @@ export default function Issues(): JSX.Element {
         other windows.
       </li>
       <li>
-        The end state of a dialed goal will always be in terms of date and
-        rate, regardless of how the goal's end was originally defined.
+        Goals with an end state defined in terms of end date and end value,
+        leaving end rate undefined, are unsupported and will not be dialed.
       </li>
     </ul>
   </>;
