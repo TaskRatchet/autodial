@@ -1,4 +1,4 @@
-import {TableCell, TableRow} from "@mui/material";
+import {Badge, TableCell, TableRow} from "@mui/material";
 import {
   AutodialSettings,
   dial,
@@ -16,6 +16,16 @@ function fn(n: number): string {
   return n.toFixed(2).replace(/\.0+$/, "");
 }
 
+function getEdge(g: GoalVerbose, o: AutodialSettings): number {
+  const r = g.mathishard[2];
+
+  let e = 0;
+  if (r === o.min) e = -1;
+  if (r === o.max) e = 1;
+
+  return e * g.yaw;
+}
+
 interface Props {
   goal: GoalVerbose,
   username: string
@@ -30,6 +40,7 @@ export default function GoalRow(
   const [settings, setSettings] = useState<AutodialSettings>();
   const [pendingRate, setPendingRate] = useState<false|number>(false);
   const [arpn, setArpn] = useState<number>();
+  const [edge, setEdge] = useState<number>(0);
 
   useEffect(() => {
     const options = getSettings(goal);
@@ -38,6 +49,7 @@ export default function GoalRow(
     const arps = getRollingAverageRate(goal);
     const arpn = arps * UNIT_SECONDS[goal.runits];
 
+    setEdge(getEdge(goal, options));
     setSettings(options);
     setPendingRate(newRate === null ? false : newRate);
     setArpn(arpn);
@@ -52,10 +64,21 @@ export default function GoalRow(
   const rate = goal.mathishard[2];
 
   return <TableRow>
-    <TableCell><a
-      href={`https://beeminder.com/${username}/${goal.slug}`}
-      target={"_blank"}
-      rel={"nofollow noreferrer"}>{goal.slug}</a></TableCell>
+    <TableCell>
+      <Badge
+        invisible={edge === 0}
+        color={edge === 1 ? "success" : "primary"}
+        variant="dot"
+      >
+        <a
+          href={`https://beeminder.com/${username}/${goal.slug}`}
+          target={"_blank"}
+          rel={"nofollow noreferrer"}
+        >
+          {goal.slug}
+        </a>
+      </Badge>
+    </TableCell>
     <TableCell>{min}</TableCell>
     <TableCell>{max}</TableCell>
     <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
