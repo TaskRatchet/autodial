@@ -13,7 +13,7 @@ export default function StepTwo(): JSX.Element {
 
   return <>
     <h3>Step 2: Configure specific goals to use the autodialer</h3>
-    <p>Add one or more of the following three tags to the fineprint of the goals
+    <p>Add one or more of the following four tags to the fineprint of the goals
       you wish to autodial:</p>
 
     <Tags />
