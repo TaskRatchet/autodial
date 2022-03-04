@@ -15,9 +15,10 @@ export function dial(
 ): Roadall | false {
   const t = now();
   const {min = -Infinity, max = Infinity, strict = false} = opts;
-  const strictNotNull = strict && g.rate !== null
-  const strictMin = strictNotNull && g.yaw == 1 ? Math.max(min, g.rate) : min;
-  const strictMax = strictNotNull && g.yaw == -1 ? Math.min(max, g.rate) : max;
+  const neverLess = strict && g.yaw == 1;
+  const neverMore = strict && g.yaw == -1;
+  const strictMin = neverLess && g.rate !== null ? Math.max(min, g.rate) : min;
+  const strictMax = neverMore && g.rate !== null ? Math.min(max, g.rate) : max;
   const rateSeconds = UNIT_SECONDS[g.runits];
   const averagePerSecond = getRollingAverageRate(g);
   const len = t - g.fullroad[0][0];
