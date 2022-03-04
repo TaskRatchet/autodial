@@ -1,4 +1,4 @@
-import {Badge, TableCell, TableRow} from "@mui/material";
+import {Box, TableCell, TableRow} from "@mui/material";
 import {
   AutodialSettings,
   dial,
@@ -11,6 +11,8 @@ import {
 import React, {useEffect, useState} from "react";
 import moment from "moment";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import {green} from "@mui/material/colors";
+
 
 function fn(n: number): string {
   return n.toFixed(2).replace(/\.0+$/, "");
@@ -42,6 +44,9 @@ export default function GoalRow(
   const [arpn, setArpn] = useState<number>();
   const [edge, setEdge] = useState<number>(0);
 
+  const success = edge === goal.yaw;
+  const backgroundColor = success ? green[50] : "initial";
+
   useEffect(() => {
     const options = getSettings(goal);
     const newRoad = dial(goal, options);
@@ -63,35 +68,31 @@ export default function GoalRow(
 
   const rate = goal.mathishard[2];
 
-  return <TableRow>
+  return <TableRow sx={{backgroundColor}}>
     <TableCell>
-      <Badge
-        invisible={edge === 0}
-        color={edge === 1 ? "success" : "primary"}
-        variant="dot"
+      <a
+        href={`https://beeminder.com/${username}/${goal.slug}`}
+        target={"_blank"}
+        rel={"nofollow noreferrer"}
       >
-        <a
-          href={`https://beeminder.com/${username}/${goal.slug}`}
-          target={"_blank"}
-          rel={"nofollow noreferrer"}
-        >
-          {goal.slug}
-        </a>
-      </Badge>
+        {goal.slug}
+      </a>
     </TableCell>
     <TableCell>{min}</TableCell>
     <TableCell>{max}</TableCell>
     <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
     <TableCell>
-      {fn(rate)}/{goal.runits}
-      {pendingRate && <>
-        <DoubleArrowIcon
-          aria-label={"pending change"}
-          fontSize={"inherit"}
-          sx={{pl: 1, pr: 1}}
-        />
-        <span>{fn(pendingRate)}/{goal.runits}</span>
-      </>}
+      <Box sx={{display: "flex", alignItems: "center"}}>
+        {fn(rate)}/{goal.runits}
+        {pendingRate && <>
+          <DoubleArrowIcon
+            aria-label={"pending change"}
+            fontSize={"inherit"}
+            sx={{pl: 1, pr: 1}}
+          />
+          <span>{fn(pendingRate)}/{goal.runits}</span>
+        </>}
+      </Box>
     </TableCell>
     <TableCell>{arpn !== undefined && `${fn(arpn)}/${goal.runits}`}</TableCell>
     <TableCell>{goal.weekends_off ? "yes" : "no"}</TableCell>
