@@ -94,7 +94,9 @@ export default function GoalRow(
         </>}
       </Box>
     </TableCell>
-    <TableCell>{arpn !== undefined && `${fn(arpn)}/${goal.runits}`}</TableCell>
+    <TableCell>{arpn !== undefined && 
+    `${fn(arpn)}${settings?.add == 0 ? "" : "+" + settings?.add}/${goal.runits}`
+    }</TableCell>
     <TableCell>{goal.weekends_off ? "yes" : "no"}</TableCell>
     <TableCell>{moment.duration(getGoalAge(goal) * 1000).humanize()}</TableCell>
   </TableRow>;

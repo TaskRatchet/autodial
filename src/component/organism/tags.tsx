@@ -39,6 +39,11 @@ export default function Tags(): JSX.Element {
           <TableCell>Enables autodialing and prevents autodialer from ever
             making goal easier.</TableCell>
         </TableRow>
+        <TableRow>
+          <TableCell>#autodialAdd=1</TableCell>
+          <TableCell>Enables autodialing and specifies an amount to be added
+            to your 30-day average (can be negative).</TableCell>
+        </TableRow>
       </TableBody>
     </Table>
   </TableContainer>;
