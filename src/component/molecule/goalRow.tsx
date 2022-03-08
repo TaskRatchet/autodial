@@ -44,7 +44,7 @@ export default function GoalRow(
   const [arpn, setArpn] = useState<number>();
   const [edge, setEdge] = useState<number>(0);
 
-  const success = edge === goal.yaw;
+  const success = edge === 1;
   const backgroundColor = success ? green[50] : "initial";
 
   useEffect(() => {
