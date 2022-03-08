@@ -18,7 +18,7 @@ export function dial(
   if (lastRow[2] === null) return false;
 
   const t = now();
-  const {min = -Infinity, max = Infinity, strict = false} = opts;
+  const {min = -Infinity, max = Infinity, strict = false, add = 0} = opts;
   const neverLess = strict && g.yaw == 1;
   const neverMore = strict && g.yaw == -1;
   const strictMin = neverLess && g.rate !== null ? Math.max(min, g.rate) : min;
@@ -27,7 +27,7 @@ export function dial(
   const averagePerSecond = getRollingAverageRate(g);
   const len = t - g.fullroad[0][0];
   const oldRate = g.mathishard[2];
-  const newRate = averagePerSecond * rateSeconds;
+  const newRate = averagePerSecond * rateSeconds + add;
   const monthCompletion = Math.min(len / (SID * 30), 1);
   const rateDiff = oldRate - newRate;
   const modulatedRate = oldRate - (rateDiff * monthCompletion);
