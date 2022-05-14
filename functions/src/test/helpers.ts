@@ -7,7 +7,7 @@ import {
   fuzzyEquals,
   Datapoint,
   Goal,
-  GoalVerbose,
+  GoalVerbose, DenseSegment,
 } from "../../../src/lib";
 import {setLogger} from "react-query";
 
@@ -40,6 +40,18 @@ type DatapointInput = Omit<Datapoint, "timestamp"> & { timestamp?: number };
 export type GoalInput = Partial<Goal>
   & { datapoints?: DatapointInput[] }
 
+function getRate(g: GoalInput, mathishard: DenseSegment | undefined): number {
+  if (g.rate !== undefined) {
+    return g.rate;
+  }
+
+  if (mathishard !== undefined) {
+    return mathishard[2];
+  }
+
+  return 1;
+}
+
 export function makeGoal(g: GoalInput = {}): GoalVerbose {
   const roadall = g.roadall || [];
   const runits = g.runits || "d";
@@ -49,6 +61,7 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
   return {
     ...g,
     slug: g.slug || "the_slug",
+    rate: getRate(g, mathishard),
     aggday: g.aggday || "last",
     kyoom: g.kyoom || false,
     yaw: g.yaw || 1,
@@ -62,7 +75,6 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
     fineprint: g.fineprint || "",
     title: g.title || "",
     weekends_off: g.weekends_off || false,
-    rate: g.rate === undefined ? mathishard[2] : g.rate,
     mathishard,
     goal_type: g.goal_type || "hustler",
     odom: g.odom || false,

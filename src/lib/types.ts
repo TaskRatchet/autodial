@@ -44,7 +44,7 @@ export type GoalType =
   | "custom" // Full access to the underlying goal parameters
 
 export type Goal = {
-  rate: number | null;
+  rate: number;
   slug: string,
   title: string,
   aggday: Aggday,
