@@ -28,6 +28,9 @@ export default function Issues(): JSX.Element {
         Goals with an end state defined in terms of end date and end value,
         leaving end rate undefined, are unsupported and will not be dialed.
       </li>
+      <li>
+        Odometer-type goals are unsupported and will not be dialed.
+      </li>
     </ul>
   </>;
 }

@@ -41,39 +41,31 @@ export type GoalInput = Partial<Goal>
   & { datapoints?: DatapointInput[] }
 
 export function makeGoal(g: GoalInput = {}): GoalVerbose {
-  const {
-    rate,
-    slug = "the_slug",
-    aggday = "last",
-    kyoom = false,
-    yaw = 1,
-    runits = "d",
-    roadall = [],
-    fullroad = fillroadall(roadall, UNIT_SECONDS[runits]),
-    datapoints = [],
-    fineprint = "",
-    title = "",
-    // eslint-disable-next-line camelcase
-    weekends_off = false,
-  } = g;
+  const roadall = g.roadall || [];
+  const runits = g.runits || "d";
+  const fullroad = fillroadall(roadall, UNIT_SECONDS[runits]);
+  const mathishard = fullroad[fullroad.length - 1];
 
   return {
-    rate: rate === undefined ? fullroad[fullroad.length - 1]?.[2] : rate,
-    slug,
-    aggday,
-    kyoom,
-    yaw,
+    ...g,
+    slug: g.slug || "the_slug",
+    aggday: g.aggday || "last",
+    kyoom: g.kyoom || false,
+    yaw: g.yaw || 1,
     runits,
     roadall,
     fullroad,
-    datapoints: datapoints.map((d: DatapointInput) => ({
+    datapoints: (g.datapoints || []).map((d: DatapointInput) => ({
       timestamp: parseDate(d.daystamp),
       ...d,
     })),
-    fineprint,
-    title,
-    weekends_off,
-    mathishard: fullroad[fullroad.length - 1],
+    fineprint: g.fineprint || "",
+    title: g.title || "",
+    weekends_off: g.weekends_off || false,
+    rate: g.rate === undefined ? mathishard[2] : g.rate,
+    mathishard,
+    goal_type: g.goal_type || "hustler",
+    odom: g.odom || false,
   };
 }
 

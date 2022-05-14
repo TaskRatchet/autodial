@@ -13,6 +13,8 @@ export function dial(
     g: GoalVerbose,
     opts: Partial<AutodialSettings> = {},
 ): Roadall | false {
+  if (g.odom) return false;
+
   const lastRow = g.roadall[g.roadall.length - 1];
 
   if (lastRow[2] === null) return false;

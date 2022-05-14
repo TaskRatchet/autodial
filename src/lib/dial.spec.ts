@@ -681,6 +681,20 @@ describe("dial function", () => {
 
     expect(end).toEqual([null, 300, 0]);
   });
+
+  it("does not dial odometer goals", async () => {
+    setNow(2021, 2, 25);
+
+    const r = dial(makeGoal({
+      odom: true,
+      roadall: [
+        [parseDate("20210125"), 0, null],
+        [null, 300, 1],
+      ],
+    }));
+
+    expect(r).toBeFalsy();
+  });
 });
 
 // TODO:
