@@ -34,8 +34,17 @@ export type Aggday =
   | "skatesum"
   | "cap1"
 
+export type GoalType =
+  "hustler" // Do More
+  | "biker" // Odometer
+  | "fatloser" // Weight loss
+  | "gainer" // Gain Weight
+  | "inboxer" // Inbox Fewer
+  | "drinker" // Do Less
+  | "custom" // Full access to the underlying goal parameters
+
 export type Goal = {
-  rate: number | null;
+  rate: number;
   slug: string,
   title: string,
   aggday: Aggday,
@@ -48,6 +57,9 @@ export type Goal = {
   // eslint-disable-next-line camelcase
   weekends_off: boolean
   mathishard: DenseSegment
+  // eslint-disable-next-line camelcase
+  goal_type: GoalType
+  odom: boolean
 }
 
 export type GoalVerbose = {
