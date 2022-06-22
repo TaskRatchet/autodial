@@ -1,4 +1,4 @@
-import {Box, TableCell, TableRow} from "@mui/material";
+import { Box, TableCell, TableRow } from "@mui/material";
 import {
   AutodialSettings,
   dial,
@@ -8,10 +8,10 @@ import {
   GoalVerbose,
   UNIT_SECONDS,
 } from "../../lib";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
-import {green} from "@mui/material/colors";
+import { green } from "@mui/material/colors";
 
 function fn(n: number): string {
   return n.toFixed(2).replace(/\.0+$/, "");
@@ -28,18 +28,13 @@ function getEdge(g: GoalVerbose, o: AutodialSettings): number {
 }
 
 interface Props {
-  goal: GoalVerbose,
-  username: string
+  goal: GoalVerbose;
+  username: string;
 }
 
-export default function GoalRow(
-    {
-      goal,
-      username,
-    }: Props,
-): JSX.Element {
+export default function GoalRow({ goal, username }: Props): JSX.Element {
   const [settings, setSettings] = useState<AutodialSettings>();
-  const [pendingRate, setPendingRate] = useState<false|number>(false);
+  const [pendingRate, setPendingRate] = useState<false | number>(false);
   const [arpn, setArpn] = useState<number>();
   const [edge, setEdge] = useState<number>(0);
 
@@ -59,54 +54,69 @@ export default function GoalRow(
     setArpn(arpn);
   }, [goal]);
 
-  const min = settings?.min === -Infinity ?
-    "—" : `${settings?.min}/${goal.runits}`;
-  const max = settings?.max === Infinity ?
-    "—" : `${settings?.max}/${goal.runits}`;
-
+  const min =
+    settings?.min === -Infinity ? "—" : `${settings?.min}/${goal.runits}`;
+  const max =
+    settings?.max === Infinity ? "—" : `${settings?.max}/${goal.runits}`;
 
   const rate = goal.mathishard[2];
 
-  return <TableRow sx={{backgroundColor}}>
-    <TableCell>
-      <a
-        href={`https://beeminder.com/${username}/${goal.slug}`}
-        target={"_blank"}
-        rel={"nofollow noreferrer"}
-      >
-        {goal.slug}
-      </a>
-    </TableCell>
-    <TableCell>{min}</TableCell>
-    <TableCell>{max}</TableCell>
-    <TableCell>{settings?.add === 0 ? "—" : settings?.add}</TableCell>
-    <TableCell>
-      {settings?.from ? <a
-        href={`https://beeminder.com/${username}/${settings.from}`}
-        target={"_blank"}
-        rel={"nofollow noreferrer"}
-      >
-        {settings.from}
-      </a> : "—"}
-    </TableCell>
-    <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
-    <TableCell>
-      <Box sx={{display: "flex", alignItems: "center"}}>
-        {fn(rate)}/{goal.runits}
-        {pendingRate && <>
-          <DoubleArrowIcon
-            aria-label={"pending change"}
-            fontSize={"inherit"}
-            sx={{pl: 1, pr: 1}}
-          />
-          <span>{fn(pendingRate)}/{goal.runits}</span>
-        </>}
-      </Box>
-    </TableCell>
-    <TableCell>{arpn !== undefined &&
-    `${fn(arpn)}${settings?.add == 0 ? "" : "+" + settings?.add}/${goal.runits}`
-    }</TableCell>
-    <TableCell>{goal.weekends_off ? "yes" : "no"}</TableCell>
-    <TableCell>{moment.duration(getGoalAge(goal) * 1000).humanize()}</TableCell>
-  </TableRow>;
+  return (
+    <TableRow sx={{ backgroundColor }}>
+      <TableCell>
+        <a
+          href={`https://beeminder.com/${username}/${goal.slug}`}
+          target={"_blank"}
+          rel={"nofollow noreferrer"}
+        >
+          {goal.slug}
+        </a>
+      </TableCell>
+      <TableCell>{min}</TableCell>
+      <TableCell>{max}</TableCell>
+      <TableCell>{settings?.add === 0 ? "—" : settings?.add}</TableCell>
+      <TableCell>{settings?.times === 1 ? "—" : settings?.times}</TableCell>
+      <TableCell>
+        {settings?.from ? (
+          <a
+            href={`https://beeminder.com/${username}/${settings.from}`}
+            target={"_blank"}
+            rel={"nofollow noreferrer"}
+          >
+            {settings.from}
+          </a>
+        ) : (
+          "—"
+        )}
+      </TableCell>
+      <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
+      <TableCell>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {fn(rate)}/{goal.runits}
+          {pendingRate && (
+            <>
+              <DoubleArrowIcon
+                aria-label={"pending change"}
+                fontSize={"inherit"}
+                sx={{ pl: 1, pr: 1 }}
+              />
+              <span>
+                {fn(pendingRate)}/{goal.runits}
+              </span>
+            </>
+          )}
+        </Box>
+      </TableCell>
+      <TableCell>
+        {arpn !== undefined &&
+          `${fn(arpn)}${settings?.add == 0 ? "" : "+" + settings?.add}/${
+            goal.runits
+          }`}
+      </TableCell>
+      <TableCell>{goal.weekends_off ? "yes" : "no"}</TableCell>
+      <TableCell>
+        {moment.duration(getGoalAge(goal) * 1000).humanize()}
+      </TableCell>
+    </TableRow>
+  );
 }

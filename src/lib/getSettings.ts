@@ -1,32 +1,46 @@
-import {Goal, GoalVerbose} from "./types";
+import { Goal, GoalVerbose } from "./types";
 
 export type AutodialSettings = {
-  autodial: boolean,
-  min: number,
-  max: number,
-  strict: boolean,
-  add: number,
-  from?: string,
-  fromGoal?: GoalVerbose
+  autodial: boolean;
+  min: number;
+  max: number;
+  strict: boolean;
+  add: number;
+  times: number;
+  from?: string;
+  fromGoal?: GoalVerbose;
+};
+
+function parseOptionFloat(
+  haystack: string,
+  hashtag: string,
+  fallback: number
+): number {
+  const match = parseHashtag(haystack, hashtag, "(-?\\d*\\.?\\d+)");
+
+  return match ? parseFloat(match) : fallback;
+}
+
+function parseHashtag(
+  haystack: string,
+  hashtag: string,
+  pattern: string
+): string | undefined {
+  const matches = haystack.match(new RegExp(`#${hashtag}=${pattern}`));
+
+  return matches?.[1];
 }
 
 export function getSettings(g: Goal): AutodialSettings {
-  const text = `${g.fineprint} ${g.title}`;
-  const minMatches = text.match(/#autodialMin=(-?\d*\.?\d+)/);
-  const maxMatches = text.match(/#autodialMax=(-?\d*\.?\d+)/);
-  const addMatches = text.match(/#autodialAdd=(-?\d*\.?\d+)/);
-  const fromMatches = text.match(/#autodialFrom=(-?[\w-]+)/);
-  const min = minMatches ? parseFloat(minMatches[1]) : -Infinity;
-  const max = maxMatches ? parseFloat(maxMatches[1]) : Infinity;
-  const add = addMatches ? parseFloat(addMatches[1]) : 0;
-  const from = fromMatches ? fromMatches[1] : undefined;
+  const t = `${g.fineprint} ${g.title}`;
 
   return {
-    autodial: text.includes("#autodial") || false,
-    min,
-    max,
-    strict: text.includes("#autodialStrict") || false,
-    add,
-    from,
+    autodial: t.includes("#autodial"),
+    min: parseOptionFloat(t, "autodialMin", -Infinity),
+    max: parseOptionFloat(t, "autodialMax", Infinity),
+    strict: t.includes("#autodialStrict"),
+    add: parseOptionFloat(t, "autodialAdd", 0),
+    times: parseOptionFloat(t, "autodialTimes", 1),
+    from: parseHashtag(t, "autodialFrom", "(-?[\\w-]+)"),
   };
 }

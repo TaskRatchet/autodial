@@ -46,6 +46,13 @@ export default function Tags(): JSX.Element {
             </TableCell>
           </TableRow>
           <TableRow>
+            <TableCell>#autodialTimes=0.5</TableCell>
+            <TableCell>
+              Enables autodialing and specifies a multiplier to be applied to
+              your 30-day average (can be negative).
+            </TableCell>
+          </TableRow>
+          <TableRow>
             <TableCell>#autodialFrom=goal_slug</TableCell>
             <TableCell>
               Enables autodialing and tells the autodialer to use the average

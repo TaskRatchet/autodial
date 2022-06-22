@@ -1,8 +1,8 @@
-import {now} from "./time";
-import {AKRASIA_HORIZON, SID, UNIT_SECONDS} from "./constants";
-import {getRollingAverageRate} from "./getRollingAverageRate";
-import {fuzzyEquals} from "./fuzzyEquals";
-import {AutodialSettings, GoalVerbose, Roadall, SparseSegment} from "./index";
+import { now } from "./time";
+import { AKRASIA_HORIZON, SID, UNIT_SECONDS } from "./constants";
+import { getRollingAverageRate } from "./getRollingAverageRate";
+import { fuzzyEquals } from "./fuzzyEquals";
+import { AutodialSettings, GoalVerbose, Roadall, SparseSegment } from "./index";
 
 function clip(x: number, min: number, max: number) {
   if (min > max) [min, max] = [max, min];
@@ -10,8 +10,8 @@ function clip(x: number, min: number, max: number) {
 }
 
 export function dial(
-    g: GoalVerbose,
-    opts: Partial<AutodialSettings> = {},
+  g: GoalVerbose,
+  opts: Partial<AutodialSettings> = {}
 ): Roadall | false {
   if (g.odom) return false;
 
@@ -25,6 +25,7 @@ export function dial(
     max = Infinity,
     strict = false,
     add = 0,
+    times = 1,
     fromGoal,
   } = opts;
   const neverLess = strict && g.yaw == 1;
@@ -35,10 +36,10 @@ export function dial(
   const averagePerSecond = getRollingAverageRate(fromGoal ?? g);
   const len = t - g.fullroad[0][0];
   const oldRate = g.mathishard[2];
-  const newRate = averagePerSecond * rateSeconds + add;
+  const newRate = averagePerSecond * rateSeconds * times + add;
   const monthCompletion = Math.min(len / (SID * 30), 1);
   const rateDiff = oldRate - newRate;
-  const modulatedRate = oldRate - (rateDiff * monthCompletion);
+  const modulatedRate = oldRate - rateDiff * monthCompletion;
   const clippedRate = clip(modulatedRate, strictMin, strictMax);
 
   if (fuzzyEquals(clippedRate, oldRate)) return false;
@@ -52,15 +53,8 @@ export function dial(
   });
 
   if (!shouldAddBoundary) {
-    return [
-      ...tail,
-      lastRowModified,
-    ];
+    return [...tail, lastRowModified];
   }
 
-  return [
-    ...tail,
-    [t + AKRASIA_HORIZON, null, lastRow[2]],
-    lastRowModified,
-  ];
+  return [...tail, [t + AKRASIA_HORIZON, null, lastRow[2]], lastRowModified];
 }

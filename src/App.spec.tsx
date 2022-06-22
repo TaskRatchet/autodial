@@ -3,20 +3,24 @@
  */
 
 import React from "react";
-import {waitFor, screen} from "@testing-library/react";
+import { waitFor, screen } from "@testing-library/react";
 import App from "./App";
 
-import {getParams} from "./lib/browser";
+import { getParams } from "./lib/browser";
 import {
   getGoal,
   getGoals,
   getGoalsVerbose,
   setNow,
   GoalVerbose,
-  parseDate, r, withMutedReactQueryLogger, now, SID,
+  parseDate,
+  r,
+  withMutedReactQueryLogger,
+  now,
+  SID,
 } from "./lib";
-import {GoalInput, makeGoal} from "../functions/src/test/helpers";
-import {remove, update} from "./lib/functions";
+import { GoalInput, makeGoal } from "../functions/src/test/helpers";
+import { remove, update } from "./lib/functions";
 import userEvent from "@testing-library/user-event";
 
 jest.mock("./lib/browser");
@@ -37,17 +41,19 @@ function loadParams(params: string) {
 }
 
 function loadGoals(goals: GoalInput[]) {
-  const goals_: Partial<GoalVerbose>[] = goals.map((g, i) => makeGoal({
-    slug: `slug_${i}`,
-    runits: "d",
-    fineprint: "#autodial",
-    aggday: "sum",
-    roadall: [
-      [parseDate("20090210"), 0, null],
-      [parseDate("20090315"), null, g.rate === undefined ? 1 : g.rate],
-    ],
-    ...g,
-  }));
+  const goals_: Partial<GoalVerbose>[] = goals.map((g, i) =>
+    makeGoal({
+      slug: `slug_${i}`,
+      runits: "d",
+      fineprint: "#autodial",
+      aggday: "sum",
+      roadall: [
+        [parseDate("20090210"), 0, null],
+        [parseDate("20090315"), null, g.rate === undefined ? 1 : g.rate],
+      ],
+      ...g,
+    })
+  );
 
   mockGetGoal.mockImplementation((slug: string) => {
     return {
@@ -55,10 +61,12 @@ function loadGoals(goals: GoalInput[]) {
       ...goals_.find((g) => g.slug === slug),
     };
   });
-  mockGetGoalsVerbose.mockResolvedValue(goals_.map((g) => ({
-    datapoints: [],
-    ...g,
-  })));
+  mockGetGoalsVerbose.mockResolvedValue(
+    goals_.map((g) => ({
+      datapoints: [],
+      ...g,
+    }))
+  );
   mockGetGoals.mockResolvedValue(goals_);
 }
 
@@ -66,14 +74,14 @@ describe("Home page", () => {
   beforeEach(() => {
     mockGetParams.mockReturnValue(new URLSearchParams(""));
     mockUpdate.mockResolvedValue(null);
-    loadGoals([{slug: "the_slug"}]);
+    loadGoals([{ slug: "the_slug" }]);
     loadParams("?access_token=abc123&username=the_user");
   });
 
   it("has authenticate button", async () => {
     loadParams("");
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("Enable Autodialer")).toBeInTheDocument();
@@ -83,10 +91,13 @@ describe("Home page", () => {
   it("links authenticate link", async () => {
     loadParams("");
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
-      expect(getByText("Enable Autodialer")).toHaveAttribute("href", expect.stringContaining("https://www.beeminder.com/apps/authorize"));
+      expect(getByText("Enable Autodialer")).toHaveAttribute(
+        "href",
+        expect.stringContaining("https://www.beeminder.com/apps/authorize")
+      );
     });
   });
 
@@ -95,7 +106,7 @@ describe("Home page", () => {
 
     beforeEach(() => {
       jest.resetModules();
-      process.env = {...OLD_ENV};
+      process.env = { ...OLD_ENV };
     });
 
     afterAll(() => {
@@ -107,11 +118,13 @@ describe("Home page", () => {
 
       process.env.REACT_APP_BM_CLIENT_ID = "the_client_id";
 
-      const {getByText} = await r(<App/>);
+      const { getByText } = await r(<App />);
 
       await waitFor(() => {
-        expect(getByText("Enable Autodialer"))
-            .toHaveAttribute("href", expect.stringContaining("the_client_id"));
+        expect(getByText("Enable Autodialer")).toHaveAttribute(
+          "href",
+          expect.stringContaining("the_client_id")
+        );
       });
     });
 
@@ -120,17 +133,19 @@ describe("Home page", () => {
 
       process.env.REACT_APP_APP_URL = "http://the_app_url";
 
-      const {getByText} = await r(<App/>);
+      const { getByText } = await r(<App />);
 
       await waitFor(() => {
-        expect(getByText("Enable Autodialer"))
-            .toHaveAttribute("href", expect.stringContaining(encodeURIComponent("http://the_app_url")));
+        expect(getByText("Enable Autodialer")).toHaveAttribute(
+          "href",
+          expect.stringContaining(encodeURIComponent("http://the_app_url"))
+        );
       });
     });
   });
 
   it("persists credentials", async () => {
-    await r(<App/>);
+    await r(<App />);
 
     await waitFor(() => {
       expect(update).toBeCalledWith("the_user", "abc123");
@@ -140,16 +155,16 @@ describe("Home page", () => {
   it("does not persist credentials if none passed", async () => {
     loadParams("");
 
-    await r(<App/>);
+    await r(<App />);
 
     expect(update).not.toBeCalled();
   });
 
   it("gets user goals", async () => {
     setNow(2021, 2, 29);
-    const diffSince = now() - (SID * 31);
+    const diffSince = now() - SID * 31;
 
-    await r(<App/>);
+    await r(<App />);
 
     await waitFor(() => {
       expect(getGoalsVerbose).toBeCalledWith("the_user", "abc123", diffSince);
@@ -160,7 +175,7 @@ describe("Home page", () => {
     await withMutedReactQueryLogger(async () => {
       mockGetGoalsVerbose.mockRejectedValue(new Error("the_error_message"));
 
-      const {getByText} = await r(<App/>);
+      const { getByText } = await r(<App />);
 
       await waitFor(() => {
         expect(getByText("the_error_message")).toBeInTheDocument();
@@ -169,7 +184,7 @@ describe("Home page", () => {
   });
 
   it("displays beeminder username", async () => {
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("the_user")).toBeInTheDocument();
@@ -177,9 +192,9 @@ describe("Home page", () => {
   });
 
   it("lists goal slugs", async () => {
-    loadGoals([{slug: "the_slug"}]);
+    loadGoals([{ slug: "the_slug" }]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("the_slug")).toBeInTheDocument();
@@ -187,12 +202,9 @@ describe("Home page", () => {
   });
 
   it("lists slugs alphabetically", async () => {
-    loadGoals([
-      {slug: "b_slug"},
-      {slug: "a_slug"},
-    ]);
+    loadGoals([{ slug: "b_slug" }, { slug: "a_slug" }]);
 
-    await r(<App/>);
+    await r(<App />);
 
     await waitFor(() => {
       const html = document.body.innerHTML;
@@ -205,17 +217,15 @@ describe("Home page", () => {
   it("hides goals table if user not authenticated", async () => {
     loadParams("");
 
-    const {queryByText} = await r(<App/>);
+    const { queryByText } = await r(<App />);
 
     expect(queryByText("Here are your goals:")).not.toBeInTheDocument();
   });
 
   it("displays min value", async () => {
-    loadGoals([
-      {slug: "the_slug", rate: 3, fineprint: "#autodialMin=1.5"},
-    ]);
+    loadGoals([{ slug: "the_slug", rate: 3, fineprint: "#autodialMin=1.5" }]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("1.5/d")).toBeInTheDocument();
@@ -223,11 +233,9 @@ describe("Home page", () => {
   });
 
   it("displays positive value", async () => {
-    loadGoals([
-      {slug: "the_slug", rate: 3, fineprint: "#autodialMax=1"},
-    ]);
+    loadGoals([{ slug: "the_slug", rate: 3, fineprint: "#autodialMax=1" }]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("1/d")).toBeInTheDocument();
@@ -235,7 +243,7 @@ describe("Home page", () => {
   });
 
   it("removes login button when data loads successfully", async () => {
-    const {queryByText} = await r(<App/>);
+    const { queryByText } = await r(<App />);
 
     await waitFor(() => {
       expect(queryByText("Enable Autodialer")).not.toBeInTheDocument();
@@ -243,7 +251,7 @@ describe("Home page", () => {
   });
 
   it("includes disable button", async () => {
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("Disable Autodialer")).toBeInTheDocument();
@@ -251,26 +259,27 @@ describe("Home page", () => {
   });
 
   it("links disable button", async () => {
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
-      expect(getByText("Disable Autodialer"))
-          .toHaveAttribute(
-              "href",
-              "/?access_token=abc123&username=the_user&disable=true",
-          );
+      expect(getByText("Disable Autodialer")).toHaveAttribute(
+        "href",
+        "/?access_token=abc123&username=the_user&disable=true"
+      );
     });
   });
 
   it("does not persist credentials if disabling", async () => {
     loadParams("?access_token=abc123&username=the_user&disable=true");
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
-      expect(getByText(
-          "The autodialer has been disabled for Beeminder user the_user",
-      )).toBeInTheDocument();
+      expect(
+        getByText(
+          "The autodialer has been disabled for Beeminder user the_user"
+        )
+      ).toBeInTheDocument();
     });
 
     expect(update).not.toBeCalled();
@@ -279,7 +288,7 @@ describe("Home page", () => {
   it("deletes database user on disable", async () => {
     loadParams("?access_token=abc123&username=the_user&disable=true");
 
-    await r(<App/>);
+    await r(<App />);
 
     await waitFor(() => {
       expect(remove).toBeCalledWith("the_user", "abc123");
@@ -289,12 +298,14 @@ describe("Home page", () => {
   it("does not show goals for disabled user", async () => {
     loadParams("?access_token=abc123&username=the_user&disable=true");
 
-    const {getByText, queryByText} = await r(<App/>);
+    const { getByText, queryByText } = await r(<App />);
 
     await waitFor(() => {
-      expect(getByText(
-          "The autodialer has been disabled for Beeminder user the_user",
-      )).toBeInTheDocument();
+      expect(
+        getByText(
+          "The autodialer has been disabled for Beeminder user the_user"
+        )
+      ).toBeInTheDocument();
     });
 
     expect(queryByText("Here are your goals:")).not.toBeInTheDocument();
@@ -303,18 +314,18 @@ describe("Home page", () => {
   it("does not get goals if no username", async () => {
     loadParams("");
 
-    await r(<App/>);
+    await r(<App />);
 
     expect(getGoals).not.toBeCalled();
   });
 
   it("only shows enabled goals", async () => {
     loadGoals([
-      {slug: "slug_a", fineprint: ""},
-      {slug: "slug_b", fineprint: "#autodial"},
+      { slug: "slug_a", fineprint: "" },
+      { slug: "slug_b", fineprint: "#autodial" },
     ]);
 
-    const {queryByText, getByText} = await r(<App/>);
+    const { queryByText, getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("slug_b")).toBeInTheDocument();
@@ -324,44 +335,51 @@ describe("Home page", () => {
   });
 
   it("links slugs", async () => {
-    loadGoals([{slug: "the_slug"}]);
+    loadGoals([{ slug: "the_slug" }]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
-      expect(getByText("the_slug")).toHaveAttribute("href", "https://beeminder.com/the_user/the_slug");
+      expect(getByText("the_slug")).toHaveAttribute(
+        "href",
+        "https://beeminder.com/the_user/the_slug"
+      );
     });
   });
 
   it("links username", async () => {
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
-      expect(getByText("the_user")).toHaveAttribute("href", "https://beeminder.com/the_user");
+      expect(getByText("the_user")).toHaveAttribute(
+        "href",
+        "https://beeminder.com/the_user"
+      );
     });
   });
 
   it("includes historical average", async () => {
     setNow(2009, 3, 4);
 
-    loadGoals([{
-      slug: "the_slug",
-      rate: 3,
-      roadall: [
-        [parseDate("20090210"), 0, null],
-        [parseDate("20090315"), null, 3],
-      ],
-      datapoints: [
-        {value: 0, daystamp: "20090210"},
-        {
-          value: 30,
-          daystamp: "20090213",
-        },
-      ],
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        rate: 3,
+        roadall: [
+          [parseDate("20090210"), 0, null],
+          [parseDate("20090315"), null, 3],
+        ],
+        datapoints: [
+          { value: 0, daystamp: "20090210" },
+          {
+            value: 30,
+            daystamp: "20090213",
+          },
+        ],
+      },
     ]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("1/d")).toBeInTheDocument();
@@ -371,25 +389,26 @@ describe("Home page", () => {
   it("reports average in terms of runits", async () => {
     setNow(2009, 3, 4);
 
-    loadGoals([{
-      slug: "the_slug",
-      rate: 3,
-      runits: "m",
-      roadall: [
-        [parseDate("20090210"), 0, null],
-        [parseDate("20090315"), null, 1],
-      ],
-      datapoints: [
-        {value: 0, daystamp: "20090210"},
-        {
-          value: 30,
-          daystamp: "20090213",
-        },
-      ],
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        rate: 3,
+        runits: "m",
+        roadall: [
+          [parseDate("20090210"), 0, null],
+          [parseDate("20090315"), null, 1],
+        ],
+        datapoints: [
+          { value: 0, daystamp: "20090210" },
+          {
+            value: 30,
+            daystamp: "20090213",
+          },
+        ],
+      },
     ]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("30.44/m")).toBeInTheDocument();
@@ -399,25 +418,26 @@ describe("Home page", () => {
   it("shows rate changes", async () => {
     setNow(2009, 3, 4);
 
-    loadGoals([{
-      slug: "the_slug",
-      rate: 3,
-      runits: "m",
-      roadall: [
-        [parseDate("20090210"), 0, null],
-        [parseDate("20090315"), null, 1],
-      ],
-      datapoints: [
-        {value: 0, daystamp: "20090210"},
-        {
-          value: 30,
-          daystamp: "20090213",
-        },
-      ],
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        rate: 3,
+        runits: "m",
+        roadall: [
+          [parseDate("20090210"), 0, null],
+          [parseDate("20090315"), null, 1],
+        ],
+        datapoints: [
+          { value: 0, daystamp: "20090210" },
+          {
+            value: 30,
+            daystamp: "20090213",
+          },
+        ],
+      },
     ]);
 
-    const {getByLabelText, getByText} = await r(<App/>);
+    const { getByLabelText, getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByLabelText("pending change")).toBeInTheDocument();
@@ -430,21 +450,20 @@ describe("Home page", () => {
 
     const oldRate = 0;
 
-    loadGoals([{
-      slug: "the_slug",
-      rate: oldRate,
-      runits: "m",
-      roadall: [
-        [parseDate("20090210"), 0, null],
-        [parseDate("20090315"), null, oldRate],
-      ],
-      datapoints: [
-        {value: 0, daystamp: "20090210"},
-      ],
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        rate: oldRate,
+        runits: "m",
+        roadall: [
+          [parseDate("20090210"), 0, null],
+          [parseDate("20090315"), null, oldRate],
+        ],
+        datapoints: [{ value: 0, daystamp: "20090210" }],
+      },
     ]);
 
-    const {queryByLabelText, getAllByText} = await r(<App/>);
+    const { queryByLabelText, getAllByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getAllByText("0/m")).toBeTruthy();
@@ -456,13 +475,14 @@ describe("Home page", () => {
   it("shows strict setting", async () => {
     setNow(2009, 3, 4);
 
-    loadGoals([{
-      slug: "the_slug",
-      fineprint: "#autodialStrict",
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        fineprint: "#autodialStrict",
+      },
     ]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("yes")).toBeInTheDocument();
@@ -471,9 +491,9 @@ describe("Home page", () => {
 
   it("displays update error", async () => {
     await withMutedReactQueryLogger(async () => {
-      mockUpdate.mockRejectedValue({message: "the_error"});
+      mockUpdate.mockRejectedValue({ message: "the_error" });
 
-      await r(<App/>);
+      await r(<App />);
 
       await waitFor(() => {
         expect(screen.getByText("the_error")).toBeInTheDocument();
@@ -483,10 +503,10 @@ describe("Home page", () => {
 
   it("displays remove error", async () => {
     await withMutedReactQueryLogger(async () => {
-      mockRemove.mockRejectedValue({message: "the_error"});
+      mockRemove.mockRejectedValue({ message: "the_error" });
       loadParams("?access_token=abc123&username=the_user&disable=true");
 
-      await r(<App/>);
+      await r(<App />);
 
       await waitFor(() => {
         expect(screen.getByText("the_error")).toBeInTheDocument();
@@ -497,7 +517,7 @@ describe("Home page", () => {
   it("refetches goals after force run", async () => {
     loadParams("?access_token=abc123&username=the_user");
 
-    await r(<App/>);
+    await r(<App />);
 
     userEvent.click(screen.getByText("Force Run"));
 
@@ -509,31 +529,52 @@ describe("Home page", () => {
   it("shows from setting", async () => {
     setNow(2009, 3, 4);
 
-    loadGoals([{
-      slug: "the_slug",
-      fineprint: "#autodialFrom=from_slug",
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        fineprint: "#autodialFrom=from_slug",
+      },
     ]);
 
-    await r(<App/>);
+    await r(<App />);
 
-    await expect(screen.findByText("from_slug")).resolves
-        .toHaveAttribute("href", "https://beeminder.com/the_user/from_slug");
+    await expect(screen.findByText("from_slug")).resolves.toHaveAttribute(
+      "href",
+      "https://beeminder.com/the_user/from_slug"
+    );
   });
 
   it("shows add setting", async () => {
     setNow(2009, 3, 4);
 
-    loadGoals([{
-      slug: "the_slug",
-      fineprint: "#autodialAdd=3.333",
-    },
+    loadGoals([
+      {
+        slug: "the_slug",
+        fineprint: "#autodialAdd=3.333",
+      },
     ]);
 
-    const {getByText} = await r(<App/>);
+    const { getByText } = await r(<App />);
 
     await waitFor(() => {
       expect(getByText("3.333")).toBeInTheDocument();
+    });
+  });
+
+  it("shows times setting", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([
+      {
+        slug: "the_slug",
+        fineprint: "#autodialTimes=3",
+      },
+    ]);
+
+    const { getByText } = await r(<App />);
+
+    await waitFor(() => {
+      expect(getByText("3")).toBeInTheDocument();
     });
   });
 });

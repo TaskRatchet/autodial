@@ -1,9 +1,9 @@
-import {dial} from "./dial";
-import {describe, it} from "@jest/globals";
-import {e, makeGoal} from "../../functions/src/test/helpers";
-import {parseDate} from "./time";
-import {setNow} from "./test/helpers";
-import {Roadall} from "./types";
+import { dial } from "./dial";
+import { describe, it } from "@jest/globals";
+import { e, makeGoal } from "../../functions/src/test/helpers";
+import { parseDate } from "./time";
+import { setNow } from "./test/helpers";
+import { Roadall } from "./types";
 
 function getRoadEnd(roadall: Roadall | false) {
   if (!roadall) {
@@ -33,16 +33,18 @@ describe("dial function", () => {
   it("dials goal with no datapoints", () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), null, 1],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210225"), null, 1],
+        ],
+        datapoints: [],
+      })
+    );
 
     expectEndRate(r, 0);
   });
@@ -50,38 +52,43 @@ describe("dial function", () => {
   it("dials goal with less than 30d history", () => {
     setNow(2021, 2, 1);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210201"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 1},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210201"), null, 1],
+        ],
+        datapoints: [{ daystamp: "20210125", value: 1 }],
+      })
+    );
 
-    expectFuzzyEndRate(r, 1 - (7/30));
+    expectFuzzyEndRate(r, 1 - 7 / 30);
   });
 
   it("dials goal with datapoint after a month", () => {
     setNow(2021, 2, 24);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210124"), 0, null],
-        [parseDate("20210224"), null, 1],
-      ],
-      datapoints: [{daystamp: "20210124", value: 0}, {
-        daystamp: "20210125",
-        value: 1,
-      }],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210124"), 0, null],
+          [parseDate("20210224"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210124", value: 0 },
+          {
+            daystamp: "20210125",
+            value: 1,
+          },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1 / 30);
   });
@@ -89,19 +96,21 @@ describe("dial function", () => {
   it("dials goal with datapoint after a week with runits=weekly", () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "w",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210325"), null, 2],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210126", value: 30 / 7},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "w",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210325"), null, 2],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210126", value: 30 / 7 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1);
   });
@@ -109,18 +118,20 @@ describe("dial function", () => {
   it("dials goal with min option", () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      slug: "my_special_slug",
-      aggday: "last",
-      kyoom: false,
-      runits: "w",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), null, 1],
-      ],
-      datapoints: [{daystamp: "20210126", value: 1}],
-    }),
-    {min: 2});
+    const r = dial(
+      makeGoal({
+        slug: "my_special_slug",
+        aggday: "last",
+        kyoom: false,
+        runits: "w",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210225"), null, 1],
+        ],
+        datapoints: [{ daystamp: "20210126", value: 1 }],
+      }),
+      { min: 2 }
+    );
 
     expectEndRate(r, 2);
   });
@@ -128,20 +139,22 @@ describe("dial function", () => {
   it("supports aggday last", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 2},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 2 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 2 / 30);
   });
@@ -149,20 +162,22 @@ describe("dial function", () => {
   it("supports aggday first", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "first",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 2},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "first",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 2 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1 / 30);
   });
@@ -170,20 +185,22 @@ describe("dial function", () => {
   it("supports aggday sum", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "sum",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 2},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "sum",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 2 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 3 / 30);
   });
@@ -191,20 +208,22 @@ describe("dial function", () => {
   it("supports aggday min", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "min",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 2},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "min",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 2 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1 / 30);
   });
@@ -212,20 +231,22 @@ describe("dial function", () => {
   it("supports aggday max", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "max",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 2},
-        {daystamp: "20210201", value: 1},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "max",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 2 },
+          { daystamp: "20210201", value: 1 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 2 / 30);
   });
@@ -233,20 +254,22 @@ describe("dial function", () => {
   it("supports aggday count", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "count",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 5},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "count",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 5 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     // because data is not cumulative, initial day aggregates to 1,
     // and additional day aggregates to 2, so difference is 1
@@ -256,20 +279,22 @@ describe("dial function", () => {
   it("supports cumulative goals", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "count",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 5},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "count",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 5 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 2 / 30);
   });
@@ -277,20 +302,22 @@ describe("dial function", () => {
   it("supports aggday binary", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "binary",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 5},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "binary",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 5 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1 / 30);
   });
@@ -298,20 +325,22 @@ describe("dial function", () => {
   it("supports aggday nonzero", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "nonzero",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 0},
-        {daystamp: "20210202", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "nonzero",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 0 },
+          { daystamp: "20210202", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1 / 30);
   });
@@ -319,20 +348,22 @@ describe("dial function", () => {
   it("supports aggday truemean", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "truemean",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 5},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "truemean",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 5 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 5 / 30);
   });
@@ -340,20 +371,22 @@ describe("dial function", () => {
   it("supports aggday mean", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "mean",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 5},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "mean",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 5 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 5 / 30);
   });
@@ -361,20 +394,22 @@ describe("dial function", () => {
   it("supports aggday uniquemean", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "uniqmean",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 5},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "uniqmean",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 5 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 5 / 30);
   });
@@ -382,21 +417,23 @@ describe("dial function", () => {
   it("supports aggday median", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "median",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 4},
-        {daystamp: "20210201", value: 5},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "median",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 4 },
+          { daystamp: "20210201", value: 5 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 4 / 30);
   });
@@ -404,20 +441,22 @@ describe("dial function", () => {
   it("supports aggday cap1", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "cap1",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 1},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "cap1",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 1 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1 / 30);
   });
@@ -425,20 +464,22 @@ describe("dial function", () => {
   it("supports aggday square", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "square",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 2},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "square",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 2 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 9 / 30);
   });
@@ -446,20 +487,22 @@ describe("dial function", () => {
   it("supports aggday triangle", () => {
     setNow(2021, 2, 29);
 
-    const r = dial(makeGoal({
-      aggday: "triangle",
-      kyoom: true,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210301"), null, 1],
-      ],
-      datapoints: [
-        {daystamp: "20210125", value: 0},
-        {daystamp: "20210201", value: 1},
-        {daystamp: "20210201", value: 1},
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "triangle",
+        kyoom: true,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210301"), null, 1],
+        ],
+        datapoints: [
+          { daystamp: "20210125", value: 0 },
+          { daystamp: "20210201", value: 1 },
+          { daystamp: "20210201", value: 1 },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 3 / 30);
   });
@@ -467,16 +510,18 @@ describe("dial function", () => {
   it("protects akrasia horizon", async () => {
     setNow(2021, 3, 1);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210325"), null, 1],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210325"), null, 1],
+        ],
+        datapoints: [],
+      })
+    );
 
     e(r && r[1]).toEqual([parseDate("20210309"), null, 1]);
   });
@@ -484,17 +529,19 @@ describe("dial function", () => {
   it("does not add row if last segment starts after horizon", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210305"), null, 1],
-        [parseDate("20210325"), null, 1],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210305"), null, 1],
+          [parseDate("20210325"), null, 1],
+        ],
+        datapoints: [],
+      })
+    );
 
     e(r && r.length).toEqual(3);
   });
@@ -502,17 +549,19 @@ describe("dial function", () => {
   it("uses fullroad to decide if akrasia boundary needed", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [null, 40, 1],
-        [parseDate("20210325"), null, 1],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [null, 40, 1],
+          [parseDate("20210325"), null, 1],
+        ],
+        datapoints: [],
+      })
+    );
 
     e(r && r.length).toEqual(3);
   });
@@ -520,16 +569,18 @@ describe("dial function", () => {
   it("does not dial goal if new rate ~= old rate", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), null, 0.000000000000000000001],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210225"), null, 0.000000000000000000001],
+        ],
+        datapoints: [],
+      })
+    );
 
     expect(r).toBeFalsy();
   });
@@ -537,27 +588,29 @@ describe("dial function", () => {
   it("takes weekends off into account", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      rate: 5,
-      weekends_off: true,
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210325"), null, 5],
-      ],
-      datapoints: [
-        {
-          daystamp: "20210125",
-          value: 0,
-        },
-        {
-          daystamp: "20210220",
-          value: 30 * 5 / 7,
-        },
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        rate: 5,
+        weekends_off: true,
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210325"), null, 5],
+        ],
+        datapoints: [
+          {
+            daystamp: "20210125",
+            value: 0,
+          },
+          {
+            daystamp: "20210220",
+            value: (30 * 5) / 7,
+          },
+        ],
+      })
+    );
 
     expectFuzzyEndRate(r, 1);
   });
@@ -565,40 +618,44 @@ describe("dial function", () => {
   it("adjusts rate slowly for new do-less goal", async () => {
     setNow(2021, 2, 1);
 
-    const r = dial(makeGoal({
-      rate: 5,
-      weekends_off: true,
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210325"), null, 5],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        rate: 5,
+        weekends_off: true,
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210325"), null, 5],
+        ],
+        datapoints: [],
+      })
+    );
 
-    expectFuzzyEndRate(r, 5 - (7 / 30 * 5));
+    expectFuzzyEndRate(r, 5 - (7 / 30) * 5);
   });
 
   it("does not use future datapoints when calculating rate", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20210225"), null, 0.000000000000000000001],
-      ],
-      datapoints: [
-        {
-          daystamp: "20210226",
-          value: 100000,
-        },
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20210225"), null, 0.000000000000000000001],
+        ],
+        datapoints: [
+          {
+            daystamp: "20210226",
+            value: 100000,
+          },
+        ],
+      })
+    );
 
     expect(r).toBeFalsy();
   });
@@ -606,16 +663,18 @@ describe("dial function", () => {
   it("does not dial goal without end rate", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [parseDate("20220125"), 10, null],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [parseDate("20220125"), 10, null],
+        ],
+        datapoints: [],
+      })
+    );
 
     expect(r).toBeFalsy();
   });
@@ -623,20 +682,26 @@ describe("dial function", () => {
   it("does not make strict goal easier", () => {
     setNow(2021, 2, 24);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      rate: 5,
-      runits: "d",
-      roadall: [
-        [parseDate("20210124"), 0, null],
-        [parseDate("20210224"), null, 5],
-      ],
-      datapoints: [{daystamp: "20210124", value: 0}, {
-        daystamp: "20210125",
-        value: 1,
-      }],
-    }), {strict: true});
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        rate: 5,
+        runits: "d",
+        roadall: [
+          [parseDate("20210124"), 0, null],
+          [parseDate("20210224"), null, 5],
+        ],
+        datapoints: [
+          { daystamp: "20210124", value: 0 },
+          {
+            daystamp: "20210125",
+            value: 1,
+          },
+        ],
+      }),
+      { strict: true }
+    );
 
     expect(r).toBeFalsy();
   });
@@ -644,21 +709,27 @@ describe("dial function", () => {
   it("does not make strict do-less goal easier", () => {
     setNow(2021, 2, 24);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      yaw: -1,
-      rate: 0,
-      runits: "d",
-      roadall: [
-        [parseDate("20210124"), 0, null],
-        [parseDate("20210224"), null, 0],
-      ],
-      datapoints: [{daystamp: "20210124", value: 0}, {
-        daystamp: "20210125",
-        value: 1,
-      }],
-    }), {strict: true});
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        yaw: -1,
+        rate: 0,
+        runits: "d",
+        roadall: [
+          [parseDate("20210124"), 0, null],
+          [parseDate("20210224"), null, 0],
+        ],
+        datapoints: [
+          { daystamp: "20210124", value: 0 },
+          {
+            daystamp: "20210125",
+            value: 1,
+          },
+        ],
+      }),
+      { strict: true }
+    );
 
     expect(r).toBeFalsy();
   });
@@ -666,16 +737,18 @@ describe("dial function", () => {
   it("preserves end value", () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      aggday: "last",
-      kyoom: false,
-      runits: "d",
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [null, 300, 1],
-      ],
-      datapoints: [],
-    }));
+    const r = dial(
+      makeGoal({
+        aggday: "last",
+        kyoom: false,
+        runits: "d",
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [null, 300, 1],
+        ],
+        datapoints: [],
+      })
+    );
 
     const end = getRoadEnd(r);
 
@@ -685,13 +758,15 @@ describe("dial function", () => {
   it("does not dial odometer goals", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(makeGoal({
-      odom: true,
-      roadall: [
-        [parseDate("20210125"), 0, null],
-        [null, 300, 1],
-      ],
-    }));
+    const r = dial(
+      makeGoal({
+        odom: true,
+        roadall: [
+          [parseDate("20210125"), 0, null],
+          [null, 300, 1],
+        ],
+      })
+    );
 
     expect(r).toBeFalsy();
   });
@@ -705,9 +780,7 @@ describe("dial function", () => {
         [parseDate("20210124"), 0, null],
         [parseDate("20210225"), null, 1],
       ],
-      datapoints: [
-        {daystamp: "20210124", value: 0},
-      ],
+      datapoints: [{ daystamp: "20210124", value: 0 }],
     });
     const g2 = makeGoal({
       slug: "from",
@@ -716,16 +789,42 @@ describe("dial function", () => {
         [parseDate("20210225"), null, 1],
       ],
       datapoints: [
-        {daystamp: "20210124", value: 0}, {
+        { daystamp: "20210124", value: 0 },
+        {
           daystamp: "20210224",
           value: 1,
         },
       ],
     });
 
-    const r = dial(g1, {fromGoal: g2});
+    const r = dial(g1, { fromGoal: g2 });
 
     expectFuzzyEndRate(r, 1 / 30);
+  });
+
+  it("uses `times` option", async () => {
+    setNow(2021, 2, 24);
+
+    const g = makeGoal({
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210224"), null, 1],
+      ],
+      datapoints: [
+        { daystamp: "20210124", value: 0 },
+        {
+          daystamp: "20210125",
+          value: 1,
+        },
+      ],
+    });
+
+    const r = dial(g, { times: 2 });
+
+    expectFuzzyEndRate(r, 2 / 30);
   });
 });
 
