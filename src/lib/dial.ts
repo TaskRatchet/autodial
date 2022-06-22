@@ -20,7 +20,13 @@ export function dial(
   if (lastRow[2] === null) return false;
 
   const t = now();
-  const {min = -Infinity, max = Infinity, strict = false, add = 0, fromGoal} = opts;
+  const {
+    min = -Infinity,
+    max = Infinity,
+    strict = false,
+    add = 0,
+    fromGoal,
+  } = opts;
   const neverLess = strict && g.yaw == 1;
   const neverMore = strict && g.yaw == -1;
   const strictMin = neverLess && g.rate !== null ? Math.max(min, g.rate) : min;
