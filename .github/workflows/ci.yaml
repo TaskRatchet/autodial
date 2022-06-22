@@ -5,6 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.1
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -19,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.1
       - uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -27,7 +33,7 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install root dependencies
         run: npm ci
-      - name: Install function dependenciesfire
+      - name: Install function dependencies
         run: npm ci
         working-directory: ./functions
       - name: Run tests

@@ -3,8 +3,7 @@
 ## Local Development
 
 - Copy `.env.example` to `.env` and set variables
-- `npm install netlify-cli -g`
-- `netlify link`
+- `npx netlify link`
 - `npm run netlify`
 - Open <http://localhost:8888/>
 

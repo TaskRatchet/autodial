@@ -21,12 +21,14 @@ export default function GoalsTable({
       <TableHead>
         <TableRow>
           <TableCell>Slug</TableCell>
-          <TableCell>#autodialMin=?</TableCell>
-          <TableCell>#autodialMax=?</TableCell>
-          <TableCell>#autodialStrict</TableCell>
+          <TableCell>Min</TableCell>
+          <TableCell>Max</TableCell>
+          <TableCell>Add</TableCell>
+          <TableCell>From</TableCell>
+          <TableCell>Strict</TableCell>
           <TableCell>Rate</TableCell>
-          <TableCell>30d Average</TableCell>
-          <TableCell>Weekends Off</TableCell>
+          <TableCell>30d Avg</TableCell>
+          <TableCell>Wknds Off</TableCell>
           <TableCell>Age</TableCell>
         </TableRow>
       </TableHead>

@@ -20,13 +20,19 @@ export function dial(
   if (lastRow[2] === null) return false;
 
   const t = now();
-  const {min = -Infinity, max = Infinity, strict = false, add = 0} = opts;
+  const {
+    min = -Infinity,
+    max = Infinity,
+    strict = false,
+    add = 0,
+    fromGoal,
+  } = opts;
   const neverLess = strict && g.yaw == 1;
   const neverMore = strict && g.yaw == -1;
   const strictMin = neverLess && g.rate !== null ? Math.max(min, g.rate) : min;
   const strictMax = neverMore && g.rate !== null ? Math.min(max, g.rate) : max;
   const rateSeconds = UNIT_SECONDS[g.runits];
-  const averagePerSecond = getRollingAverageRate(g);
+  const averagePerSecond = getRollingAverageRate(fromGoal ?? g);
   const len = t - g.fullroad[0][0];
   const oldRate = g.mathishard[2];
   const newRate = averagePerSecond * rateSeconds + add;
