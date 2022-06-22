@@ -826,6 +826,37 @@ describe("dial function", () => {
 
     expectFuzzyEndRate(r, 2 / 30);
   });
+
+  it("uses min of two goals ages when using from option", async () => {
+    setNow(2021, 2, 24);
+
+    const g1 = makeGoal({
+      slug: "to",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210225"), null, 0],
+      ],
+      datapoints: [{ daystamp: "20210124", value: 0 }],
+    });
+    const g2 = makeGoal({
+      slug: "from",
+      roadall: [
+        [parseDate("20210223"), 0, null],
+        [parseDate("20210225"), null, 0],
+      ],
+      datapoints: [
+        { daystamp: "20210223", value: 0 },
+        {
+          daystamp: "20210224",
+          value: 1,
+        },
+      ],
+    });
+
+    const r = dial(g1, { fromGoal: g2 });
+
+    expectFuzzyEndRate(r, 0.001111111111);
+  });
 });
 
 // TODO:

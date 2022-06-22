@@ -9,17 +9,24 @@ function clip(x: number, min: number, max: number) {
   return x < min ? min : x > max ? max : x;
 }
 
-export function dial(
+// Goal maturity is defined in terms of the length of the goal's road,
+// as a percentage of one month, capped at 100%.
+function getGoalMaturity(
   g: GoalVerbose,
-  opts: Partial<AutodialSettings> = {}
-): Roadall | false {
-  if (g.odom) return false;
-
-  const lastRow = g.roadall[g.roadall.length - 1];
-
-  if (lastRow[2] === null) return false;
-
+  opts: Partial<AutodialSettings>
+): number {
   const t = now();
+  const { fromGoal } = opts;
+  const start = Math.max(
+    g.fullroad[0][0],
+    fromGoal ? fromGoal.fullroad[0][0] : 0
+  );
+  const len = t - start;
+
+  return Math.min(len / (SID * 30), 1);
+}
+
+function calculateNewRate(g: GoalVerbose, opts: Partial<AutodialSettings>) {
   const {
     min = -Infinity,
     max = Infinity,
@@ -28,24 +35,35 @@ export function dial(
     times = 1,
     fromGoal,
   } = opts;
+
   const neverLess = strict && g.yaw == 1;
   const neverMore = strict && g.yaw == -1;
   const strictMin = neverLess && g.rate !== null ? Math.max(min, g.rate) : min;
   const strictMax = neverMore && g.rate !== null ? Math.min(max, g.rate) : max;
   const rateSeconds = UNIT_SECONDS[g.runits];
   const averagePerSecond = getRollingAverageRate(fromGoal ?? g);
-  const len = t - g.fullroad[0][0];
   const oldRate = g.mathishard[2];
   const newRate = averagePerSecond * rateSeconds * times + add;
-  const monthCompletion = Math.min(len / (SID * 30), 1);
+  const maturity = getGoalMaturity(g, opts);
   const rateDiff = oldRate - newRate;
-  const modulatedRate = oldRate - rateDiff * monthCompletion;
-  const clippedRate = clip(modulatedRate, strictMin, strictMax);
+  const modulatedRate = oldRate - rateDiff * maturity;
 
-  if (fuzzyEquals(clippedRate, oldRate)) return false;
+  return clip(modulatedRate, strictMin, strictMax);
+}
 
+function shouldDial(g: GoalVerbose) {
+  if (g.odom) return false;
+
+  const lastRow = g.roadall[g.roadall.length - 1];
+
+  return lastRow[2] !== null;
+}
+
+function buildRoad(g: GoalVerbose, newRate: number): Roadall {
+  const t = now();
   const tail = g.roadall.slice(0, -1);
-  const lastRowModified: SparseSegment = [lastRow[0], lastRow[1], clippedRate];
+  const lastRow = g.roadall[g.roadall.length - 1];
+  const lastRowModified: SparseSegment = [lastRow[0], lastRow[1], newRate];
   const fullTail = g.fullroad.slice(0, -1);
   const unixTimes = fullTail.map((r) => r[0]);
   const shouldAddBoundary = !unixTimes.some((ut) => {
@@ -57,4 +75,18 @@ export function dial(
   }
 
   return [...tail, [t + AKRASIA_HORIZON, null, lastRow[2]], lastRowModified];
+}
+
+export function dial(
+  g: GoalVerbose,
+  opts: Partial<AutodialSettings> = {}
+): Roadall | false {
+  if (!shouldDial(g)) return false;
+
+  const newRate = calculateNewRate(g, opts);
+  const oldRate = g.mathishard[2];
+
+  if (fuzzyEquals(newRate, oldRate)) return false;
+
+  return buildRoad(g, newRate);
 }
