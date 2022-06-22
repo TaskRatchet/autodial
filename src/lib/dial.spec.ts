@@ -695,6 +695,38 @@ describe("dial function", () => {
 
     expect(r).toBeFalsy();
   });
+
+  it("uses average of `from` goal", async () => {
+    setNow(2021, 2, 24);
+
+    const g1 = makeGoal({
+      slug: "to",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210225"), null, 1],
+      ],
+      datapoints: [
+        {daystamp: "20210124", value: 0},
+      ],
+    });
+    const g2 = makeGoal({
+      slug: "from",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210225"), null, 1],
+      ],
+      datapoints: [
+        {daystamp: "20210124", value: 0}, {
+          daystamp: "20210224",
+          value: 1,
+        },
+      ],
+    });
+
+    const r = dial(g1, {fromGoal: g2});
+
+    expectFuzzyEndRate(r, 1 / 30);
+  });
 });
 
 // TODO:

@@ -157,7 +157,7 @@ describe("function", () => {
         "the_user",
         "the_token",
         "the_slug",
-        diffSince
+        diffSince,
     );
   });
 
@@ -183,6 +183,23 @@ describe("function", () => {
     await runCron();
 
     expect(dial).toBeCalledWith(goal, expect.objectContaining({strict: true}));
+  });
+
+  it("supports from", async () => {
+    const g = makeGoal({
+      fineprint: "#autodialFrom=from_goal",
+    });
+
+    setGoal(g);
+
+    await runCron();
+
+    expect(getGoal).toBeCalledWith(
+        expect.anything(),
+        expect.anything(),
+        "from_goal",
+        expect.anything()
+    );
   });
 });
 

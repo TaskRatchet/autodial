@@ -13,7 +13,6 @@ import moment from "moment";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import {green} from "@mui/material/colors";
 
-
 function fn(n: number): string {
   return n.toFixed(2).replace(/\.0+$/, "");
 }
@@ -61,9 +60,9 @@ export default function GoalRow(
   }, [goal]);
 
   const min = settings?.min === -Infinity ?
-    "Negative Infinity" : `${settings?.min}/${goal.runits}`;
+    "—" : `${settings?.min}/${goal.runits}`;
   const max = settings?.max === Infinity ?
-    "Positive Infinity" : `${settings?.max}/${goal.runits}`;
+    "—" : `${settings?.max}/${goal.runits}`;
 
 
   const rate = goal.mathishard[2];
@@ -80,6 +79,16 @@ export default function GoalRow(
     </TableCell>
     <TableCell>{min}</TableCell>
     <TableCell>{max}</TableCell>
+    <TableCell>{settings?.add === 0 ? "—" : settings?.add}</TableCell>
+    <TableCell>
+      {settings?.from ? <a
+        href={`https://beeminder.com/${username}/${settings.from}`}
+        target={"_blank"}
+        rel={"nofollow noreferrer"}
+      >
+        {settings.from}
+      </a> : "—"}
+    </TableCell>
     <TableCell>{settings?.strict ? "yes" : "no"}</TableCell>
     <TableCell>
       <Box sx={{display: "flex", alignItems: "center"}}>

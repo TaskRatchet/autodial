@@ -67,7 +67,7 @@ describe("Home page", () => {
     mockGetParams.mockReturnValue(new URLSearchParams(""));
     mockUpdate.mockResolvedValue(null);
     loadGoals([{slug: "the_slug"}]);
-    loadParams("?access_token=abc123&username=alice");
+    loadParams("?access_token=abc123&username=the_user");
   });
 
   it("has authenticate button", async () => {
@@ -133,7 +133,7 @@ describe("Home page", () => {
     await r(<App/>);
 
     await waitFor(() => {
-      expect(update).toBeCalledWith("alice", "abc123");
+      expect(update).toBeCalledWith("the_user", "abc123");
     });
   });
 
@@ -152,7 +152,7 @@ describe("Home page", () => {
     await r(<App/>);
 
     await waitFor(() => {
-      expect(getGoalsVerbose).toBeCalledWith("alice", "abc123", diffSince);
+      expect(getGoalsVerbose).toBeCalledWith("the_user", "abc123", diffSince);
     });
   });
 
@@ -172,7 +172,7 @@ describe("Home page", () => {
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
-      expect(getByText("alice")).toBeInTheDocument();
+      expect(getByText("the_user")).toBeInTheDocument();
     });
   });
 
@@ -222,30 +222,6 @@ describe("Home page", () => {
     });
   });
 
-  it("displays negative infinity if no min set for enabled goal", async () => {
-    loadGoals([
-      {slug: "the_slug", fineprint: "#autodial"},
-    ]);
-
-    const {getByText} = await r(<App/>);
-
-    await waitFor(() => {
-      expect(getByText("Negative Infinity")).toBeInTheDocument();
-    });
-  });
-
-  it("does not display min if autodial not enabled for goal", async () => {
-    loadGoals([
-      {slug: "the_slug"},
-    ]);
-
-    const {queryByText} = await r(<App/>);
-
-    await waitFor(() => {
-      expect(queryByText("Negative Infinity")).not.toBeInTheDocument();
-    });
-  });
-
   it("displays positive value", async () => {
     loadGoals([
       {slug: "the_slug", rate: 3, fineprint: "#autodialMax=1"},
@@ -255,18 +231,6 @@ describe("Home page", () => {
 
     await waitFor(() => {
       expect(getByText("1/d")).toBeInTheDocument();
-    });
-  });
-
-  it("displays positive infinity if no max set for enabled goal", async () => {
-    loadGoals([
-      {slug: "the_slug", fineprint: "#autodial"},
-    ]);
-
-    const {getByText} = await r(<App/>);
-
-    await waitFor(() => {
-      expect(getByText("Positive Infinity")).toBeInTheDocument();
     });
   });
 
@@ -293,19 +257,19 @@ describe("Home page", () => {
       expect(getByText("Disable Autodialer"))
           .toHaveAttribute(
               "href",
-              "/?access_token=abc123&username=alice&disable=true",
+              "/?access_token=abc123&username=the_user&disable=true",
           );
     });
   });
 
   it("does not persist credentials if disabling", async () => {
-    loadParams("?access_token=abc123&username=alice&disable=true");
+    loadParams("?access_token=abc123&username=the_user&disable=true");
 
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
       expect(getByText(
-          "The autodialer has been disabled for Beeminder user alice",
+          "The autodialer has been disabled for Beeminder user the_user",
       )).toBeInTheDocument();
     });
 
@@ -313,23 +277,23 @@ describe("Home page", () => {
   });
 
   it("deletes database user on disable", async () => {
-    loadParams("?access_token=abc123&username=alice&disable=true");
+    loadParams("?access_token=abc123&username=the_user&disable=true");
 
     await r(<App/>);
 
     await waitFor(() => {
-      expect(remove).toBeCalledWith("alice", "abc123");
+      expect(remove).toBeCalledWith("the_user", "abc123");
     });
   });
 
   it("does not show goals for disabled user", async () => {
-    loadParams("?access_token=abc123&username=alice&disable=true");
+    loadParams("?access_token=abc123&username=the_user&disable=true");
 
     const {getByText, queryByText} = await r(<App/>);
 
     await waitFor(() => {
       expect(getByText(
-          "The autodialer has been disabled for Beeminder user alice",
+          "The autodialer has been disabled for Beeminder user the_user",
       )).toBeInTheDocument();
     });
 
@@ -365,7 +329,7 @@ describe("Home page", () => {
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
-      expect(getByText("the_slug")).toHaveAttribute("href", "https://beeminder.com/alice/the_slug");
+      expect(getByText("the_slug")).toHaveAttribute("href", "https://beeminder.com/the_user/the_slug");
     });
   });
 
@@ -373,7 +337,7 @@ describe("Home page", () => {
     const {getByText} = await r(<App/>);
 
     await waitFor(() => {
-      expect(getByText("alice")).toHaveAttribute("href", "https://beeminder.com/alice");
+      expect(getByText("the_user")).toHaveAttribute("href", "https://beeminder.com/the_user");
     });
   });
 
@@ -520,7 +484,7 @@ describe("Home page", () => {
   it("displays remove error", async () => {
     await withMutedReactQueryLogger(async () => {
       mockRemove.mockRejectedValue({message: "the_error"});
-      loadParams("?access_token=abc123&username=alice&disable=true");
+      loadParams("?access_token=abc123&username=the_user&disable=true");
 
       await r(<App/>);
 
@@ -531,7 +495,7 @@ describe("Home page", () => {
   });
 
   it("refetches goals after force run", async () => {
-    loadParams("?access_token=abc123&username=alice");
+    loadParams("?access_token=abc123&username=the_user");
 
     await r(<App/>);
 
@@ -539,6 +503,37 @@ describe("Home page", () => {
 
     await waitFor(() => {
       expect(getGoalsVerbose).toBeCalledTimes(2);
+    });
+  });
+
+  it("shows from setting", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([{
+      slug: "the_slug",
+      fineprint: "#autodialFrom=from_slug",
+    },
+    ]);
+
+    await r(<App/>);
+
+    await expect(screen.findByText("from_slug")).resolves
+        .toHaveAttribute("href", "https://beeminder.com/the_user/from_slug");
+  });
+
+  it("shows add setting", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([{
+      slug: "the_slug",
+      fineprint: "#autodialAdd=3.333",
+    },
+    ]);
+
+    const {getByText} = await r(<App/>);
+
+    await waitFor(() => {
+      expect(getByText("3.333")).toBeInTheDocument();
     });
   });
 });

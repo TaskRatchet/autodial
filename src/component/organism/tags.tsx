@@ -35,14 +35,19 @@ export default function Tags(): JSX.Element {
             of your goal's current time unit.</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell>#autodialStrict</TableCell>
-          <TableCell>Enables autodialing and prevents autodialer from ever
-            making goal easier.</TableCell>
-        </TableRow>
-        <TableRow>
           <TableCell>#autodialAdd=1</TableCell>
           <TableCell>Enables autodialing and specifies an amount to be added
             to your 30-day average (can be negative).</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>#autodialFrom=from_slug</TableCell>
+          <TableCell>Enables autodialing and tells the autodialer to use the
+            average rate from a separate goal.</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>#autodialStrict</TableCell>
+          <TableCell>Enables autodialing and prevents autodialer from ever
+            making goal easier.</TableCell>
         </TableRow>
       </TableBody>
     </Table>

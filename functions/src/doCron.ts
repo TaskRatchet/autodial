@@ -32,12 +32,16 @@ const doCron = async (): Promise<void> => {
         log(`start dial goal ${beeminder_user}/${g.slug}`);
         try {
           const settings = getSettings(g);
+          const diffSince = now() - (SID * 31);
           const fullGoal = await getGoal(
               beeminder_user,
               beeminder_token,
               g.slug,
-              now() - (SID * 31),
+              diffSince,
           );
+          settings.fromGoal = settings.from && await getGoal(
+              beeminder_user, beeminder_token, settings.from, diffSince
+          ) || undefined;
           const roadall = dial(fullGoal, settings);
           const newRate = roadall && roadall[roadall.length - 1][2];
           const id = `${beeminder_user}/${g.slug}`;
