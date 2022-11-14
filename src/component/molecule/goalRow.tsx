@@ -37,21 +37,31 @@ export default function GoalRow({ goal, username }: Props): JSX.Element {
   const [pendingRate, setPendingRate] = useState<false | number>(false);
   const [arpn, setArpn] = useState<number>();
   const [edge, setEdge] = useState<number>(0);
+  const [error, setError] = useState<string>();
 
   const success = edge === 1;
   const backgroundColor = success ? green[50] : "initial";
 
   useEffect(() => {
     const options = getSettings(goal);
-    const newRoad = dial(goal, options);
-    const newRate = newRoad && newRoad[newRoad.length - 1][2];
-    const arps = getRollingAverageRate(goal);
-    const arpn = arps * UNIT_SECONDS[goal.runits];
 
-    setEdge(getEdge(goal, options));
-    setSettings(options);
-    setPendingRate(newRate === null ? false : newRate);
-    setArpn(arpn);
+    try {
+      const newRoad = dial(goal, options);
+      const newRate = newRoad && newRoad[newRoad.length - 1][2];
+      const arps = getRollingAverageRate(goal);
+      const arpn = arps * UNIT_SECONDS[goal.runits];
+
+      setEdge(getEdge(goal, options));
+      setSettings(options);
+      setPendingRate(newRate === null ? false : newRate);
+      setArpn(arpn);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Unknown error");
+      }
+    }
   }, [goal]);
 
   const min =
@@ -117,6 +127,7 @@ export default function GoalRow({ goal, username }: Props): JSX.Element {
       <TableCell>
         {moment.duration(getGoalAge(goal) * 1000).humanize()}
       </TableCell>
+      <TableCell>{error}</TableCell>
     </TableRow>
   );
 }
