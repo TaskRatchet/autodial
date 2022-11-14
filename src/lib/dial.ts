@@ -52,11 +52,12 @@ function calculateNewRate(g: GoalVerbose, opts: Partial<AutodialSettings>) {
 }
 
 function shouldDial(g: GoalVerbose) {
-  if (g.odom) return false;
+  if (g.odom) throw new Error("Odometer-type goals are not supported");
 
   const lastRow = g.roadall[g.roadall.length - 1];
 
-  return lastRow[2] !== null;
+  if (lastRow[2] === null)
+    throw new Error("Goals without explicit end rates are not supported");
 }
 
 function buildRoad(g: GoalVerbose, newRate: number): Roadall {
@@ -81,7 +82,7 @@ export function dial(
   g: GoalVerbose,
   opts: Partial<AutodialSettings> = {}
 ): Roadall | false {
-  if (!shouldDial(g)) return false;
+  shouldDial(g);
 
   const newRate = calculateNewRate(g, opts);
   const oldRate = g.mathishard[2];
