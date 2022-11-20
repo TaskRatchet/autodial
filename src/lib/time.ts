@@ -1,4 +1,4 @@
-import {unix} from "moment";
+import { unix } from "npm:moment";
 
 export function now(): number {
   return Date.now() / 1000;

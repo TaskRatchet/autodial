@@ -1,15 +1,15 @@
-import {now, parseDate} from "./time";
-import stepify from "./stepify";
-import aggregate from "./aggregate";
-import {SID} from "./constants";
-import {Datapoint, GoalVerbose, UnixDatapoint} from "./types";
+import { now, parseDate } from "./time.ts";
+import stepify from "./stepify.ts";
+import aggregate from "./aggregate.ts";
+import { SID } from "./constants.ts";
+import { Datapoint, GoalVerbose, UnixDatapoint } from "./types.ts";
 
 // Take list of datapoints and a window (in seconds), return average rate in
 // that window.
 function avgrate(
-    data: Datapoint[],
-    window: number,
-    weekendsOff: boolean,
+  data: Datapoint[],
+  window: number,
+  weekendsOff: boolean
 ): number {
   if (!data || !data.length) return 0;
 
@@ -25,7 +25,7 @@ function avgrate(
   const valNow = df(now());
   const valBefore = df(preTime);
   const vdelta = valNow - valBefore;
-  const divisor = weekendsOff ? window * 5 / 7 : window;
+  const divisor = weekendsOff ? (window * 5) / 7 : window;
 
   return vdelta / divisor;
 }
@@ -34,7 +34,7 @@ function autoSum(data: Datapoint[]): Datapoint[] {
   return data.reduce((prev: Datapoint[], p) => {
     const last = prev[prev.length - 1];
     const sum = last ? last.value + p.value : p.value;
-    return [...prev, {...p, value: sum}];
+    return [...prev, { ...p, value: sum }];
   }, []);
 }
 

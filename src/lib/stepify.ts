@@ -1,5 +1,5 @@
-import {searchLow} from "./search";
-import {UnixDatapoint} from "./types";
+import { searchLow } from "./search.ts";
+import { UnixDatapoint } from "./types.ts";
 
 // Utility function for stepify. Takes a list of datapoints sorted by x-value
 // and a given x-value and finds the most recent y-value (the one with the
@@ -7,7 +7,10 @@ import {UnixDatapoint} from "./types";
 // It's like Mathematica's Interpolation[] with interpolation order 0.
 // If the given x is strictly less than d[0][0], return d[0][1].
 function stepFunc(d: UnixDatapoint[], x: number): number {
-  const i = Math.max(0, searchLow(d, (p) => p[0] - x));
+  const i = Math.max(
+    0,
+    searchLow(d, (p) => p[0] - x)
+  );
   return d[i][1];
 }
 

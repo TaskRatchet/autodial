@@ -1,8 +1,13 @@
-import { now } from "./time";
-import { AKRASIA_HORIZON, SID, UNIT_SECONDS } from "./constants";
-import { getRollingAverageRate } from "./getRollingAverageRate";
-import { fuzzyEquals } from "./fuzzyEquals";
-import { AutodialSettings, GoalVerbose, Roadall, SparseSegment } from "./index";
+import { now } from "./time.ts";
+import { AKRASIA_HORIZON, SID, UNIT_SECONDS } from "./constants.ts";
+import { getRollingAverageRate } from "./getRollingAverageRate.ts";
+import { fuzzyEquals } from "./fuzzyEquals.ts";
+import {
+  AutodialSettings,
+  GoalVerbose,
+  Roadall,
+  SparseSegment,
+} from "./index.ts";
 
 function clip(x: number, min: number, max: number) {
   if (min > max) [min, max] = [max, min];

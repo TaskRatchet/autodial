@@ -1,5 +1,4 @@
-import {expect} from "@jest/globals";
-import Matchers = jest.Matchers;
+import { expect } from "npm:@jest/globals";
 import {
   fillroadall,
   UNIT_SECONDS,
@@ -7,38 +6,30 @@ import {
   fuzzyEquals,
   Datapoint,
   Goal,
-  GoalVerbose, DenseSegment,
-} from "../../../src/lib";
-import {setLogger} from "react-query";
-
-interface MyMatchers<R> extends Matchers<R> {
-  toFuzzyEqual(expected: number): R;
-}
+  GoalVerbose,
+  DenseSegment,
+} from "../../../src/lib/index.ts";
+import { setLogger } from "npm:react-query@3.34.16/lib/core/logger.js";
 
 expect.extend({
   toFuzzyEqual(received: number, expected: number) {
     const pass = fuzzyEquals(expected, received);
     if (pass) {
       return {
-        message: () =>
-          `expected ${received} not to fuzzy equal ${expected}`,
+        message: () => `expected ${received} not to fuzzy equal ${expected}`,
         pass: true,
       };
     } else {
       return {
-        message: () =>
-          `expected ${received} to fuzzy equal ${expected}`,
+        message: () => `expected ${received} to fuzzy equal ${expected}`,
         pass: false,
       };
     }
   },
 });
 
-export const e = expect as never as <T>(actual: T) => MyMatchers<T>;
-
 type DatapointInput = Omit<Datapoint, "timestamp"> & { timestamp?: number };
-export type GoalInput = Partial<Goal>
-  & { datapoints?: DatapointInput[] }
+export type GoalInput = Partial<Goal> & { datapoints?: DatapointInput[] };
 
 function getRate(g: GoalInput, mathishard: DenseSegment | undefined): number {
   if (g.rate !== undefined) {
@@ -82,7 +73,7 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
 }
 
 export async function withMutedReactQueryLogger<T>(
-    func: () => Promise<T>
+  func: () => Promise<T>
 ): Promise<T> {
   const noop = () => {
     // do nothing
@@ -96,7 +87,7 @@ export async function withMutedReactQueryLogger<T>(
 
   const result = await func();
 
-  setLogger(window.console);
+  setLogger(self.console);
 
   return result;
 }

@@ -1,5 +1,5 @@
-import {now} from "./time";
-import {GoalVerbose} from "./types";
+import { now } from "./time.ts";
+import { GoalVerbose } from "./types.ts";
 
 export function getGoalAge(g: GoalVerbose): number {
   const firstRow = g.roadall[0];

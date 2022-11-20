@@ -1,6 +1,6 @@
-import _ from "lodash";
-import {daysnap} from "./time";
-import {Fullroad, Roadall} from "./types";
+import _ from "npm:lodash";
+import { daysnap } from "./time.ts";
+import { Fullroad, Roadall } from "./types.ts";
 
 // TODO: Improve types throughout; get rid of `as [type]` as much as possible
 
@@ -10,8 +10,8 @@ const BDUSK = 2147317201;
 
 // Helper for fillroad for propagating forward filling in all the nulls
 const nextrow = (
-    or: [number, number, number],
-    nr: [number|null, number|null, number|null],
+  or: [number, number, number],
+  nr: [number | null, number | null, number | null]
 ): [number, number, number] => {
   const tprev = or[0];
   const vprev = or[1];
@@ -34,20 +34,20 @@ const nextrow = (
  r = rate in hertz (s^-1), ie, road rate per second
  return the third, namely, whichever one is passed in as null. */
 const tvr = (
-    tp: number,
-    vp: number,
-    t: number|null,
-    v: number|null,
-    r: number|null,
+  tp: number,
+  vp: number,
+  t: number | null,
+  v: number | null,
+  r: number | null
 ) => {
   if (t === null && v !== null && r !== null) {
     if (r === 0) return BDUSK;
-    else return daysnap(Math.min(BDUSK, tp + (v-vp)/r));
+    else return daysnap(Math.min(BDUSK, tp + (v - vp) / r));
   }
-  if (v === null && t !== null && r !== null) return vp+r*(t-tp);
+  if (v === null && t !== null && r !== null) return vp + r * (t - tp);
   if (r === null && t !== null && v !== null) {
     if (t === tp) return 0; // special case: zero-length road segment
-    return (v-vp)/(t-tp);
+    return (v - vp) / (t - tp);
   }
   return 0;
 };
@@ -64,15 +64,12 @@ export const fillroadall = (roadall: Roadall, siru: number): Fullroad => {
     throw new Error("Initial time or value was null");
   }
   rd.splice(0, 1);
-  rd.forEach((e) => (e[2] = null === e[2] ? e[2] : e[2]/siru));
+  rd.forEach((e: number[]) => (e[2] = null === e[2] ? e[2] : e[2] / siru));
   rd[0] = nextrow([tini, vini, 0], rd[0]);
   for (let i = 1; i < rd.length; i++) {
-    rd[i] = nextrow(rd[i-1] as [number, number, number], rd[i]);
+    rd[i] = nextrow(rd[i - 1] as [number, number, number], rd[i]);
   }
-  rd.forEach((e) => (e[2] = (null === e[2]) ? e[2] : e[2]*siru));
+  rd.forEach((e: number[]) => (e[2] = null === e[2] ? e[2] : e[2] * siru));
   const firstRow = [tini, vini, 0];
-  return [
-    firstRow,
-    ...rd,
-  ] as Fullroad;
+  return [firstRow, ...rd] as Fullroad;
 };

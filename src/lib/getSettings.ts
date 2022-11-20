@@ -1,4 +1,4 @@
-import { Goal, GoalVerbose } from "./types";
+import { Goal, GoalVerbose } from "./types.ts";
 
 export type AutodialSettings = {
   autodial: boolean;
