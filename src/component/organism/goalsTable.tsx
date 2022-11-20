@@ -30,6 +30,7 @@ export default function GoalsTable({ goals, username }: Props): JSX.Element {
             <TableCell>30d Avg</TableCell>
             <TableCell>Wknds Off</TableCell>
             <TableCell>Age</TableCell>
+            <TableCell>Errors</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

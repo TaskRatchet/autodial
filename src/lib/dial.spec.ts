@@ -663,20 +663,21 @@ describe("dial function", () => {
   it("does not dial goal without end rate", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(
-      makeGoal({
-        aggday: "last",
-        kyoom: false,
-        runits: "d",
-        roadall: [
-          [parseDate("20210125"), 0, null],
-          [parseDate("20220125"), 10, null],
-        ],
-        datapoints: [],
-      })
-    );
+    const fn = () =>
+      dial(
+        makeGoal({
+          aggday: "last",
+          kyoom: false,
+          runits: "d",
+          roadall: [
+            [parseDate("20210125"), 0, null],
+            [parseDate("20220125"), 10, null],
+          ],
+          datapoints: [],
+        })
+      );
 
-    expect(r).toBeFalsy();
+    expect(fn).toThrow();
   });
 
   it("does not make strict goal easier", () => {
@@ -758,17 +759,18 @@ describe("dial function", () => {
   it("does not dial odometer goals", async () => {
     setNow(2021, 2, 25);
 
-    const r = dial(
-      makeGoal({
-        odom: true,
-        roadall: [
-          [parseDate("20210125"), 0, null],
-          [null, 300, 1],
-        ],
-      })
-    );
+    const fn = () =>
+      dial(
+        makeGoal({
+          odom: true,
+          roadall: [
+            [parseDate("20210125"), 0, null],
+            [null, 300, 1],
+          ],
+        })
+      );
 
-    expect(r).toBeFalsy();
+    expect(fn).toThrow();
   });
 
   it("uses average of `from` goal", async () => {

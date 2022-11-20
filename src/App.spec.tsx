@@ -577,6 +577,25 @@ describe("Home page", () => {
       expect(getByText("3")).toBeInTheDocument();
     });
   });
+
+  it("shows dialer errors", async () => {
+    setNow(2009, 3, 4);
+
+    loadGoals([
+      {
+        slug: "the_slug",
+        odom: true,
+      },
+    ]);
+
+    const { getByText } = await r(<App />);
+
+    await waitFor(() => {
+      expect(
+        getByText("Odometer-type goals are not supported")
+      ).toBeInTheDocument();
+    });
+  });
 });
 
 // TODO:
