@@ -40,7 +40,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210225"), null, 1],
+          [parseDate("20210325"), null, 1],
         ],
         datapoints: [],
       })
@@ -59,7 +59,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210201"), null, 1],
+          [parseDate("20210301"), null, 1],
         ],
         datapoints: [{ daystamp: "20210125", value: 1 }],
       })
@@ -78,7 +78,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210124"), 0, null],
-          [parseDate("20210224"), null, 1],
+          [parseDate("20210324"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210124", value: 0 },
@@ -126,7 +126,7 @@ describe("dial function", () => {
         runits: "w",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210225"), null, 1],
+          [parseDate("20210325"), null, 1],
         ],
         datapoints: [{ daystamp: "20210126", value: 1 }],
       }),
@@ -146,7 +146,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -169,7 +169,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -192,7 +192,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -215,7 +215,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -238,7 +238,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -261,7 +261,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -286,7 +286,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -309,7 +309,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -332,7 +332,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -355,7 +355,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -378,7 +378,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -401,7 +401,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -424,7 +424,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -448,7 +448,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -471,7 +471,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -494,7 +494,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210301"), null, 1],
+          [parseDate("20210401"), null, 1],
         ],
         datapoints: [
           { daystamp: "20210125", value: 0 },
@@ -576,7 +576,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210225"), null, 0.000000000000000000001],
+          [parseDate("20210325"), null, 0.000000000000000000001],
         ],
         datapoints: [],
       })
@@ -646,7 +646,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210125"), 0, null],
-          [parseDate("20210225"), null, 0.000000000000000000001],
+          [parseDate("20210325"), null, 0.000000000000000000001],
         ],
         datapoints: [
           {
@@ -690,7 +690,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210124"), 0, null],
-          [parseDate("20210224"), null, 5],
+          [parseDate("20210324"), null, 5],
         ],
         datapoints: [
           { daystamp: "20210124", value: 0 },
@@ -718,7 +718,7 @@ describe("dial function", () => {
         runits: "d",
         roadall: [
           [parseDate("20210124"), 0, null],
-          [parseDate("20210224"), null, 0],
+          [parseDate("20210324"), null, 0],
         ],
         datapoints: [
           { daystamp: "20210124", value: 0 },
@@ -778,7 +778,7 @@ describe("dial function", () => {
       slug: "to",
       roadall: [
         [parseDate("20210124"), 0, null],
-        [parseDate("20210225"), null, 1],
+        [parseDate("20210325"), null, 1],
       ],
       datapoints: [{ daystamp: "20210124", value: 0 }],
     });
@@ -786,7 +786,7 @@ describe("dial function", () => {
       slug: "from",
       roadall: [
         [parseDate("20210124"), 0, null],
-        [parseDate("20210225"), null, 1],
+        [parseDate("20210325"), null, 1],
       ],
       datapoints: [
         { daystamp: "20210124", value: 0 },
@@ -811,7 +811,7 @@ describe("dial function", () => {
       runits: "d",
       roadall: [
         [parseDate("20210124"), 0, null],
-        [parseDate("20210224"), null, 1],
+        [parseDate("20210324"), null, 1],
       ],
       datapoints: [
         { daystamp: "20210124", value: 0 },
@@ -834,7 +834,7 @@ describe("dial function", () => {
       slug: "to",
       roadall: [
         [parseDate("20210124"), 0, null],
-        [parseDate("20210225"), null, 0],
+        [parseDate("20210325"), null, 0],
       ],
       datapoints: [{ daystamp: "20210124", value: 0 }],
     });
@@ -842,7 +842,7 @@ describe("dial function", () => {
       slug: "from",
       roadall: [
         [parseDate("20210223"), 0, null],
-        [parseDate("20210225"), null, 0],
+        [parseDate("20210325"), null, 0],
       ],
       datapoints: [
         { daystamp: "20210223", value: 0 },
@@ -857,8 +857,32 @@ describe("dial function", () => {
 
     expectFuzzyEndRate(r, 0.001111111111);
   });
+
+  it("does not add row with date after end row", () => {
+    setNow(2021, 2, 24);
+
+    const g = makeGoal({
+      aggday: "last",
+      kyoom: false,
+      runits: "d",
+      roadall: [
+        [parseDate("20210124"), 0, null],
+        [parseDate("20210224"), null, 1],
+      ],
+      datapoints: [
+        { daystamp: "20210124", value: 0 },
+        {
+          daystamp: "20210125",
+          value: 1,
+        },
+      ],
+    });
+
+    const fn = () => dial(g, { times: 2 });
+
+    expect(fn).toThrow();
+  });
 });
 
 // TODO:
-// reject odom goals
-// weekends off?
+// support odom goals
