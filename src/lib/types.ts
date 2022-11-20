@@ -75,6 +75,8 @@ export type GoalVerbose = {
 } & Goal;
 
 export type User = {
+  // eslint-disable-next-line camelcase
   beeminder_token: string;
+  // eslint-disable-next-line camelcase
   beeminder_user: string;
 };
