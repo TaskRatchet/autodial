@@ -1,32 +1,13 @@
-import { expect } from "npm:@jest/globals";
 import {
   fillroadall,
   UNIT_SECONDS,
   parseDate,
-  fuzzyEquals,
   Datapoint,
   Goal,
   GoalVerbose,
   DenseSegment,
 } from "../../../src/lib/index.ts";
 import { setLogger } from "npm:react-query@3.34.16/lib/core/logger.js";
-
-expect.extend({
-  toFuzzyEqual(received: number, expected: number) {
-    const pass = fuzzyEquals(expected, received);
-    if (pass) {
-      return {
-        message: () => `expected ${received} not to fuzzy equal ${expected}`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () => `expected ${received} to fuzzy equal ${expected}`,
-        pass: false,
-      };
-    }
-  },
-});
 
 type DatapointInput = Omit<Datapoint, "timestamp"> & { timestamp?: number };
 export type GoalInput = Partial<Goal> & { datapoints?: DatapointInput[] };

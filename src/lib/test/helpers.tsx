@@ -7,14 +7,16 @@ import {
   stub,
   returnsArg,
 } from "https://deno.land/std@0.165.0/testing/mock.ts";
+import { FakeTime } from "https://deno.land/std@0.165.0/testing/time.ts";
 
 import * as time from "../time.ts";
 
-export const setNow = (yyyy: number, m: number, d: number): number => {
-  const value: number = Date.UTC(yyyy, m - 1, d, 12) / 1000;
+export const setNow = (yyyy: number, m: number, d: number): FakeTime => {
+  const value: number = Date.UTC(yyyy, m - 1, d, 12);
   // jest.spyOn(time, "now").mockReturnValue(value);
-  stub(time, "now", returnsArg(value));
-  return value;
+  // stub(time._internals, "now", () => value);
+
+  return new FakeTime(value);
 };
 
 export function r(ui: unknown): RenderResult {

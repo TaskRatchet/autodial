@@ -1,4 +1,4 @@
-import { unix } from "npm:moment";
+import moment from "npm:moment@2.29.4";
 
 export function now(): number {
   return Date.now() / 1000;
@@ -18,10 +18,12 @@ export function parseDate(s: string): number {
 /* Fixes the supplied unixtime to 00:00:00 on the same day (uses Moment)
  @param {Number} ut Unix time  */
 export const daysnap = (ut: number): number => {
-  const d = unix(ut).utc();
+  const d = moment.unix(ut).utc();
   d.hours(0);
   d.minutes(0);
   d.seconds(0);
   d.milliseconds(0);
   return d.unix();
 };
+
+export const _internals = { now };
