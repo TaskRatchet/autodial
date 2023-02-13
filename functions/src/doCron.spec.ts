@@ -8,10 +8,11 @@ import {
   updateGoal,
   getGoal,
   setNow,
-  now, SID,
+  now,
+  SID,
 } from "../../src/lib";
-import {getUsers} from "./database";
-import {makeGoal} from "./test/helpers";
+import { getUsers } from "./database";
+import { makeGoal } from "./test/helpers";
 
 jest.mock("firebase-functions");
 jest.mock("../../src/lib/log");
@@ -37,10 +38,12 @@ describe("function", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mockGetGoals.mockResolvedValue([]);
-    mockGetUsers.mockResolvedValue([{
-      "beeminder_user": "the_user",
-      "beeminder_token": "the_token",
-    }]);
+    mockGetUsers.mockResolvedValue([
+      {
+        beeminder_user: "the_user",
+        beeminder_token: "the_token",
+      },
+    ]);
   });
 
   it("gets beeminder goals", async () => {
@@ -70,7 +73,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
+    expect(dial).toBeCalledWith(goal, expect.objectContaining({ min: 1.5 }));
   });
 
   it("supports max", async () => {
@@ -82,7 +85,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1.5}));
+    expect(dial).toBeCalledWith(goal, expect.objectContaining({ max: 1.5 }));
   });
 
   it("skips goals without hashtag", async () => {
@@ -106,12 +109,9 @@ describe("function", () => {
 
     await runCron();
 
-    expect(updateGoal).toBeCalledWith(
-        "the_user",
-        "the_token",
-        "the_slug",
-        {roadall: "the_new_road"},
-    );
+    expect(updateGoal).toBeCalledWith("the_user", "the_token", "the_slug", {
+      roadall: "the_new_road",
+    });
   });
 
   it("does not update goal if goal not dialed", async () => {
@@ -143,7 +143,7 @@ describe("function", () => {
 
   it("gets verbose goal with diffSince", async () => {
     setNow(2021, 2, 29);
-    const diffSince = now() - (SID * 31);
+    const diffSince = now() - SID * 31;
 
     const goal = makeGoal({
       fineprint: "#autodial",
@@ -154,10 +154,10 @@ describe("function", () => {
     await runCron();
 
     expect(getGoal).toBeCalledWith(
-        "the_user",
-        "the_token",
-        "the_slug",
-        diffSince,
+      "the_user",
+      "the_token",
+      "the_slug",
+      diffSince
     );
   });
 
@@ -182,7 +182,10 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({strict: true}));
+    expect(dial).toBeCalledWith(
+      goal,
+      expect.objectContaining({ strict: true })
+    );
   });
 
   it("supports from", async () => {
@@ -195,11 +198,23 @@ describe("function", () => {
     await runCron();
 
     expect(getGoal).toBeCalledWith(
-        expect.anything(),
-        expect.anything(),
-        "from_goal",
-        expect.anything()
+      expect.anything(),
+      expect.anything(),
+      "from_goal",
+      expect.anything()
     );
+  });
+
+  it("is case-insensitive", async () => {
+    const goal = makeGoal({
+      fineprint: "#autodialmin=1.5",
+    });
+
+    setGoal(goal);
+
+    await runCron();
+
+    expect(dial).toBeCalledWith(goal, expect.objectContaining({ min: 1.5 }));
   });
 });
 
