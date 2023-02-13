@@ -26,7 +26,7 @@ function parseHashtag(
   hashtag: string,
   pattern: string
 ): string | undefined {
-  const matches = haystack.match(new RegExp(`#${hashtag}=${pattern}`));
+  const matches = haystack.match(new RegExp(`#${hashtag}=${pattern}`, "i"));
 
   return matches?.[1];
 }
