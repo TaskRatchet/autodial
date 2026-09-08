@@ -38,15 +38,21 @@ export const handlers = {
 
     const {pathname} = new URL(req.url);
 
+    // Route before reading the body. Scanners POST junk at paths like
+    // /index.php; parsing first turned every one of those into a JSON
+    // SyntaxError, a captured Sentry event and a 500, and the 404 below was
+    // unreachable for them.
+    if (pathname !== "/update" && pathname !== "/remove") {
+      return new Response("Not found", {status: 404, headers: CORS});
+    }
+
     try {
       const {user, token} = await req.json<{ user: string; token: string }>();
 
       if (pathname === "/update") {
         await doUpdate(env.USERS, user, token);
-      } else if (pathname === "/remove") {
-        await doRemove(env.USERS, user, token);
       } else {
-        return new Response("Not found", {status: 404, headers: CORS});
+        await doRemove(env.USERS, user, token);
       }
 
       return new Response("Success", {status: 200, headers: CORS});
