@@ -7,10 +7,10 @@ import reportWebVitals from "./reportWebVitals";
 import {redactToken} from "./lib/redactToken";
 import {QueryClient, QueryClientProvider} from "react-query";
 
-// No-op unless a DSN is configured (REACT_APP_SENTRY_DSN build var).
-if (process.env.REACT_APP_SENTRY_DSN) {
+// No-op unless a DSN is configured (VITE_SENTRY_DSN build var).
+if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
+    dsn: import.meta.env.VITE_SENTRY_DSN,
     tracesSampleRate: 0,
     sendDefaultPii: false,
     // After the Beeminder OAuth redirect the token sits in the URL bar, which
@@ -53,5 +53,5 @@ ReactDOM.render(
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// or send to an analytics endpoint. Learn more: https://web.dev/vitals
 reportWebVitals();

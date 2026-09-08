@@ -23,14 +23,13 @@ jobs:
       - name: Build SPA
         run: npm run build
         env:
-          # react-scripts 4 / webpack 4 needs the legacy OpenSSL provider on Node 17+
-          NODE_OPTIONS: --openssl-legacy-provider
-          CI: false
           # Same-origin: the Worker serves the SPA, so the API is reached at /update etc.
-          REACT_APP_API_URL: ""
-          REACT_APP_APP_URL: ${{ secrets.REACT_APP_APP_URL }}
-          REACT_APP_BM_CLIENT_ID: ${{ secrets.REACT_APP_BM_CLIENT_ID }}
-          REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
+          # Secret names are unchanged (REACT_APP_*) from the pre-Vite setup;
+          # only the build-time env var names moved to Vite's VITE_ prefix.
+          VITE_API_URL: ""
+          VITE_APP_URL: ${{ secrets.REACT_APP_APP_URL }}
+          VITE_BM_CLIENT_ID: ${{ secrets.REACT_APP_BM_CLIENT_ID }}
+          VITE_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
       - name: Deploy Worker (SPA assets + API + cron)
         run: npx wrangler deploy
         working-directory: ./functions
