@@ -1,8 +1,5 @@
-/**
- * @jest-environment jsdom
- */
-
 import React from "react";
+import type { Mock } from "vitest";
 import { waitFor, screen } from "@testing-library/react";
 import App from "./App";
 
@@ -20,16 +17,16 @@ import { setNow, r, withMutedReactQueryLogger } from "./lib/test/helpers";
 import { GoalInput, makeGoal } from "../functions/src/test/helpers";
 import { remove, update } from "./lib/functions";
 
-jest.mock("./lib/browser");
-jest.mock("./lib/functions");
-jest.mock("./lib/beeminder");
+vi.mock("./lib/browser");
+vi.mock("./lib/functions");
+vi.mock("./lib/beeminder");
 
-const mockGetParams = getParams as jest.Mock;
-const mockUpdate = update as jest.Mock;
-const mockRemove = remove as jest.Mock;
-const mockGetGoals = getGoals as jest.Mock;
-const mockGetGoalsVerbose = getGoalsVerbose as jest.Mock;
-const mockGetGoal = getGoal as jest.Mock;
+const mockGetParams = getParams as Mock;
+const mockUpdate = update as Mock;
+const mockRemove = remove as Mock;
+const mockGetGoals = getGoals as Mock;
+const mockGetGoalsVerbose = getGoalsVerbose as Mock;
+const mockGetGoal = getGoal as Mock;
 
 function loadParams(params: string) {
   mockGetParams.mockReturnValue(new URLSearchParams(params));
@@ -97,21 +94,14 @@ describe("Home page", () => {
   });
 
   describe("with mocked env", () => {
-    const OLD_ENV = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...OLD_ENV };
-    });
-
-    afterAll(() => {
-      process.env = OLD_ENV;
+    afterEach(() => {
+      vi.unstubAllEnvs();
     });
 
     it("includes client id in authenticate url", async () => {
       loadParams("");
 
-      process.env.REACT_APP_BM_CLIENT_ID = "the_client_id";
+      vi.stubEnv("VITE_BM_CLIENT_ID", "the_client_id");
 
       const { getByText } = await r(<App />);
 
@@ -126,7 +116,7 @@ describe("Home page", () => {
     it("includes client secret in authenticate url", async () => {
       loadParams("");
 
-      process.env.REACT_APP_APP_URL = "http://the_app_url";
+      vi.stubEnv("VITE_APP_URL", "http://the_app_url");
 
       const { getByText } = await r(<App />);
 
@@ -218,6 +208,11 @@ describe("Home page", () => {
   });
 
   it("displays min value", async () => {
+    // Pin the clock: the fixture's roadall ends 2009-03-15, and dial() skips
+    // goals whose road already ended, which — unmocked — depends on how far
+    // "now" has drifted past that date. Pre-existing on master, unrelated to
+    // the vitest migration (reproduces under the old jest suite too).
+    setNow(2009, 3, 4);
     loadGoals([{ slug: "the_slug", rate: 3, fineprint: "#autodialMin=1.5" }]);
 
     const { getByText } = await r(<App />);
@@ -228,6 +223,9 @@ describe("Home page", () => {
   });
 
   it("displays positive value", async () => {
+    // See the comment in "displays min value" above — same pre-existing
+    // wall-clock dependency, pinned the same way.
+    setNow(2009, 3, 4);
     loadGoals([{ slug: "the_slug", rate: 3, fineprint: "#autodialMax=1" }]);
 
     const { getByText } = await r(<App />);

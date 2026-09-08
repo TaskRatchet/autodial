@@ -1,8 +1,9 @@
+import type {Mock} from "vitest";
 import {getGoal, getGoals, getUser, updateGoal} from "./beeminder";
 import {BeeminderAuthError} from "./beeminderAuthError";
 
 function mockFetch(res: Record<string, unknown>) {
-  (global as unknown as { fetch: jest.Mock }).fetch = jest
+  (global as unknown as { fetch: Mock }).fetch = vi
       .fn()
       .mockResolvedValue({
         ok: true,
@@ -101,7 +102,7 @@ describe("beeminder client", () => {
           updateGoal("u", "t", "g", {roadall: []})
       ).rejects.toThrow(/500/);
 
-      const fetchMock = (global as unknown as { fetch: jest.Mock }).fetch;
+      const fetchMock = (global as unknown as { fetch: Mock }).fetch;
       expect(fetchMock).toHaveBeenCalledWith(
           expect.stringContaining("/goals/g.json?access_token=t"),
           expect.objectContaining({method: "PUT"})
