@@ -14,9 +14,9 @@ export default function StepOne(): JSX.Element {
   const goals = useGoals();
   const isAuthenticated = useIsAuthenticated();
 
-  const {REACT_APP_APP_URL = "", REACT_APP_BM_CLIENT_ID = ""} = process.env;
-  const redirectUri = encodeURIComponent(REACT_APP_APP_URL);
-  const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${REACT_APP_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
+  const {VITE_APP_URL = "", VITE_BM_CLIENT_ID = ""} = import.meta.env;
+  const redirectUri = encodeURIComponent(VITE_APP_URL);
+  const enableUrl = `https://www.beeminder.com/apps/authorize?client_id=${VITE_BM_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=token`;
   const disableUrl =
     `/?access_token=${params.token}&username=${params.user}&disable=true`;
 
