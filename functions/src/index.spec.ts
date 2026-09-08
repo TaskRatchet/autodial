@@ -107,6 +107,19 @@ describe("worker fetch", () => {
     );
     expect(res.status).toBe(500);
   });
+
+  // The route check now runs before the body is parsed, but a known route
+  // still needs to parse its body — an unparsable one there is a real
+  // application error, not scanner noise, and must still be reported.
+  it("500s and reports to Sentry when a known route's body can't be parsed", async () => {
+    (Sentry.captureException as jest.Mock).mockClear();
+    const res = await handlers.fetch(
+        reqWithUnparsableBody("POST", "/update"),
+        env
+    );
+    expect(res.status).toBe(500);
+    expect(Sentry.captureException).toBeCalled();
+  });
 });
 
 describe("worker scheduled", () => {
