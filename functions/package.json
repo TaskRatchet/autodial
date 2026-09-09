@@ -30,50 +30,23 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
-    "@sentry/cloudflare": "^8.47.0",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/react": "^17.0.38",
-    "@types/react-dom": "^17.0.11",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-query": "^3.34.16"
+    "@sentry/cloudflare": "^8.47.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240909.0",
-    "@types/jest": "^27.4.0",
-    "@types/lodash": "~4.14.170",
-    "@typescript-eslint/eslint-plugin": "^3.9.1",
-    "@typescript-eslint/parser": "^3.8.0",
-    "eslint": "^7.6.0",
+    "@cloudflare/workers-types": "^5.20260908.1",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "eslint": "^8.57.1",
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.22.0",
-    "jest": "^27.4.7",
-    "ts-jest": "^27.1.3",
-    "typescript": "^4.3.4",
-    "wrangler": "^3.78.0"
+    "eslint-plugin-import": "^2.32.0",
+    "jest": "^30.5.1",
+    "ts-jest": "^29.4.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.130.0"
   },
   "private": true,
   "overrides": {
-    "@babel/core": "^7.29.6",
-    "@babel/runtime": "^7.26.10",
-    "@babel/traverse": "7.23.2",
-    "@tootallnate/once": "^2.0.1",
-    "brace-expansion": "1.1.18",
-    "braces": "3.0.3",
-    "browserslist": "4.28.7",
-    "decode-uri-component": "^0.5.0",
-    "flatted": "3.4.2",
-    "form-data": "3.0.5",
-    "js-yaml": "^3.15.2",
-    "json5": "2.2.2",
-    "minimatch": "3.1.4",
-    "minimist": "1.2.6",
-    "picomatch": "^2.3.2",
-    "sharp": "^0.35.4",
-    "ws": "8.21.0"
+    "sharp": "^0.35.4"
   }
 }

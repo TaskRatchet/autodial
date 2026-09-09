@@ -10,6 +10,6 @@ describe("doRemove", () => {
   it("removes user", async () => {
     await doRemove(kv, "the_user", "the_token");
 
-    expect(removeUser).toBeCalledWith(kv, "the_user");
+    expect(removeUser).toHaveBeenCalledWith(kv, "the_user");
   });
 });

@@ -3,6 +3,7 @@
     ".eslintrc.js"
   ],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   }
 }

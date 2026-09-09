@@ -70,7 +70,7 @@ describe("worker fetch", () => {
         env
     );
     expect(res.status).toBe(200);
-    expect(doUpdate).toBeCalledWith(env.USERS, "u", "t");
+    expect(doUpdate).toHaveBeenCalledWith(env.USERS, "u", "t");
   });
 
   it("routes /remove to doRemove", async () => {
@@ -79,7 +79,7 @@ describe("worker fetch", () => {
         env
     );
     expect(res.status).toBe(200);
-    expect(doRemove).toBeCalledWith(env.USERS, "u", "t");
+    expect(doRemove).toHaveBeenCalledWith(env.USERS, "u", "t");
   });
 
   it("404s unknown paths", async () => {
@@ -96,7 +96,7 @@ describe("worker fetch", () => {
         env
     );
     expect(res.status).toBe(404);
-    expect(Sentry.captureException).not.toBeCalled();
+    expect(Sentry.captureException).not.toHaveBeenCalled();
   });
 
   it("500s when a handler throws", async () => {
@@ -118,7 +118,7 @@ describe("worker fetch", () => {
         env
     );
     expect(res.status).toBe(500);
-    expect(Sentry.captureException).toBeCalled();
+    expect(Sentry.captureException).toHaveBeenCalled();
   });
 });
 
@@ -128,6 +128,6 @@ describe("worker scheduled", () => {
         {} as ScheduledController,
         {USERS: {} as KVNamespace, DRY_RUN: "true"}
     );
-    expect(doCron).toBeCalledWith(expect.anything(), true);
+    expect(doCron).toHaveBeenCalledWith(expect.anything(), true);
   });
 });
