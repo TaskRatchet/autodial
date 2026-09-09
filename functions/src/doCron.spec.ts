@@ -58,7 +58,7 @@ describe("function", () => {
   it("gets beeminder goals", async () => {
     await runCron();
 
-    expect(getGoals).toBeCalledWith("the_user", "the_token");
+    expect(getGoals).toHaveBeenCalledWith("the_user", "the_token");
   });
 
   it("dials goals", async () => {
@@ -70,7 +70,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.anything());
+    expect(dial).toHaveBeenCalledWith(goal, expect.anything());
   });
 
   it("supports min", async () => {
@@ -82,7 +82,9 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
+    expect(dial).toHaveBeenCalledWith(
+        goal, expect.objectContaining({min: 1.5})
+    );
   });
 
   it("supports max", async () => {
@@ -94,7 +96,9 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({max: 1.5}));
+    expect(dial).toHaveBeenCalledWith(
+        goal, expect.objectContaining({max: 1.5})
+    );
   });
 
   it("skips goals without hashtag", async () => {
@@ -104,7 +108,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).not.toBeCalled();
+    expect(dial).not.toHaveBeenCalled();
   });
 
   it("persists modified road", async () => {
@@ -118,9 +122,10 @@ describe("function", () => {
 
     await runCron();
 
-    expect(updateGoal).toBeCalledWith("the_user", "the_token", "the_slug", {
-      roadall: "the_new_road",
-    });
+    expect(updateGoal).toHaveBeenCalledWith(
+        "the_user", "the_token", "the_slug",
+        {roadall: "the_new_road"}
+    );
   });
 
   it("does not update goal if goal not dialed", async () => {
@@ -134,7 +139,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(updateGoal).not.toBeCalled();
+    expect(updateGoal).not.toHaveBeenCalled();
   });
 
   it("handles getGoal 404s", async () => {
@@ -147,7 +152,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockGetGoal).toBeCalledTimes(2);
+    expect(mockGetGoal).toHaveBeenCalledTimes(2);
   });
 
   it("gets verbose goal with diffSince", async () => {
@@ -162,7 +167,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(getGoal).toBeCalledWith(
+    expect(getGoal).toHaveBeenCalledWith(
         "the_user",
         "the_token",
         "the_slug",
@@ -179,7 +184,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.anything());
+    expect(dial).toHaveBeenCalledWith(goal, expect.anything());
   });
 
   it("supports strict", async () => {
@@ -191,7 +196,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(
+    expect(dial).toHaveBeenCalledWith(
         goal,
         expect.objectContaining({strict: true})
     );
@@ -206,7 +211,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(getGoal).toBeCalledWith(
+    expect(getGoal).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
         "from_goal",
@@ -223,7 +228,9 @@ describe("function", () => {
 
     await runCron();
 
-    expect(dial).toBeCalledWith(goal, expect.objectContaining({min: 1.5}));
+    expect(dial).toHaveBeenCalledWith(
+        goal, expect.objectContaining({min: 1.5})
+    );
   });
 
   it("does not report a skipped goal to Sentry", async () => {
@@ -238,7 +245,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(Sentry.captureException).not.toBeCalled();
+    expect(Sentry.captureException).not.toHaveBeenCalled();
   });
 
   it("logs the reason a goal was skipped", async () => {
@@ -253,7 +260,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockLog).toBeCalledWith(
+    expect(mockLog).toHaveBeenCalledWith(
         "skip dial goal the_user/the_slug: Goal ends too soon to dial"
     );
   });
@@ -271,7 +278,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockCaptureException).toBeCalledWith(
+    expect(mockCaptureException).toHaveBeenCalledWith(
         error,
         expect.objectContaining({
           extra: {beeminder_user: "the_user", slug: "the_slug"},
@@ -285,7 +292,7 @@ describe("function", () => {
 
     const kv = await runCron();
 
-    expect(mockDisableUser).toBeCalledWith(
+    expect(mockDisableUser).toHaveBeenCalledWith(
         kv,
         "the_user",
         "the_token",
@@ -299,7 +306,7 @@ describe("function", () => {
 
     const kv = await runCron();
 
-    expect(mockDisableUser).toBeCalledWith(
+    expect(mockDisableUser).toHaveBeenCalledWith(
         kv,
         "the_user",
         "the_token",
@@ -314,8 +321,8 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockCaptureException).toBeCalledTimes(1);
-    expect(mockCaptureException).toBeCalledWith(
+    expect(mockCaptureException).toHaveBeenCalledTimes(1);
+    expect(mockCaptureException).toHaveBeenCalledWith(
         error,
         expect.objectContaining({
           extra: {beeminder_user: "the_user", status: 401},
@@ -330,7 +337,7 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockCaptureException).toBeCalledWith(
+    expect(mockCaptureException).toHaveBeenCalledWith(
         error,
         expect.objectContaining({
           extra: {beeminder_user: "the_user", status: 401},
@@ -348,11 +355,11 @@ describe("function", () => {
     // and taking every other user's run down with it.
     await expect(runCron()).resolves.toBeDefined();
 
-    expect(mockCaptureException).toBeCalledWith(
+    expect(mockCaptureException).toHaveBeenCalledWith(
         writeError,
         expect.objectContaining({extra: {beeminder_user: "the_user"}})
     );
-    expect(mockCaptureException).toBeCalledWith(
+    expect(mockCaptureException).toHaveBeenCalledWith(
         error,
         expect.objectContaining({
           extra: {beeminder_user: "the_user", status: 401},
@@ -366,10 +373,10 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockDisableUser).not.toBeCalled();
+    expect(mockDisableUser).not.toHaveBeenCalled();
     // The non-auth branch keeps its original payload shape: no status, and
     // no disabled flag, so a 500 stays visibly distinct from a dead token.
-    expect(mockCaptureException).toBeCalledWith(error, {
+    expect(mockCaptureException).toHaveBeenCalledWith(error, {
       extra: {beeminder_user: "the_user"},
     });
   });
@@ -386,8 +393,8 @@ describe("function", () => {
     // Deliberate asymmetry: a per-goal 401/404 usually means the goal was
     // renamed or deleted, not that the credential died. Pinned so a future
     // refactor cannot quietly unify the two catch blocks in either direction.
-    expect(mockDisableUser).not.toBeCalled();
-    expect(mockCaptureException).toBeCalledWith(
+    expect(mockDisableUser).not.toHaveBeenCalled();
+    expect(mockCaptureException).toHaveBeenCalledWith(
         expect.any(BeeminderAuthError),
         expect.objectContaining({
           extra: expect.objectContaining({slug: g.slug}),
@@ -406,8 +413,8 @@ describe("function", () => {
 
     await runCron();
 
-    expect(mockGetGoals).not.toBeCalled();
-    expect(mockCaptureException).not.toBeCalled();
+    expect(mockGetGoals).not.toHaveBeenCalled();
+    expect(mockCaptureException).not.toHaveBeenCalled();
   });
 });
 

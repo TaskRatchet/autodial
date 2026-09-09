@@ -9,7 +9,6 @@ import {
   Goal,
   GoalVerbose, DenseSegment,
 } from "../../../src/lib";
-import {setLogger} from "react-query";
 
 interface MyMatchers<R> extends Matchers<R> {
   toFuzzyEqual(expected: number): R;
@@ -34,6 +33,8 @@ expect.extend({
   },
 });
 
+// Also consumed by root's own vitest suite (dial.spec.ts): it imports this
+// module directly rather than duplicating the matcher.
 export const e = expect as never as <T>(actual: T) => MyMatchers<T>;
 
 type DatapointInput = Omit<Datapoint, "timestamp"> & { timestamp?: number };
@@ -79,24 +80,4 @@ export function makeGoal(g: GoalInput = {}): GoalVerbose {
     goal_type: g.goal_type || "hustler",
     odom: g.odom || false,
   };
-}
-
-export async function withMutedReactQueryLogger<T>(
-    func: () => Promise<T>
-): Promise<T> {
-  const noop = () => {
-    // do nothing
-  };
-
-  setLogger({
-    log: noop,
-    warn: noop,
-    error: noop,
-  });
-
-  const result = await func();
-
-  setLogger(window.console);
-
-  return result;
 }

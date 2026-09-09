@@ -13,7 +13,7 @@ describe("doUpdate", () => {
   it("runs", async () => {
     await doUpdate(kv, "the_user", "the_token");
 
-    expect(getUser).toBeCalledWith("the_user", "the_token");
+    expect(getUser).toHaveBeenCalledWith("the_user", "the_token");
   });
 
   it("throws error", async () => {
@@ -33,6 +33,6 @@ describe("doUpdate", () => {
   it("updates user", async () => {
     await doUpdate(kv, "the_user", "the_token");
 
-    expect(updateUser).toBeCalledWith(kv, "the_user", "the_token");
+    expect(updateUser).toHaveBeenCalledWith(kv, "the_user", "the_token");
   });
 });
