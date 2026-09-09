@@ -27,7 +27,7 @@
     ]
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@sentry/cloudflare": "^8.47.0"
