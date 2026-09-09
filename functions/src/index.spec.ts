@@ -9,8 +9,9 @@ jest.mock("./doUpdate");
 jest.mock("./doRemove");
 jest.mock("./doCron");
 
-// jest 27's node env has no global Response; the worker only ever constructs
-// one and the tests read .status / .headers.get, so a tiny stand-in suffices.
+// jest's node test env doesn't reliably expose global Response; the worker
+// only ever constructs one and the tests read .status / .headers.get, so a
+// tiny stand-in suffices.
 class FakeResponse {
   status: number;
   headers: { get: (k: string) => string | null };
